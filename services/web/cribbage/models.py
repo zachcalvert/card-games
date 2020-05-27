@@ -16,3 +16,13 @@ class Player(db.Model):
 
     def __init__(self, nickname):
         self.nickname = nickname
+
+
+class Game(db.Model):
+    __tablename__ = "games"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), unique=False, nullable=False)
+
+    def __init__(self, nickname):
+        self.name = name

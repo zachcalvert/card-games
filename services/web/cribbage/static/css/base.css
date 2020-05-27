@@ -1,5 +1,51 @@
+.game {
+  display: none;
+  border: 1px solid #D8E6F1 ;
+  height: 99%;
+  margin-top: .5%;
+}
+
+.dark-mode {
+  background-color: black;
+  color: white;
+}
+
+.navbar {
+    margin-left: -15px;
+    margin-right: -15px;
+    height: 8%;
+    border-bottom: 1px solid #D8E6F1 ;
+    background: #D8E6F1;
+}
+
+.game-area {
+  height: 66%;
+}
+
+.game-log {
+  height: 100%;
+  padding: 15px;
+  border-right: 1px solid #D8E6F1;
+}
+
+.scoreboard {
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.player-area {
+    border-top: 1px solid #D8E6F1;
+    height: 26%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #f8f9fa;
+}
+
 .playerCard {
     width: 100px;
+    padding: 5px;
 }
 
 ul {
@@ -8,7 +54,6 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333333;
 }
 
 li {
@@ -23,10 +68,45 @@ li a {
   text-decoration: none;
 }
 
-li a:hover {
-  background-color: #111111;
+
+
+.action-button {
+    background: rgb(28, 184, 65);
+    display:block;
+    margin: 10%;
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    border: 1px solid white;
+
 }
 
-.game {
-  display: none;
+.button-error {
+    color: #fafafa;
+    background: rgb(202, 60, 60);
+}
+
+/*  COLORS  */
+.black {
+  background: #333333;
+}
+
+.navy {
+  background: #173753;
+}
+
+.blue {
+  background: #2274A5;
+}
+
+.pink {
+  background: #F4C3C2;
+}
+
+.almond {
+  background: #DECBB7;
+}
+
+.white {
+  background: #FAF8F2;
 }
