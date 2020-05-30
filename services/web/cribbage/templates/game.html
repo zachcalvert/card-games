@@ -1,5 +1,5 @@
 <div class="game container-xl rounded">
-    <nav class="navbar navbar-light bg-transparent rounded panel">
+    <nav class="navbar navbar-light bg-dark rounded panel">
       <span id="game-name" class="navbar-brand mb-0 h1"></span>
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary active">
@@ -62,8 +62,6 @@
         $('body').attr('style', 'background-color: #000000 !important');
         $('.game').css({"background-color":"#000000"});
         $('.game').css('color', '#F5F5F5');
-        $('nav').removeClass('bg-light');
-        $('nav').addClass('bg-dark');
         $('.panel').css('background', '#343a40');
         $('.panel').css('border', '1px solid #8B7B8B');
     });
@@ -72,9 +70,7 @@
         $("body").css({"background-color":"#344152"});
         $('.game').css('background', '#344152');
         $('.game').css('color', '#F5F5F5');
-        $('nav').removeClass('bg-dark');
-        $('nav').addClass('bg-light');
-        $('.panel').css('background', '#FFFFFF');
-        $('.panel').css('border', '1px solid #596C56');
+        $('.panel').css('background', '#343a40');
+        $('.panel').css('border', '1px solid #404040');
     });
 </script>

@@ -4,11 +4,12 @@ html, body {
 .game {
   display: none;
   background: #344152;
+  color: #D3D3D3;
 }
 
 .navbar {
-    margin: 0px -15px;
-    height: 6%;
+    margin: 5px -15px 1px -15px;
+    height: 8%;
 }
 
 .navbar.dark-mode{
@@ -16,8 +17,8 @@ html, body {
 }
 
 .panel {
-    /*border: 1px solid #596C56;*/
-    background: #E8E8E8;
+    border: 1px solid #404040;
+    background: #343a40;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -64,17 +65,11 @@ html, body {
 .scoreboard-player-area {
     display: inline-block;
     background: #3A3A38;
-    color: #F5F5F5;
     padding: 5%;
     width: 45%;
     height: 45%;
     margin: 2%;
 }
-
-/*.scoreboard-player-area:first-child {*/
-/*    margin-right: 5%px;*/
-/*} */
-
 
 .deck-area {
     height: 100%;
@@ -103,7 +98,6 @@ li {
 
 li a {
   display: block;
-  color: white;
   text-align: center;
   padding: 16px;
   text-decoration: none;

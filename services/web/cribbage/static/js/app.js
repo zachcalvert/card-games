@@ -37,16 +37,19 @@ $(document).ready(function() {
     $('.game').show();
     $('.lobby').hide();
 
-    // $('.scoreboard').append($('<div/>').html(
-    //     '<div id="player-' + msg.nickname + '" class="scoreboard-player-area rounded">\n' +
-    //     '<h5 class="player-name">' + msg.nickname + '</h5>\n' +
-    //     '<h6 class="player-score">0</h6>\n' +
-    //     '</div>'
-    // ));
+    if ($("#player-" + msg.nickname).length == 0) {
+      let playerDiv = $('<div/>', {
+        id: 'player-' + msg.nickname,
+        class: 'scoreboard-player-area',
+        html: '<h5 class="player-name">' + msg.nickname + '</h5><h6>class="player-score">' + 0 + '</h6>'
+      });
+      $('.scoreboard').append(playerDiv);
+    }
 
     socket.emit('player_action_announcement', {
       game: msg.gameName, nickname: msg.nickname, action: 'joined' });
   });
+
 
   // leave game
   $('form#leave').submit(function(event) {
