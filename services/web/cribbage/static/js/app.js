@@ -36,10 +36,17 @@ $(document).ready(function() {
   socket.on('player_join', function (msg, cb) {
     $('.game').show();
     $('.lobby').hide();
+
+    // $('.scoreboard').append($('<div/>').html(
+    //     '<div id="player-' + msg.nickname + '" class="scoreboard-player-area rounded">\n' +
+    //     '<h5 class="player-name">' + msg.nickname + '</h5>\n' +
+    //     '<h6 class="player-score">0</h6>\n' +
+    //     '</div>'
+    // ));
+
     socket.emit('player_action_announcement', {
       game: msg.gameName, nickname: msg.nickname, action: 'joined' });
   });
-
 
   // leave game
   $('form#leave').submit(function(event) {
@@ -64,7 +71,7 @@ $(document).ready(function() {
     let nickname = sessionStorage.getItem("nickname");
     let gameName = sessionStorage.getItem("gameName");
     socket.emit('send_message', {
-      game: gameName, nickname: nickname, data: $('#game_data').val()});
+      game: gameName, nickname: nickname, data: $('#message_content').val()});
     return false;
   });
   socket.on('new_chat_message', function(msg, cb) {
@@ -81,7 +88,6 @@ $(document).ready(function() {
       if (cb)
         cb();
     });
-
     $('#action-button').click(function (event) {
       socket.emit('deal_card');
       return false;

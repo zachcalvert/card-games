@@ -77,9 +77,11 @@ def join(message):
         db.session.add(game)
         db.session.commit()
 
-    player = Player(nickname=message['nickname'], game_id=game.id)
-    db.session.add(player)
-    db.session.commit()
+    player = Player.query.filter_by(nickname=message['nickname'], game_id=game.id).first()
+    if player is None:
+        player = Player(nickname=message['nickname'], game_id=game.id)
+        db.session.add(player)
+        db.session.commit()
 
     emit('player_join',
          {'nickname': player.nickname, 'gameName': game.name})
@@ -96,7 +98,8 @@ def leave(message):
 def player_action_announcement(message):
     player = message['nickname']
     action = message['action']
-    emit('player_action_announcement', {'action': action, 'player': player}, room=message['game'])
+    msg = '{} {}'.format(player, action)
+    emit('player_action_announcement', {'data': msg}, room=message['game'])
 
 
 @socketio.on('send_message', namespace='/game')

@@ -1,5 +1,5 @@
 <div class="game container-xl rounded">
-    <nav class="navbar navbar-light bg-light rounded panel">
+    <nav class="navbar navbar-light bg-transparent rounded panel">
       <span id="game-name" class="navbar-brand mb-0 h1"></span>
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary active">
@@ -10,15 +10,16 @@
           <input type="radio" name="dark-mode" id="activate-dark-mode" autocomplete="off">
           <i class="fas fa-moon"></i>
         </label>
-    </div>
+      </div>
     </nav>
+
     <div class="game-area row">
         <div class="game-log-container col rounded panel">
             <b>Game log</b>
             <div id="game-log"></div>
             <form id="send_message" class="input-group" method="POST" action='#'>
                 <div class="input-group mb-3">
-                  <input type="text" class="form-control" name="game_data" id="game_data" placeholder="Message">
+                  <input type="text" class="form-control" name="message_content" id="message_content" placeholder="Message">
                   <div class="input-group-append">
                     <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
                         <span class="fas fa-paper-plane"></span>
@@ -28,33 +29,6 @@
             </form>
         </div>
         <div class="col-6 scoreboard rounded panel">
-            <ul class="list-group">
-              <li class="list-group-item scoreboard-player">
-                  <b><span id="player-name"></span></b>
-                  <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 81%;" aria-valuemin="0" aria-valuemax="121">81</div>
-                  </div>
-              </li>
-              <li class="list-group-item scoreboard-player">
-                  <b><span>michelle</span></b>
-                  <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 88%;" aria-valuemin="0" aria-valuemax="121">88</div>
-                  </div>
-              </li>
-              <li class="list-group-item scoreboard-player">
-                  <b><span>leah</span></b>
-                  <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 67%;" aria-valuemin="0" aria-valuemax="121">67</div>
-                  </div>
-              </li>
-              <li class="list-group-item scoreboard-player">
-                  <b><span>dad</span></b>
-                  <div class="progress" style="height: 20px;">
-                    <div class="progress-bar" role="progressbar" style="width: 52%;" aria-valuemin="0" aria-valuemax="121">52</div>
-                  </div>
-              </li>
-            </ul>
-
         </div>
         <div class="col deck-area rounded panel">
             <div id="deck">
@@ -65,7 +39,7 @@
 
     <div class="player-area row rounded panel">
         <div class="col">
-            <button id="action-button" type="button" class="btn btn-primary btn-lg">Deal card</button>
+            <button id="action-button" type="button" class="btn btn-dark btn-lg">Deal card</button>
         </div>
         <div class="col-6">
             <ul id="playerCards"></ul>
@@ -85,24 +59,22 @@
     });
 
     $('#activate-dark-mode').click(function (event) {
-        $("body").css({"background-color":"#000000"});
+        $('body').attr('style', 'background-color: #000000 !important');
         $('.game').css({"background-color":"#000000"});
         $('.game').css('color', '#F5F5F5');
         $('nav').removeClass('bg-light');
         $('nav').addClass('bg-dark');
-        $('.navbar').css('color', '#F5F5F5');
         $('.panel').css('background', '#343a40');
-        $('.panel').css('border', '1px solid #778899');
+        $('.panel').css('border', '1px solid #8B7B8B');
     });
 
     $('#activate-light-mode').click(function (event) {
-        $("body").css({"background-color":"#F5F5F5"});
-        $('.game').css('background', '#F5F5F5');
-        $('.game').css('color', '#000000');
+        $("body").css({"background-color":"#344152"});
+        $('.game').css('background', '#344152');
+        $('.game').css('color', '#F5F5F5');
         $('nav').removeClass('bg-dark');
         $('nav').addClass('bg-light');
-        $('.panel').css('background', 'white');
-        $('.panel').css('border', '1px solid #D8E6F1');
+        $('.panel').css('background', '#FFFFFF');
+        $('.panel').css('border', '1px solid #596C56');
     });
-
 </script>
