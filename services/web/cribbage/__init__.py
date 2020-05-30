@@ -18,8 +18,45 @@ async_mode = None
 
 app = Flask(__name__)
 app.config.from_object("cribbage.config.Config")
+
 db = SQLAlchemy(app)
+
+
+class Game(db.Model):
+    __tablename__ = 'games'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), unique=False, nullable=False)
+    players = db.relationship('Player', backref='games', lazy=True)
+
+    def __init__(self, name):
+        self.name = name
+
+
+class Player(db.Model):
+    __tablename__ = 'players'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nickname = db.Column(db.String(128), unique=False, nullable=False)
+    active = db.Column(db.Boolean(), default=True, nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False)
+
+    def __init__(self, nickname, game_id):
+        self.nickname = nickname
+        self.game_id = game_id
+
+
+class Hand(db.Model):
+    __tablename__ = 'hands'
+
+    id = db.Column(db.Integer, primary_key=True)
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False)
+    player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
+    state = db.Column(db.String(20), unique=False, nullable=False, default='DISCARDING')
+
+
 fa = FontAwesome(app)
+
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
@@ -33,8 +70,19 @@ def index():
 @socketio.on('join', namespace='/game')
 def join(message):
     join_room(message['game'])
+
+    game = Game.query.filter_by(name=message['game']).first()
+    if game is None:
+        game = Game(name=message['game'])
+        db.session.add(game)
+        db.session.commit()
+
+    player = Player(nickname=message['nickname'], game_id=game.id)
+    db.session.add(player)
+    db.session.commit()
+
     emit('player_join',
-         {'nickname': message['nickname'], 'gameName': message['game']})
+         {'nickname': player.nickname, 'gameName': game.name})
 
 
 @socketio.on('leave', namespace='/game')
@@ -48,8 +96,7 @@ def leave(message):
 def player_action_announcement(message):
     player = message['nickname']
     action = message['action']
-    msg = '{} {}'.format(player, action)
-    emit('player_action_announcement', {'data': msg}, room=message['game'])
+    emit('player_action_announcement', {'action': action, 'player': player}, room=message['game'])
 
 
 @socketio.on('send_message', namespace='/game')

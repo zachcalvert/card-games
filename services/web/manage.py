@@ -1,7 +1,6 @@
 from flask.cli import FlaskGroup
 
 from cribbage import app, db
-from cribbage.models import Player
 
 
 cli = FlaskGroup(app)
