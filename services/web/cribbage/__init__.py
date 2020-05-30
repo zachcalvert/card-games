@@ -4,6 +4,7 @@ import random
 from threading import Lock
 from flask import Flask, render_template, session, request, \
     copy_current_request_context, Markup
+from flask_fontawesome import FontAwesome
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 from flask_sqlalchemy import SQLAlchemy
@@ -18,6 +19,7 @@ async_mode = None
 app = Flask(__name__)
 app.config.from_object("cribbage.config.Config")
 db = SQLAlchemy(app)
+fa = FontAwesome(app)
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()

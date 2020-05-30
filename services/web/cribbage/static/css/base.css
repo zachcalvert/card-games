@@ -1,46 +1,73 @@
 .game {
   display: none;
-  border: 1px solid #D8E6F1 ;
-  height: 99%;
-  margin-top: .5%;
 }
 
 .dark-mode {
-  background-color: black;
+  background-color: #000000!important;
   color: white;
 }
 
-.navbar {
-    margin-left: -15px;
-    margin-right: -15px;
-    height: 8%;
-    border-bottom: 1px solid #D8E6F1 ;
-    background: #D8E6F1;
-}
-
-.game-area {
-  height: 66%;
-}
-
-.game-log {
-  height: 100%;
-  padding: 15px;
-  border-right: 1px solid #D8E6F1;
-}
-
-.scoreboard {
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
-}
-
-.player-area {
-    border-top: 1px solid #D8E6F1;
-    height: 26%;
+.panel {
+    border: 1px solid #D8E6F1;
+    background: white;
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: #f8f9fa;
+    padding: 10px;
+}
+
+.navbar {
+    margin: 5px -15px 1px -15px;
+    height: 8%;
+    border: 1px solid #D8E6F1;
+}
+
+.navbar.dark-mode{
+  background:#D8E6F1;
+}
+
+.game-area {
+  height: 63%;
+  margin: 10px -15px;
+}
+
+.game-log-container {
+  height: 100%;
+  border: 1px solid #D8E6F1;
+  text-align: left;
+  position: relative;
+}
+
+#game-log {
+  text-align: bottom;
+}
+
+#send_message {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  width: 90%;
+}
+
+#game_data {
+  display: block;
+}
+
+#send_message_button {
+  display: block;
+}
+
+.scoreboard {
+    height: 100%;
+    margin: 0 10px;
+}
+
+.deck-area {
+    height: 100%;
+}
+
+.player-area {
+    height: 25%;
 }
 
 .playerCard {

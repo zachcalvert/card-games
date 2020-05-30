@@ -10,3 +10,4 @@ psycopg2-binary==2.8.4
 python-engineio
 python-socketio
 six==1.11.0
+Flask-FontAwesome

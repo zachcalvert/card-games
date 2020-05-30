@@ -1,25 +1,33 @@
 <div class="game container-xl rounded">
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light bg-light rounded panel">
       <span id="game-name" class="navbar-brand mb-0 h1"></span>
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary active">
-          <input type="radio" name="light-mode" id="activate-light-mode" autocomplete="off" checked> Light mode
+          <input type="radio" name="light-mode" id="activate-light-mode" autocomplete="off" checked>
+            <i class="fas fa-sun"></i>
         </label>
         <label class="btn btn-secondary">
-          <input type="radio" name="dark-mode" id="activate-dark-mode" autocomplete="off"> Dark mode
+          <input type="radio" name="dark-mode" id="activate-dark-mode" autocomplete="off">
+          <i class="fas fa-moon"></i>
         </label>
     </div>
     </nav>
     <div class="game-area row">
-        <div class="game-log col">
+        <div class="game-log-container col rounded panel">
             <b>Game log</b>
             <div id="game-log"></div>
-            <form id="send_message" method="POST" action='#'>
-                <input type="text" name="game_data" id="game_data" placeholder="Message">
-                <input type="submit" value="Send">
+            <form id="send_message" class="input-group" method="POST" action='#'>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" name="game_data" id="game_data" placeholder="Message">
+                  <div class="input-group-append">
+                    <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
+                        <span class="fas fa-paper-plane"></span>
+                    </button>
+                  </div>
+                </div>
             </form>
         </div>
-        <div class="col-6 scoreboard">
+        <div class="col-6 scoreboard rounded panel">
             <ul class="list-group">
               <li class="list-group-item scoreboard-player">
                   <b><span id="player-name"></span></b>
@@ -48,10 +56,14 @@
             </ul>
 
         </div>
-        <div class="col"></div>
+        <div class="col deck-area rounded panel">
+            <div id="deck">
+                <img src="/static/img/cards/deck.png" width="100px" />
+            </div>
+        </div>
     </div>
 
-    <div class="player-area row">
+    <div class="player-area row rounded panel">
         <div class="col">
             <button id="action-button" type="button" class="btn btn-primary btn-lg">Deal card</button>
         </div>
@@ -69,8 +81,28 @@
 <script>
     $(document).ready(function() {
         $('#player-name').text(sessionStorage.getItem('nickname'));
-    });
-    $(document).ready(function() {
         $('#game-name').text('Game: ' + sessionStorage.getItem('gameName'));
     });
+
+    $('#activate-dark-mode').click(function (event) {
+        $("body").css({"background-color":"#000000"});
+        $('.game').css({"background-color":"#000000"});
+        $('.game').css('color', '#F5F5F5');
+        $('nav').removeClass('bg-light');
+        $('nav').addClass('bg-dark');
+        $('.navbar').css('color', '#F5F5F5');
+        $('.panel').css('background', '#343a40');
+        $('.panel').css('border', '1px solid #778899');
+    });
+
+    $('#activate-light-mode').click(function (event) {
+        $("body").css({"background-color":"#F5F5F5"});
+        $('.game').css('background', '#F5F5F5');
+        $('.game').css('color', '#000000');
+        $('nav').removeClass('bg-dark');
+        $('nav').addClass('bg-light');
+        $('.panel').css('background', 'white');
+        $('.panel').css('border', '1px solid #D8E6F1');
+    });
+
 </script>
