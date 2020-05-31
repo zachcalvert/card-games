@@ -19,9 +19,6 @@ $(document).ready(function() {
     $('#game-name').text('Game: ' + sessionStorage.getItem('gameName'));
   }
 
-  socket.on('player_action_announcement', function(msg, cb) {
-    $('#game-log').append('<br>' + $('<div/>').text(msg.data).html());
-  });
 
   // join game
   $('form#join').submit(function (event) {
@@ -46,8 +43,7 @@ $(document).ready(function() {
       $('.scoreboard').append(playerDiv);
     }
 
-    socket.emit('player_action_announcement', {
-      game: msg.gameName, nickname: msg.nickname, action: 'joined' });
+    $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ' joined.').html());
   });
 
 
@@ -64,8 +60,7 @@ $(document).ready(function() {
   socket.on('player_leave', function (msg, cb) {
     $('.game').hide();
     $('.lobby').show();
-    socket.emit('player_action_announcement', {
-      game: msg.gameName, nickname: msg.nickname, action: 'left' });
+    $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ' left.').html());
   });
 
 

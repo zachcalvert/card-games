@@ -11,9 +11,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .cards import CARDS
 
-# Set this variable to "threading", "eventlet" or "gevent" to test the
-# different async modes, or leave it set to None for the application to choose
-# the best option based on installed packages.
 async_mode = None
 
 app = Flask(__name__)
@@ -98,14 +95,6 @@ def leave(message):
 
     emit('player_leave',
          {'nickname': message['nickname'], 'gameName': message['game']})
-
-
-@socketio.on('player_action_announcement', namespace='/game')
-def player_action_announcement(message):
-    player = message['nickname']
-    action = message['action']
-    msg = '{} {}'.format(player, action)
-    emit('player_action_announcement', {'data': msg}, room=message['game'])
 
 
 @socketio.on('send_message', namespace='/game')
