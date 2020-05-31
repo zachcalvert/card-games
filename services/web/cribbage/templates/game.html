@@ -1,76 +1,166 @@
-<div class="game container-xl rounded">
-    <nav class="navbar navbar-light bg-dark rounded panel">
-      <span id="game-name" class="navbar-brand mb-0 h1"></span>
-      <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-          <input type="radio" name="light-mode" id="activate-light-mode" autocomplete="off" checked>
-            <i class="fas fa-sun"></i>
-        </label>
-        <label class="btn btn-secondary">
-          <input type="radio" name="dark-mode" id="activate-dark-mode" autocomplete="off">
-          <i class="fas fa-moon"></i>
-        </label>
-      </div>
-    </nav>
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/base.css">
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+        {{ fontawesome_css() }}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ game.name }}</title>
+        <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+      <div class="game container-xl rounded">
+        <nav class="navbar navbar-light bg-dark rounded panel">
+          <span id="game-name" class="navbar-brand mb-0 h1">{{ game.name }}</span>
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary active">
+              <input type="radio" name="light-mode" id="activate-light-mode" autocomplete="off" checked>
+                <i class="fas fa-sun"></i>
+            </label>
+            <label class="btn btn-secondary">
+              <input type="radio" name="dark-mode" id="activate-dark-mode" autocomplete="off">
+              <i class="fas fa-moon"></i>
+            </label>
+          </div>
+        </nav>
 
-    <div class="game-area row">
-        <div class="game-log-container col rounded panel">
-            <b>Game log</b>
-            <div id="game-log"></div>
-            <form id="send_message" class="input-group" method="POST" action='#'>
-                <div class="input-group mb-3">
-                  <input type="text" class="form-control" name="message_content" id="message_content" placeholder="Message">
-                  <div class="input-group-append">
-                    <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
-                        <span class="fas fa-paper-plane"></span>
-                    </button>
-                  </div>
+        <div class="game-area row">
+            <div class="game-log-container col rounded panel">
+                <b>Game log</b>
+                <div id="game-log"></div>
+                <form id="send_message" class="input-group" method="POST" action='#'>
+                    <div class="input-group mb-3">
+                      <input type="text" class="form-control" name="message_content" id="message_content" placeholder="Message">
+                      <div class="input-group-append">
+                        <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
+                            <span class="fas fa-paper-plane"></span>
+                        </button>
+                      </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-6 scoreboard rounded panel">
+                <div id="player-{{ player.nickname }}" class="scoreboard-player-area">
+                    <h5 class="player-nickname">{{ player.nickname }}</h5>
+                    <h6 class="player-points">{{ player.points }}</h6>
                 </div>
-            </form>
+                {% for player in other_players %}
+                    <div id="player-{{ player.nickname }}" class="scoreboard-player-area">
+                        <h5 class="player-nickname">{{ player.nickname }}</h5>
+                        <h6 class="player-points">{{ player.points }}</h6>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col deck-area rounded panel">
+                <div id="deck">
+                    <img src="/static/img/cards/deck.png" width="100px" />
+                </div>
+            </div>
         </div>
-        <div class="col-6 scoreboard rounded panel">
-        </div>
-        <div class="col deck-area rounded panel">
-            <div id="deck">
-                <img src="/static/img/cards/deck.png" width="100px" />
+
+        <div class="player-area row rounded panel">
+            <div class="col">
+                <button id="action-button" type="button" class="btn btn-dark btn-lg">Deal card</button>
+            </div>
+            <div class="col-6">
+                <ul id="playerCards"></ul>
+            </div>
+            <div class="col">
+                <form id="leave" method="POST" action='/'>
+                    <button type="submit" class="btn btn-outline-danger">Leave game</button>
+                </form>
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+          // Use a "/test" namespace.
+          // An application can open a connection on multiple namespaces, and
+          // Socket.IO will multiplex all those connections on a single
+          // physical channel. If you don't care about multiple channels, you
+          // can set the namespace to an empty string.
+          namespace = '/game';
 
-    <div class="player-area row rounded panel">
-        <div class="col">
-            <button id="action-button" type="button" class="btn btn-dark btn-lg">Deal card</button>
-        </div>
-        <div class="col-6">
-            <ul id="playerCards"></ul>
-        </div>
-        <div class="col">
-            <form id="leave" method="POST" action='#'>
-                <button type="submit" class="btn btn-outline-danger">Leave game</button>
-            </form>
-        </div>
-    </div>
-</div>
+          // Connect to the Socket.IO server.
+          // The connection URL has the following format, relative to the current page:
+          //     http[s]://<domain>:<port>[/<namespace>]
+          var socket = io(namespace);
 
-<script>
-    $(document).ready(function() {
-        $('#player-name').text(sessionStorage.getItem('nickname'));
-        $('#game-name').text('Game: ' + sessionStorage.getItem('gameName'));
-    });
+          if (sessionStorage.getItem("gameName") !== null && sessionStorage.getItem("nickname") !== null) {
+            socket.emit('join', {game: sessionStorage.getItem('gameName'), nickname: sessionStorage.getItem('nickname')});
+          }
 
-    $('#activate-dark-mode').click(function (event) {
-        $('body').attr('style', 'background-color: #000000 !important');
-        $('.game').css({"background-color":"#000000"});
-        $('.game').css('color', '#F5F5F5');
-        $('.panel').css('background', '#343a40');
-        $('.panel').css('border', '1px solid #8B7B8B');
-    });
+          // join game
+          socket.on('player_join', function (msg, cb) {
+            if ($("#player-" + msg.nickname).length == 0) {
+              let playerDiv = $('<div/>', {
+                id: 'player-' + msg.nickname,
+                class: 'scoreboard-player-area',
+                html: '<h5 class="player-name">' + msg.nickname + '</h5><h6 class="player-score">' + 0 + '</h6>'
+              });
+              $('.scoreboard').append(playerDiv);
+              $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ' joined.').html());
+            }
+          });
 
-    $('#activate-light-mode').click(function (event) {
-        $("body").css({"background-color":"#344152"});
-        $('.game').css('background', '#344152');
-        $('.game').css('color', '#F5F5F5');
-        $('.panel').css('background', '#343a40');
-        $('.panel').css('border', '1px solid #404040');
-    });
-</script>
+
+          // leave game
+          $('form#leave').submit(function(event) {
+              let nickname = sessionStorage.getItem("nickname");
+              let gameName = sessionStorage.getItem("gameName");
+              socket.emit('leave', {game: gameName, nickname: nickname});
+              sessionStorage.removeItem('nickname');
+              sessionStorage.removeItem('gameName');
+              window.location.href = "/";
+          });
+
+          socket.on('player_leave', function (msg, cb) {
+            $("#player-" + msg.nickname).remove();
+            $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ' left.').html());
+          });
+
+
+          // send message
+          $('form#send_message').submit(function(event) {
+            console.log('here!');
+            let nickname = sessionStorage.getItem("nickname");
+            let gameName = sessionStorage.getItem("gameName");
+            socket.emit('send_message', {
+              game: gameName, nickname: nickname, data: $('#message_content').val()});
+            return false;
+          });
+          socket.on('new_chat_message', function(msg, cb) {
+            $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ': ' + msg.data).html());
+            if (cb)
+              cb();
+          });
+
+
+        // deal card
+        socket.on('deal_card', function (msg, cb) {
+          console.log('here');
+          $('#playerCards').append(msg.data);
+          if (cb)
+            cb();
+        });
+        $('#action-button').click(function (event) {
+          socket.emit('deal_card');
+          return false;
+        });
+
+        $('#activate-dark-mode').click(function (event) {
+            $('body').attr('style', 'background-color: #000000 !important');
+            $('.game').css({"background-color":"#000000", "color": "#F5F5F5"});
+            $('.panel').css({"background-color": "#343a40", "border": "1px solid #8B7B8B"});
+        });
+        $('#activate-light-mode').click(function (event) {
+            $("body").css({"background-color":"#344152"});
+            $('.game').css({"background-color":"#344152", "color": "#F5F5F5"});
+            $('.panel').css({"background-color": "#343a40", "border": "1px solid #404040"});
+        });
+
+        });
+    </script>
+    </body>
+</html>

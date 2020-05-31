@@ -6,9 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Lobby</title>
         <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-        <script src="/static/js/app.js"></script>
-        <script src="/static/js/bootstrap.min.js"></script>
     </head>
     <body>
         <div class="container lobby">
@@ -16,7 +13,7 @@
             <div class="pure-u-1-3">
                 <div class="pure-form pure-form-aligned">
                     <img src="/static/img/logo.png" />
-                    <form id="join" class="pure-form" method="POST" action='#'>
+                    <form id="join" class="pure-form" method="POST" action='/game'>
                         <div class="pure-control-group">
                           <label for="join_nickname">Nickname</label>
                           <input type="text" name="join_nickname" id="join_nickname" placeholder="johnny bravo">
@@ -33,6 +30,15 @@
             </div>
             <div class="pure-u-1-3"></div>
         </div>
-        {% include 'game.html' %}
     </body>
+    <script>
+      $(document).ready(function() {
+        $('form#join').submit(function (event) {
+          let nickname = $('#join_nickname').val();
+          let gameName = $('#join_game_name').val();
+          sessionStorage.setItem('nickname', nickname);
+          sessionStorage.setItem('gameName', gameName);
+        });
+      });
+    </script>
 </html>

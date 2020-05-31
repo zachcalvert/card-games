@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 import random
+import time
 
 from threading import Lock
 from flask import Flask, render_template, session, request, \
-    copy_current_request_context, Markup
+    copy_current_request_context, Markup, redirect, url_for
 from flask_fontawesome import FontAwesome
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
@@ -64,44 +65,48 @@ def index():
     return render_template('index.html', async_mode=socketio.async_mode)
 
 
+@app.route('/game', methods=['GET', 'POST'])
+def game():
+    if request.method == 'POST':
+        nickname = request.form.get('join_nickname')
+        game_name = request.form['join_game_name']
+
+        game = Game.query.filter_by(name=game_name).first()
+        if game is None:
+            game = Game(name=game_name)
+            db.session.add(game)
+            db.session.commit()
+
+        player = Player.query.filter_by(nickname=nickname, game_id=game.id).first()
+        if player is None:
+            player = Player(nickname=nickname, game_id=game.id)
+            db.session.add(player)
+            db.session.commit()
+
+        other_players = Player.query.filter(Player.game_id == game.id, Player.id != player.id)
+        return render_template('game.html', game=game, player=player,
+                               other_players=other_players, async_mode=socketio.async_mode)
+
+    return redirect(url_for('index'))
+
+
 @socketio.on('join', namespace='/game')
 def join(message):
     join_room(message['game'])
-
-    game = Game.query.filter_by(name=message['game']).first()
-    if game is None:
-        game = Game(name=message['game'])
-        db.session.add(game)
-        db.session.commit()
-
-    player = Player.query.filter_by(nickname=message['nickname'], game_id=game.id).first()
-    if player is None:
-        player = Player(nickname=message['nickname'], game_id=game.id)
-        db.session.add(player)
-        db.session.commit()
-
-    emit('player_join', {'nickname': player.nickname, 'gameName': game.name}, room=game.name)
+    emit('player_join', {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
 
 
 @socketio.on('leave', namespace='/game')
 def leave(message):
     leave_room(message['game'])
-
-    game = Game.query.filter_by(name=message['game']).first()
-    player = Player.query.filter_by(nickname=message['nickname'], game_id=game.id).first()
-    if player is not None:
-        db.session.delete(player)
-        db.session.commit()
-
     emit('player_leave',
-         {'nickname': message['nickname'], 'gameName': message['game']})
+         {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
 
 
 @socketio.on('send_message', namespace='/game')
 def send_message(message):
     emit('new_chat_message',
-         {'data': message['data'], 'nickname': message['nickname']},
-         room=message['game'])
+         {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
 
 
 @socketio.on('deal_card', namespace='/game')
