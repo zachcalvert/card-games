@@ -79,8 +79,22 @@ html, body {
 }
 
 .playerCard {
-    width: 100px;
-    padding: 5px;
+    width: 75px;
+}
+
+.playerCard:hover {
+    border: 5px solid darkred;
+    width: 80px;
+}
+
+.playerCard:active {
+    border: 5px solid darkred;
+    width: 80px;
+}
+
+.opponentCard {
+    width: 40px;
+    margin: 0 -10px;
 }
 
 ul {

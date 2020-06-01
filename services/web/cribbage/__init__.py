@@ -20,6 +20,9 @@ app.config.from_object("cribbage.config.Config")
 db = SQLAlchemy(app)
 
 
+HAND_SIZE = 6
+
+
 class Game(db.Model):
     __tablename__ = 'games'
 
@@ -109,13 +112,20 @@ def send_message(message):
          {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
 
 
-@socketio.on('deal_card', namespace='/game')
-def deal_card():
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    card = random.choice(CARDS)
-    value = Markup('<li><img class="playerCard" src="/static/img/{}" /></li>'.format(card['fields']['image']))
-    emit('deal_card',
-         {'data': value, 'count': session['receive_count']})
+@socketio.on('deal_hands', namespace='/game')
+def deal_hands(message):
+
+    game = Game.query.filter_by(name=message['game']).first()
+
+    hands = {}
+    for player in game.players:
+        hand = Hand(player_id=player.id, game_id=game.id)
+        db.session.add(hand)
+        db.session.commit()
+        cards = [random.choice(CARDS)['fields'] for card in range(HAND_SIZE)]
+        hands[player.nickname] = cards
+
+    emit('deal_hands', {'hands': hands}, room=game.name)
 
 
 if __name__ == '__main__':

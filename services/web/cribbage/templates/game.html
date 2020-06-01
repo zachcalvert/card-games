@@ -41,12 +41,8 @@
                 </form>
             </div>
             <div class="col-6 scoreboard rounded panel">
-                <div id="player-{{ player.nickname }}" class="scoreboard-player-area">
-                    <h5 class="player-nickname">{{ player.nickname }}</h5>
-                    <h6 class="player-points">{{ player.points }}</h6>
-                </div>
                 {% for player in other_players %}
-                    <div id="player-{{ player.nickname }}" class="scoreboard-player-area">
+                    <div id="{{ player.nickname }}" class="scoreboard-player-area">
                         <h5 class="player-nickname">{{ player.nickname }}</h5>
                         <h6 class="player-points">{{ player.points }}</h6>
                     </div>
@@ -64,7 +60,10 @@
                 <button id="action-button" type="button" class="btn btn-dark btn-lg">Deal card</button>
             </div>
             <div class="col-6">
-                <ul id="playerCards"></ul>
+                <div id="{{ player.nickname }}">
+                    <h5 class="player-nickname">{{ player.nickname }}</h5>
+                    <h6 class="player-points">{{ player.points }}</h6>
+                </div>
             </div>
             <div class="col">
                 <form id="leave" method="POST" action='/'>
@@ -93,9 +92,9 @@
 
           // join game
           socket.on('player_join', function (msg, cb) {
-            if ($("#player-" + msg.nickname).length == 0) {
+            if ($("#" + msg.nickname).length == 0) {
               let playerDiv = $('<div/>', {
-                id: 'player-' + msg.nickname,
+                id: msg.nickname,
                 class: 'scoreboard-player-area',
                 html: '<h5 class="player-name">' + msg.nickname + '</h5><h6 class="player-score">' + 0 + '</h6>'
               });
@@ -138,14 +137,32 @@
 
 
         // deal card
-        socket.on('deal_card', function (msg, cb) {
-          console.log('here');
-          $('#playerCards').append(msg.data);
-          if (cb)
-            cb();
+        socket.on('deal_hands', function (msg, cb) {
+          $.each(msg.hands, function(player, cards) {
+            if (player === sessionStorage.getItem('nickname')) {
+                $.each(cards, function(index, card) {
+                  let cardImage = $('<img/>', {
+                    id: card['id'],
+                    class: 'playerCard',
+                    src: '/static/img' + card['image']
+                  });
+                  $('#' + player).append(cardImage);
+                });
+            } else {
+              $.each(cards, function(index, card) {
+                let cardImage = $('<img/>', {
+                  id: card['id'],
+                  class: 'opponentCard',
+                  src: '/static/img/cards/facedown.png'
+                });
+                $('#' + player).append(cardImage);
+              });
+            }
+          });
         });
         $('#action-button').click(function (event) {
-          socket.emit('deal_card');
+          let gameName = sessionStorage.getItem("gameName");
+          socket.emit('deal_hands', {game: gameName});
           return false;
         });
 
@@ -160,7 +177,7 @@
             $('.panel').css({"background-color": "#343a40", "border": "1px solid #404040"});
         });
 
-        });
+      });
     </script>
     </body>
 </html>
