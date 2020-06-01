@@ -78,19 +78,15 @@ html, body {
     height: 25%;
 }
 
+.list-group-item {
+    padding: 2!important;
+    background: transparent!important;
+}
+
 .playerCard {
     width: 75px;
 }
 
-.playerCard:hover {
-    border: 5px solid darkred;
-    width: 80px;
-}
-
-.playerCard:active {
-    border: 5px solid darkred;
-    width: 80px;
-}
 
 .opponentCard {
     width: 40px;
@@ -133,6 +129,19 @@ li a {
     color: #fafafa;
     background: rgb(202, 60, 60);
 }
+
+.alert{
+    display: none;
+}
+
+/*.game-alert{*/
+/*    position: absolute;*/
+/*    bottom: 5px;*/
+/*    left:2%;*/
+/*    width: 96%;*/
+/*}*/
+
+
 
 /*  COLORS  */
 .black {

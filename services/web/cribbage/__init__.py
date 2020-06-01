@@ -54,6 +54,12 @@ class Hand(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False)
     player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
     state = db.Column(db.String(20), unique=False, nullable=False, default='DISCARDING')
+    points = db.column(db.Integer)
+
+    def __init__(self, player_id, game_id, state):
+        self.player_id = player_id
+        self.game_id = game_id
+        self.state = state
 
 
 fa = FontAwesome(app)
@@ -114,18 +120,37 @@ def send_message(message):
 
 @socketio.on('deal_hands', namespace='/game')
 def deal_hands(message):
-
     game = Game.query.filter_by(name=message['game']).first()
+
+    deck = CARDS[:-1].copy()  # exclude the facedown card
+    random.shuffle(deck)
+    random.shuffle(deck)
 
     hands = {}
     for player in game.players:
-        hand = Hand(player_id=player.id, game_id=game.id)
+        hand = Hand(player_id=player.id, game_id=game.id, state='DISCARDING')
         db.session.add(hand)
         db.session.commit()
-        cards = [random.choice(CARDS)['fields'] for card in range(HAND_SIZE)]
-        hands[player.nickname] = cards
+
+        dealt_cards = [deck.pop() for card in range(HAND_SIZE)]
+        hands[player.nickname] = dealt_cards
 
     emit('deal_hands', {'hands': hands}, room=game.name)
+
+    cut_card = deck.pop()
+    emit('receive_cut_card', {'cut_card': cut_card}, room=game.name)
+
+
+@socketio.on('discard', namespace='/game')
+def discard(message):
+    card_id = message['cardId']
+    emit('post_discard', {'discarded': card_id})
+
+
+@socketio.on('cut_deck', namespace='/game')
+def cut_deck(message):
+    game = Game.query.filter_by(name=message['game']).first()
+    emit('show_cut_card', room=game.name)
 
 
 if __name__ == '__main__':

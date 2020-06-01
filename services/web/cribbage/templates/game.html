@@ -56,13 +56,19 @@
         </div>
 
         <div class="player-area row rounded panel">
+            <div class="game-alert alert alert-info alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            </div>
+
             <div class="col">
-                <button id="action-button" type="button" class="btn btn-dark btn-lg">Deal card</button>
+                <button id="action-button" type="button" class="btn btn-dark btn-lg">Deal Hands</button>
             </div>
             <div class="col-6">
                 <div id="{{ player.nickname }}">
                     <h5 class="player-nickname">{{ player.nickname }}</h5>
                     <h6 class="player-points">{{ player.points }}</h6>
+                    <ul id="{{ player.nickname }}-cards" class="list-group-flush list-group-horizontal">
+                    </ul>
                 </div>
             </div>
             <div class="col">
@@ -140,14 +146,21 @@
         socket.on('deal_hands', function (msg, cb) {
           $.each(msg.hands, function(player, cards) {
             if (player === sessionStorage.getItem('nickname')) {
+                let card_ids = []
                 $.each(cards, function(index, card) {
                   let cardImage = $('<img/>', {
                     id: card['id'],
                     class: 'playerCard',
                     src: '/static/img' + card['image']
                   });
-                  $('#' + player).append(cardImage);
+                  let cardListItem = $('<li/>', {
+                    class: 'list-group-item',
+                  });
+                  cardListItem.append(cardImage)
+                  $('#' + player + '-cards').append(cardListItem);
+                  card_ids.push(card['id'])
                 });
+                sessionStorage.setItem('card_ids', JSON.stringify(card_ids))
             } else {
               $.each(cards, function(index, card) {
                 let cardImage = $('<img/>', {
@@ -159,10 +172,32 @@
               });
             }
           });
+          $('#action-button').html('Discard');
+          $('#action-button').prop('disabled', true);
+          socket.emit('send_message', {game: sessionStorage.getItem('gameName'), nickname: 'cribbot', data: 'Time to discard!'});
+          // gameAlert('Time to discard 2 cards from your hand.');
         });
+
+        // handle discard from sever
+        socket.on('post_discard', function (msg, cb) {
+          console.log('HERE I AM!')
+          $('#' + msg.discarded).parent().remove();
+          let card_ids = JSON.parse(sessionStorage.getItem('card_ids'));
+          card_ids.splice( $.inArray(msg.discarded, card_ids), 1 );
+          sessionStorage.setItem('card_ids', JSON.stringify(card_ids))
+        });
+
+
         $('#action-button').click(function (event) {
           let gameName = sessionStorage.getItem("gameName");
-          socket.emit('deal_hands', {game: gameName});
+          let playerName = sessionStorage.getItem("nickname");
+          if ($(this).text() === 'Deal Hands') {
+            socket.emit('deal_hands', {game: gameName});
+          } else if ($(this).text() === 'Discard') {
+            let cardId = $('li.list-group-item.active').children()[0].id;
+            console.log('cardId: ' + cardId);
+            socket.emit('discard', {game: gameName, nickname: playerName, cardId: cardId});
+          }
           return false;
         });
 
@@ -178,6 +213,22 @@
         });
 
       });
+
+      $(document).on('click', 'li.list-group-item', function(e) {
+        $(this).toggleClass('active');
+        if ($(this).hasClass('active')) {
+          $('#action-button').prop('disabled', false);
+        } else if($(this).siblings(".active").length == 0) {
+          $('#action-button').prop('disabled', true);
+        }
+      });
+
+      function gameAlert(text){
+          $(".game-alert").html(text).show();
+          // setTimeout(function(){
+          //   $(".game-alert").hide();
+          // }, 5000);
+        }
     </script>
     </body>
 </html>
