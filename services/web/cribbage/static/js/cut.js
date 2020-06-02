@@ -5,7 +5,7 @@ export function displayFacedownCutCard(msg) {
     class: 'playerCard',
     src: '/static/img/cards/facedown.png'
   });
-  $('#deck').append(cutCardImage);
+  $('.cribbage-table').append(cutCardImage);
 }
 
 export function displayCutCard(msg) {
@@ -14,7 +14,7 @@ export function displayCutCard(msg) {
     class: 'playerCard',
     src: '/static/img' + msg.cut_card
   });
-  $('#deck').append(cutCardImage);
+  $('.cribbage-table').append(cutCardImage);
   $('#facedownCutCard').remove();
 }
 

@@ -12,6 +12,7 @@ $(document).ready(function() {
   const gameName = sessionStorage.getItem('gameName');
   const nickname = sessionStorage.getItem('nickname');
 
+  let PLAYER_ORDER = [];
 
   if (gameName !== null && nickname !== null) {
     socket.emit('join', {game: gameName, nickname: nickname});

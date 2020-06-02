@@ -1,18 +1,15 @@
 html, body {
+    height: 100%;
     background: #344152!important;
 }
 .game {
   background: #344152;
   color: #D3D3D3;
+  height: 100%;
 }
 
-.navbar {
-    margin: 5px -15px 1px -15px;
-    height: 8%;
-}
-
-.navbar.dark-mode{
-  background:#D8E6F1;
+.span10 {
+    height: 100%;
 }
 
 .panel {
@@ -24,13 +21,9 @@ html, body {
     padding: 10px;
 }
 
-.game-area {
-  height: 63%;
-  margin: 10px -15px;
-}
-
 .game-log-container {
-  height: 100%;
+  height: 95%;
+  margin: 5% 0;
   text-align: left;
   position: relative;
 }
@@ -43,7 +36,7 @@ html, body {
   display: inline-block;
   position: absolute;
   bottom: 0;
-  width: 90%;
+  width: 93%;
 }
 
 #message_content {
@@ -54,28 +47,45 @@ html, body {
   display: block;
 }
 
-.scoreboard {
-    height: 100%;
-    margin: 0 10px;
+.opponents {
+    height: 30%;
+    margin: 1% 0;
     align-items: center;
     justify-content: center;
 }
 
-.scoreboard-player-area {
+.opponent {
     display: inline-block;
     background: #3A3A38;
-    padding: 5%;
-    width: 45%;
-    height: 45%;
-    margin: 2%;
+    height: 90%;
+    margin: 1%;
+    width: 25%;
 }
 
-.deck-area {
-    height: 100%;
+.opponentCard {
+    width: 40px;
+    margin: 0 -10px;
 }
 
-.player-area {
-    height: 25%;
+
+.cribbage-table {
+    height: 29%;
+}
+
+.player {
+    height: 35%;
+}
+
+.player-action, .player-cards, .player-leave {
+    display: inline-block;
+}
+.player-action, .player-leave {
+    width: 15%;
+}
+.player-cards {
+    width: 65%;
+    display: flex;
+    justify-content: center;
 }
 
 .list-group-item {
@@ -85,12 +95,6 @@ html, body {
 
 .playerCard {
     width: 75px;
-}
-
-
-.opponentCard {
-    width: 40px;
-    margin: 0 -10px;
 }
 
 ul {
