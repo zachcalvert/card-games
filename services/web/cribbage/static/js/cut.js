@@ -1,26 +1,23 @@
-// display cut deck action
-export function showCutDeckAction() {
-  $('#action-button').html('Cut deck');
-};
-
-
-export function showFacedownCutCard(msg) {
+export function displayFacedownCutCard(msg) {
   sessionStorage.setItem('cut', msg.cut_card);
   let cutCardImage = $('<img/>', {
     id: 'facedownCutCard',
     class: 'playerCard',
     src: '/static/img/cards/facedown.png'
   });
-  $('#deck').append(cutCardImage);
+  $('.cribbage-table').append(cutCardImage);
 }
 
-
-export function showCutCard(msg) {
+export function displayCutCard(msg) {
   let cutCardImage = $('<img/>', {
     id: 'cutCard',
     class: 'playerCard',
     src: '/static/img' + msg.cut_card
   });
-  $('#deck').append(cutCardImage);
+  $('.cribbage-table').append(cutCardImage);
   $('#facedownCutCard').remove();
+}
+
+export function showCutDeckAction() {
+  $('#action-button').html('Cut deck');
 }

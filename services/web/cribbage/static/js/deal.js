@@ -19,6 +19,7 @@ export function deal(msg) {
     } else {
       $.each(cards, function(index, card) {
         let cardImage = $('<img/>', {
+          id: card['id'],
           class: 'opponentCard',
           src: '/static/img/cards/facedown.png'
         });
@@ -26,4 +27,4 @@ export function deal(msg) {
       });
     }
   });
-}
+};

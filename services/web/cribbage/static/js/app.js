@@ -1,68 +1,67 @@
-import { showCutDeckAction, showFacedownCutCard } from './cut.js';
-import { discard } from "./discard.js";
+import { announcePlayerJoin } from "./join.js";
+import { announcePlayerLeave, clearSessionData } from "./leave.js";
 import { deal } from "./deal.js";
+import { discard } from "./discard.js";
+import { displayFacedownCutCard, displayCutCard, showCutDeckAction} from "./cut.js";
 
 
 $(document).ready(function() {
-
   const namespace = '/game';
+  const socket = io(namespace);
+
   const gameName = sessionStorage.getItem('gameName');
   const nickname = sessionStorage.getItem('nickname');
 
-  // Connect to the Socket.IO server.
-  // The connection URL has the following format, relative to the current page:
-  //     http[s]://<domain>:<port>[/<namespace>]
-  var socket = io(namespace);
+  let PLAYER_ORDER = [];
 
   if (gameName !== null && nickname !== null) {
     socket.emit('join', {game: gameName, nickname: nickname});
   }
 
-  // join game
   socket.on('player_join', function (msg, cb) {
-    if ($("#" + msg.nickname).length == 0) {
-      let playerDiv = $('<div/>', {
-        id: msg.nickname,
-        class: 'scoreboard-player-area',
-        html: '<h5><span class="player-name">' + msg.nickname + '</h5span><span class="player-score">' + 0 + '</span></h5>'
-      });
-      $('.scoreboard').append(playerDiv);
-      $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ' joined.').html());
-    }
+    announcePlayerJoin(msg);
+  });
+
+
+  $('#leave-game').click(function (event) {
+    socket.emit('leave', {game: gameName, nickname: nickname});
+    clearSessionData();
+  });
+  socket.on('player_leave', function (msg, cb) {
+    announcePlayerLeave(msg);
   });
 
 
   // send message
   $('form#send_message').submit(function(event) {
-    console.log('here!');
-    let nickname = sessionStorage.getItem("nickname");
-    let gameName = sessionStorage.getItem("gameName");
     socket.emit('send_message', {
       game: gameName, nickname: nickname, data: $('#message_content').val()});
     return false;
   });
   socket.on('new_chat_message', function(msg, cb) {
     $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ': ' + msg.data).html());
-    if (cb)
-      cb();
   });
 
 
-  // deal card
+  // DEAL
   socket.on('deal_hands', function (msg, cb) {
     deal(msg);
-    $('#action-button').html('Discard');
-    $('#action-button').prop('disabled', true);
+    $('#action-button').html('Discard').prop('disabled', true);
   });
-
-
-  // handle discard from sever
-  socket.on('post_discard', function (msg, cb) {
-    discard(msg);
-  });
-
 
   // CUT
+  socket.on('receive_cut_card', function (msg, cb) {
+    displayFacedownCutCard(msg);
+  });
+
+  socket.on('show_cut_card', function (msg, cb) {
+    displayCutCard(msg);
+  });
+
+  socket.on('show_cut_deck_action', function (msg, cb) {
+    showCutDeckAction();
+  });
+
   socket.on('announce_cut_deck_action', function (msg, cb) {
     socket.emit('send_message', {
       game: gameName,
@@ -71,18 +70,14 @@ $(document).ready(function() {
     });
   });
 
-  socket.on('show_cut_deck_action', function (msg, cb) {
-    showCutDeckAction();
-  });
 
-  socket.on('receive_cut_card', function (msg, cb) {
-    showFacedownCutCard(msg);
+  // DISCARD
+  socket.on('post_discard', function (msg, cb) {
+    const readyToPeg = discard(msg);
+    if (readyToPeg) {
+      socket.emit('ready_to_peg', {game: gameName, nickname: nickname})
+    }
   });
-
-  socket.on('show_cut_card', function (msg, cb) {
-    showCutCard(msg);
-  });
-
 
 
   $('#action-button').click(function (event) {
@@ -108,6 +103,7 @@ $(document).ready(function() {
       $('.game').css({"background-color":"#344152", "color": "#F5F5F5"});
       $('.panel').css({"background-color": "#343a40", "border": "1px solid #404040"});
   });
+
 });
 
 $(document).on('click', 'li.list-group-item', function(e) {

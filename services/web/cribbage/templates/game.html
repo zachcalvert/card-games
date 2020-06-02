@@ -11,72 +11,56 @@
         <script src="/static/js/bootstrap.min.js"></script>
     </head>
     <body>
-      <div class="game container-xl rounded">
-        <nav class="navbar navbar-light bg-dark rounded panel">
-          <span id="game-name" class="navbar-brand mb-0 h1">{{ game.name }}</span>
-          <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-secondary active">
-              <input type="radio" name="light-mode" id="activate-light-mode" autocomplete="off" checked>
-                <i class="fas fa-sun"></i>
-            </label>
-            <label class="btn btn-secondary">
-              <input type="radio" name="dark-mode" id="activate-dark-mode" autocomplete="off">
-              <i class="fas fa-moon"></i>
-            </label>
-          </div>
-        </nav>
+      <div class="game container-fluid h-100">
+          <div class="row justify-content-center h-100">
+              <div class="col-3 hidden-md-down">
+                  <div class="game-log-container rounded panel">
+                        <b>Game log</b>
+                        <div id="game-log"></div>
+                        <form id="send_message" class="input-group" method="POST" action='#'>
+                            <div class="input-group mb-3">
+                              <input type="text" class="form-control" name="message_content" id="message_content" placeholder="Message">
+                              <div class="input-group-append">
+                                <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
+                                    <span class="fas fa-paper-plane"></span>
+                                </button>
+                              </div>
+                            </div>
+                        </form>
+                  </div>
+              </div>
 
-        <div class="game-area row">
-            <div class="game-log-container col rounded panel">
-                <b>Game log</b>
-                <div id="game-log"></div>
-                <form id="send_message" class="input-group" method="POST" action='#'>
-                    <div class="input-group mb-3">
-                      <input type="text" class="form-control" name="message_content" id="message_content" placeholder="Message">
-                      <div class="input-group-append">
-                        <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
-                            <span class="fas fa-paper-plane"></span>
-                        </button>
-                      </div>
+            <div class="col-11 col-sm-11 col-md-11 col-lg-9 col-xl-9">
+              <div class="opponents row-fluid d-flex justify-content-center">
+                  {% for player in other_players %}
+                    <div id="{{ player.nickname }}" class="opponent rounded panel">
+                      <h5 class="player-nickname">{{ player.nickname }}</h5>
+                      <h6 class="player-points">{{ player.points }}</h6>
                     </div>
-                </form>
-            </div>
-            <div class="col-6 scoreboard rounded panel">
-                {% for player in other_players %}
-                    <div id="{{ player.nickname }}" class="scoreboard-player-area">
-                        <h5 class="player-nickname">{{ player.nickname }}</h5>
-                        <h6 class="player-points">{{ player.points }}</h6>
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="col deck-area rounded panel">
-                <div id="deck">
+                  {% endfor %}
+              </div>
+
+              <div class="cribbage-table"></div>
+
+              <div class="player d-flex justify-content-center rounded panel">
+                <div class="player-action">
+                    <button id="action-button" type="button" class="btn btn-dark btn-lg">Deal Hands</button>
                 </div>
-            </div>
-        </div>
 
-        <div class="player-area row rounded panel">
-            <div class="game-alert alert alert-info alert-dismissable">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            </div>
-
-            <div class="col">
-                <button id="action-button" type="button" class="btn btn-dark btn-lg">Deal Hands</button>
-            </div>
-            <div class="col-6">
-                <div id="{{ player.nickname }}">
-                    <span class="player-nickname">{{ player.nickname }} - </span>
-                    <span class="player-points">{{ player.points }}</span>
+                <div id="{{ player.nickname }}" class="player-cards">
+                    <h5 class="player-nickname">{{ player.nickname }}</h5><br />
+                    <h6 class="player-points">{{ player.points }}</h6>
                     <ul id="{{ player.nickname }}-cards" class="list-group-flush list-group-horizontal">
                     </ul>
                 </div>
+
+                <div class="player-leave">
+                    <button id="leave-game" type="submit" class="btn btn-outline-danger">Leave game</button>
+                </div>
+              </div>
             </div>
-            <div class="col">
-                <form id="leave" method="POST" action='/'>
-                    <button type="submit" class="btn btn-outline-danger">Leave game</button>
-                </form>
-            </div>
+
+          </div>
         </div>
-    </div>
-  </body>
+    </body>
 </html>
