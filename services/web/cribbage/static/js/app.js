@@ -1,5 +1,6 @@
 import { announcePlayerJoin } from "./join.js";
 import { announcePlayerLeave, clearSessionData } from "./leave.js";
+import { deal } from "./deal.js"
 
 $(document).ready(function() {
   const namespace = '/game';
@@ -9,8 +10,8 @@ $(document).ready(function() {
   const nickname = sessionStorage.getItem('nickname');
 
 
-  if (sessionStorage.getItem("gameName") !== null && sessionStorage.getItem("nickname") !== null) {
-    socket.emit('join', {game: sessionStorage.getItem('gameName'), nickname: sessionStorage.getItem('nickname')});
+  if (gameName !== null && nickname !== null) {
+    socket.emit('join', {game: gameName, nickname: nickname});
   }
 
   socket.on('player_join', function (msg, cb) {
@@ -29,50 +30,18 @@ $(document).ready(function() {
 
   // send message
   $('form#send_message').submit(function(event) {
-    console.log('here!');
-    let nickname = sessionStorage.getItem("nickname");
-    let gameName = sessionStorage.getItem("gameName");
     socket.emit('send_message', {
       game: gameName, nickname: nickname, data: $('#message_content').val()});
     return false;
   });
   socket.on('new_chat_message', function(msg, cb) {
     $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ': ' + msg.data).html());
-    if (cb)
-      cb();
   });
 
 
   // deal card
   socket.on('deal_hands', function (msg, cb) {
-    $.each(msg.hands, function(player, cards) {
-      if (player === sessionStorage.getItem('nickname')) {
-          let card_ids = []
-          $.each(cards, function(index, card) {
-            let cardImage = $('<img/>', {
-              id: card['id'],
-              class: 'playerCard',
-              src: '/static/img' + card['image']
-            });
-            let cardListItem = $('<li/>', {
-              class: 'list-group-item',
-            });
-            cardListItem.append(cardImage)
-            $('#' + player + '-cards').append(cardListItem);
-            card_ids.push(card['id'])
-          });
-          sessionStorage.setItem('card_ids', JSON.stringify(card_ids))
-      } else {
-        $.each(cards, function(index, card) {
-          let cardImage = $('<img/>', {
-            id: card['id'],
-            class: 'opponentCard',
-            src: '/static/img/cards/facedown.png'
-          });
-          $('#' + player).append(cardImage);
-        });
-      }
-    });
+    deal();
     $('#action-button').html('Discard');
     $('#action-button').prop('disabled', true);
   });
