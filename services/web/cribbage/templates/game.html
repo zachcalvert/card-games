@@ -50,7 +50,6 @@
             </div>
             <div class="col deck-area rounded panel">
                 <div id="deck">
-                    <img src="/static/img/cards/deck.png" width="100px" />
                 </div>
             </div>
         </div>
@@ -86,6 +85,9 @@
           // physical channel. If you don't care about multiple channels, you
           // can set the namespace to an empty string.
           namespace = '/game';
+
+          const gameName = sessionStorage.getItem('gameName');
+          const nickname = sessionStorage.getItem('nickname');
 
           // Connect to the Socket.IO server.
           // The connection URL has the following format, relative to the current page:
@@ -174,29 +176,72 @@
           });
           $('#action-button').html('Discard');
           $('#action-button').prop('disabled', true);
-          socket.emit('send_message', {game: sessionStorage.getItem('gameName'), nickname: 'cribbot', data: 'Time to discard!'});
-          // gameAlert('Time to discard 2 cards from your hand.');
         });
+
+        socket.on('receive_cut_card', function (msg, cb) {
+          sessionStorage.setItem('cut', msg.cut_card);
+          let cutCardImage = $('<img/>', {
+            id: 'facedownCutCard',
+            class: 'playerCard',
+            src: '/static/img/cards/facedown.png'
+          });
+          $('#deck').append(cutCardImage);
+        });
+
+        socket.on('show_cut_card', function (msg, cb) {
+          let cutCardImage = $('<img/>', {
+            id: 'cutCard',
+            class: 'playerCard',
+            src: '/static/img' + msg.cut_card
+          });
+          $('#deck').append(cutCardImage);
+          $('#facedownCutCard').remove();
+        });
+
 
         // handle discard from sever
         socket.on('post_discard', function (msg, cb) {
-          console.log('HERE I AM!')
-          $('#' + msg.discarded).parent().remove();
-          let card_ids = JSON.parse(sessionStorage.getItem('card_ids'));
-          card_ids.splice( $.inArray(msg.discarded, card_ids), 1 );
-          sessionStorage.setItem('card_ids', JSON.stringify(card_ids))
+          console.log(msg.nickname + ' just discarded');
+          if (sessionStorage.getItem('nickname') === msg.nickname) {
+            // remove card image
+            $('#' + msg.discarded).parent().remove();
+
+            // update session
+            let card_ids = JSON.parse(sessionStorage.getItem('card_ids'));
+            card_ids.splice( $.inArray(msg.discarded, card_ids), 1 );
+            sessionStorage.setItem('card_ids', JSON.stringify(card_ids));
+              // check if ready to play
+              if (card_ids.length === 4) {
+                socket.emit('ready_to_peg', {game: gameName, nickname: nickname})
+              }
+          } else {
+            $("#" + msg.nickname).find('img').first().remove();
+          }
+        });
+
+        // display cut deck action
+        socket.on('show_cut_deck_action', function (msg, cb) {
+            $('#action-button').html('Cut deck');
+        });
+
+        socket.on('announce_cut_deck_action', function (msg, cb) {
+          socket.emit('send_message', {
+            game: gameName,
+            nickname: 'cribbot',
+            data: 'Time to cut the deck!'
+          });
         });
 
 
         $('#action-button').click(function (event) {
-          let gameName = sessionStorage.getItem("gameName");
-          let playerName = sessionStorage.getItem("nickname");
           if ($(this).text() === 'Deal Hands') {
             socket.emit('deal_hands', {game: gameName});
+            socket.emit('send_message', {game: sessionStorage.getItem('gameName'), nickname: 'cribbot', data: 'Time to discard!'});
           } else if ($(this).text() === 'Discard') {
             let cardId = $('li.list-group-item.active').children()[0].id;
-            console.log('cardId: ' + cardId);
-            socket.emit('discard', {game: gameName, nickname: playerName, cardId: cardId});
+            socket.emit('discard', {game: gameName, nickname: nickname, cardId: cardId});
+          } else if ($(this).text() === 'Cut deck') {
+            socket.emit('cut_deck', {game: gameName, cut_card: sessionStorage.getItem('cut')});
           }
           return false;
         });
@@ -222,13 +267,6 @@
           $('#action-button').prop('disabled', true);
         }
       });
-
-      function gameAlert(text){
-          $(".game-alert").html(text).show();
-          // setTimeout(function(){
-          //   $(".game-alert").hide();
-          // }, 5000);
-        }
     </script>
     </body>
 </html>

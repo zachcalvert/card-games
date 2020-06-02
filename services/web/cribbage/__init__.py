@@ -138,19 +138,38 @@ def deal_hands(message):
     emit('deal_hands', {'hands': hands}, room=game.name)
 
     cut_card = deck.pop()
-    emit('receive_cut_card', {'cut_card': cut_card}, room=game.name)
+    emit('receive_cut_card', {'cut_card': cut_card['id']}, room=game.name)
 
 
 @socketio.on('discard', namespace='/game')
 def discard(message):
     card_id = message['cardId']
-    emit('post_discard', {'discarded': card_id})
+    emit('post_discard', {'discarded': card_id, 'nickname': message['nickname']}, room=message['game'])
+
+
+@socketio.on('ready_to_peg', namespace='/game')
+def ready_to_peg(message):
+    game = Game.query.filter_by(name=message['game']).first()
+    player = Player.query.filter_by(nickname=message['nickname'], game_id=game.id).first()
+
+    hand = Hand.query.filter_by(player_id=player.id, game_id=game.id, state='DISCARDING').first()
+    hand.state = 'PEGGING'
+    db.session.add(hand)
+    db.session.commit()
+
+    # if this game has no more Hands in a discarding state, dispatch the cut deck option
+    if not Hand.query.filter_by(game_id=game.id, state='DISCARDING').first():
+        emit('show_cut_deck_action', room=game.name)
+        emit('announce_cut_deck_action')
+
 
 
 @socketio.on('cut_deck', namespace='/game')
 def cut_deck(message):
     game = Game.query.filter_by(name=message['game']).first()
-    emit('show_cut_card', room=game.name)
+    print(message["cut_card"])
+    cut_card = next(card for card in CARDS if card['id'] == message["cut_card"])
+    emit('show_cut_card', {"cut_card": cut_card["image"]}, room=game.name)
 
 
 if __name__ == '__main__':
