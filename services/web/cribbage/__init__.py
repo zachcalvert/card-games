@@ -41,10 +41,12 @@ class Player(db.Model):
     nickname = db.Column(db.String(128), unique=False, nullable=False)
     active = db.Column(db.Boolean(), default=True, nullable=False)
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False)
+    points = db.Column(db.Integer)
 
     def __init__(self, nickname, game_id):
         self.nickname = nickname
         self.game_id = game_id
+        self.points = 0
 
 
 class Hand(db.Model):
@@ -161,7 +163,6 @@ def ready_to_peg(message):
     if not Hand.query.filter_by(game_id=game.id, state='DISCARDING').first():
         emit('show_cut_deck_action', room=game.name)
         emit('announce_cut_deck_action')
-
 
 
 @socketio.on('cut_deck', namespace='/game')
