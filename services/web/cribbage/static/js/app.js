@@ -1,6 +1,9 @@
 import { announcePlayerJoin } from "./join.js";
 import { announcePlayerLeave, clearSessionData } from "./leave.js";
-import { deal } from "./deal.js"
+import { deal } from "./deal.js";
+import { discard } from "./discard.js";
+import { displayFacedownCutCard, displayCutCard, showCutDeckAction} from "./cut.js";
+
 
 $(document).ready(function() {
   const namespace = '/game';
@@ -39,57 +42,23 @@ $(document).ready(function() {
   });
 
 
-  // deal card
+  // DEAL
   socket.on('deal_hands', function (msg, cb) {
-    deal();
-    $('#action-button').html('Discard');
-    $('#action-button').prop('disabled', true);
+    deal(msg);
+    $('#action-button').html('Discard').prop('disabled', true);
   });
 
+  // CUT
   socket.on('receive_cut_card', function (msg, cb) {
-    sessionStorage.setItem('cut', msg.cut_card);
-    let cutCardImage = $('<img/>', {
-      id: 'facedownCutCard',
-      class: 'playerCard',
-      src: '/static/img/cards/facedown.png'
-    });
-    $('#deck').append(cutCardImage);
+    displayFacedownCutCard(msg);
   });
 
   socket.on('show_cut_card', function (msg, cb) {
-    let cutCardImage = $('<img/>', {
-      id: 'cutCard',
-      class: 'playerCard',
-      src: '/static/img' + msg.cut_card
-    });
-    $('#deck').append(cutCardImage);
-    $('#facedownCutCard').remove();
+    displayCutCard(msg);
   });
 
-
-  // handle discard from sever
-  socket.on('post_discard', function (msg, cb) {
-    console.log(msg.nickname + ' just discarded');
-    if (sessionStorage.getItem('nickname') === msg.nickname) {
-      // remove card image
-      $('#' + msg.discarded).parent().remove();
-
-      // update session
-      let card_ids = JSON.parse(sessionStorage.getItem('card_ids'));
-      card_ids.splice( $.inArray(msg.discarded, card_ids), 1 );
-      sessionStorage.setItem('card_ids', JSON.stringify(card_ids));
-        // check if ready to play
-        if (card_ids.length === 4) {
-          socket.emit('ready_to_peg', {game: gameName, nickname: nickname})
-        }
-    } else {
-      $("#" + msg.nickname).find('img').first().remove();
-    }
-  });
-
-  // display cut deck action
   socket.on('show_cut_deck_action', function (msg, cb) {
-      $('#action-button').html('Cut deck');
+    showCutDeckAction();
   });
 
   socket.on('announce_cut_deck_action', function (msg, cb) {
@@ -98,6 +67,15 @@ $(document).ready(function() {
       nickname: 'cribbot',
       data: 'Time to cut the deck!'
     });
+  });
+
+
+  // DISCARD
+  socket.on('post_discard', function (msg, cb) {
+    const readyToPeg = discard(msg);
+    if (readyToPeg) {
+      socket.emit('ready_to_peg', {game: gameName, nickname: nickname})
+    }
   });
 
 
