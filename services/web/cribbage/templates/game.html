@@ -11,25 +11,28 @@
         <script src="/static/js/bootstrap.min.js"></script>
     </head>
     <body>
-      <div class="game container-fluid h-100">
-          <div class="row justify-content-center h-100">
-              <div class="col-3 hidden-md-down">
-                  <div class="game-log-container rounded panel">
-                        <b>Game log</b>
-                        <div id="game-log"></div>
-                        <form id="send_message" class="input-group" method="POST" action='#'>
-                            <div class="input-group mb-3">
-                              <input type="text" class="form-control" name="message_content" id="message_content" placeholder="Message">
-                              <div class="input-group-append">
-                                <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
-                                    <span class="fas fa-paper-plane"></span>
-                                </button>
-                              </div>
-                            </div>
-                        </form>
-                  </div>
-              </div>
+      <div class="game container-fluid h-100 bg-gradient-dark text-white">
 
+          <!--CHAT LOG-->
+          <div class="row justify-content-center h-100">
+            <div class="col-3 hidden-md-down">
+              <div class="game-log-container rounded panel">
+                <b>Game log</b>
+                <div id="game-log"></div>
+                <form id="send_message" class="input-group" method="POST" action='#'>
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="message_content" id="message_content" placeholder="Message">
+                    <div class="input-group-append">
+                      <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
+                        <span class="fas fa-paper-plane"></span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!--GAME AREA-->
             <div class="col-11 col-sm-11 col-md-11 col-lg-9 col-xl-9">
               <div class="opponents row-fluid d-flex justify-content-center">
                   {% for player in other_players %}
@@ -59,7 +62,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
     </body>
