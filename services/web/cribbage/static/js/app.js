@@ -3,6 +3,7 @@ import { announcePlayerLeave, clearSessionData } from "./leave.js";
 import { deal } from "./deal.js";
 import { discard } from "./discard.js";
 import { displayFacedownCutCard, displayCutCard, showCutDeckAction} from "./cut.js";
+import { start } from "./start.js";
 
 
 $(document).ready(function() {
@@ -44,6 +45,12 @@ $(document).ready(function() {
   });
 
 
+  // START GAME
+  socket.on('start_game', function (msg, cb) {
+    start(msg);
+  });
+
+
   // DEAL
   socket.on('deal_hands', function (msg, cb) {
     deal(msg);
@@ -82,7 +89,10 @@ $(document).ready(function() {
 
 
   $('#action-button').click(function (event) {
-    if ($(this).text() === 'Deal Hands') {
+    if ($(this).text() === 'Start Game') {
+      socket.emit('start_game', {game: gameName});
+      socket.emit('send_message', {game: sessionStorage.getItem('gameName'), nickname: 'cribbot', data: 'Start your engines!'});
+    } else if ($(this).text() === 'Deal') {
       socket.emit('deal_hands', {game: gameName});
       socket.emit('send_message', {game: sessionStorage.getItem('gameName'), nickname: 'cribbot', data: 'Time to discard!'});
     } else if ($(this).text() === 'Discard') {
@@ -93,18 +103,6 @@ $(document).ready(function() {
     }
     return false;
   });
-
-  $('#activate-dark-mode').click(function (event) {
-      $('body').attr('style', 'background-color: #000000 !important');
-      $('.game').css({"background-color":"#000000", "color": "#F5F5F5"});
-      $('.panel').css({"background-color": "#343a40", "border": "1px solid #8B7B8B"});
-  });
-  $('#activate-light-mode').click(function (event) {
-      $("body").css({"background-color":"#344152"});
-      $('.game').css({"background-color":"#344152", "color": "#F5F5F5"});
-      $('.panel').css({"background-color": "#343a40", "border": "1px solid #404040"});
-  });
-
 });
 
 $(document).on('click', 'li.list-group-item', function(e) {

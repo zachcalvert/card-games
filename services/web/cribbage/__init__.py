@@ -29,9 +29,11 @@ class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=False, nullable=False)
     players = db.relationship('Player', backref='games', lazy=True)
+    state = db.Column(db.String(20), unique=False, nullable=False, default='INIT')
 
-    def __init__(self, name):
+    def __init__(self, name, state='INIT'):
         self.name = name
+        self.state = state
 
 
 class Player(db.Model):
@@ -122,6 +124,15 @@ def leave(message):
 def send_message(message):
     emit('new_chat_message',
          {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
+
+
+@socketio.on('start_game', namespace='/game')
+def start_game(message):
+    game = Game.query.filter_by(name=message['game']).first()
+    game.state = 'UNDERWAY'
+    db.session.add(game)
+    db.session.commit()
+    emit('start_game', {'game': game.name}, room=game.name)
 
 
 @socketio.on('deal_hands', namespace='/game')
