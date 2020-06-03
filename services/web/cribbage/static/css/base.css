@@ -25,17 +25,18 @@ html, body {
   margin: 5% 0;
   text-align: left;
   position: relative;
+  padding: 0;
+}
+
+.game-log-header {
+    border-bottom: 1px solid #37434D;
+    padding: 10px;
 }
 
 #game-log {
-  text-align: bottom;
-}
-
-#send_message {
-  display: inline-block;
   position: absolute;
-  bottom: 0;
-  width: 93%;
+  bottom: 100px;
+  padding: 0 10px;
 }
 
 #message_content {
@@ -43,6 +44,14 @@ html, body {
   background: #263341;
   border: 1px solid #263341;
   color: #fafafa;
+}
+
+#send_message {
+  display: inline-block;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 10px 0;
 }
 
 #send_message_button {
@@ -68,7 +77,6 @@ html, body {
     width: 40px;
     margin: 0 -10px;
 }
-
 
 .cribbage-table {
     height: 29%;
