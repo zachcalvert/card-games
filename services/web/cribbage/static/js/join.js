@@ -1,21 +1,36 @@
 export function announcePlayerJoin(msg) {
-  if ($("#" + msg.nickname).length == 0) {
-    let playerName = $('<h5/>', {
+  if ($("#" + msg.nickname).length === 0) {
+    let playerName = $('<span/>', {
       class: 'player-name',
       html: msg.nickname
     });
-    let playerPoints = $('<h6/>', {
+
+    let playerPoints = $('<span/>', {
       class: 'player-points',
       html: msg.points
     });
-    let playerDiv = $('<div/>', {
-      id: msg.nickname,
-      class: 'opponent rounded panel',
-      html: '<h5><span class="player-name">' + msg.nickname + '</h5><span class="player-score">' + 0 + '</span>'
+
+    let panelHeading = $('<div/>', {
+      class: 'panel-heading',
     });
-    $('.opponents').append(playerDiv);
-    $('.playerDiv').append(playerName);
-    $('.playerDiv').append(playerPoints);
+
+    let panelBody = $('<div/>', {
+      id: msg.nickname + '-cards',
+      class: 'panel-body d-flex justify-content-center',
+    });
+
+    panelHeading.append(playerName);
+    panelHeading.append(playerPoints);
+
+    let opponentPanel = $('<div/>', {
+      id: msg.nickname,
+      class: 'opponent rounded panel panel-default',
+    });
+
+    opponentPanel.append(panelHeading);
+    opponentPanel.append(panelBody);
+    $('.opponents').append(opponentPanel);
+
     $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ' joined.').html());
   }
 }

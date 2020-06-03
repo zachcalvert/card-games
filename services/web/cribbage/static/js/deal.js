@@ -23,7 +23,7 @@ export function deal(msg) {
           class: 'opponentCard',
           src: '/static/img/cards/facedown.png'
         });
-        $('#' + player).append(cardImage);
+        $('#' + player + '-cards').append(cardImage);
       });
     }
   });

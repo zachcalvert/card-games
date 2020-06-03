@@ -2,14 +2,23 @@ html, body {
     height: 100%;
     background: rgb(21, 32, 43);
 }
+
 .game {
   background: rgb(21, 32, 43);
   color: #D3D3D3;
   height: 100%;
 }
 
-.span10 {
-    height: 100%;
+.row {
+  padding: 10px 0;
+}
+
+.col-3, .col-11 {
+  height: 100%;
+}
+
+.col-3 {
+  padding-right: 0!important;
 }
 
 .panel {
@@ -17,15 +26,21 @@ html, body {
     align-items: center;
     justify-content: center;
     text-align: center;
+}
+
+.panel-heading {
+    border-bottom: 1px solid #37434D;
+    padding: 10px;
+}
+
+.panel-body {
     padding: 10px;
 }
 
 .game-log-container {
-  height: 95%;
-  margin: 5% 0;
+  height: 100%;
   text-align: left;
   position: relative;
-  padding: 0;
 }
 
 .game-log-header {
@@ -36,7 +51,7 @@ html, body {
 #game-log {
   position: absolute;
   bottom: 100px;
-  padding: 0 10px;
+  padding: 0 15px;
 }
 
 #message_content {
@@ -60,7 +75,6 @@ html, body {
 
 .opponents {
     height: 30%;
-    margin: 1% 0;
     align-items: center;
     justify-content: center;
 }
@@ -68,9 +82,9 @@ html, body {
 .opponent {
     display: inline-block;
     border: 1px solid #37434D;
-    height: 90%;
-    margin: 1%;
+    height: 100%;
     width: 25%;
+    margin: 0 10px;
 }
 
 .opponentCard {
@@ -79,11 +93,11 @@ html, body {
 }
 
 .cribbage-table {
-    height: 29%;
+    height: 30%;
 }
 
 .player {
-    height: 35%;
+    height: 40%;
 }
 
 .player-action, .player-cards, .player-leave {

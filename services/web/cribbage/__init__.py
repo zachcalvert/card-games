@@ -89,6 +89,9 @@ def game():
             game = Game(name=game_name)
             db.session.add(game)
             db.session.commit()
+        elif game.state == 'UNDERWAY' or game.state == 'FINISHED':
+            pass
+
 
         player = Player.query.filter_by(nickname=nickname, game_id=game.id).first()
         if player is None:
