@@ -40,6 +40,9 @@ html, body {
 
 #message_content {
   display: block;
+  background: #263341;
+  border: 1px solid #263341;
+  color: #fafafa;
 }
 
 #send_message_button {
@@ -92,6 +95,11 @@ html, body {
     background: transparent!important;
 }
 
+.list-group-item.selected {
+  opacity: 75%;
+}
+
+
 .playerCard {
     width: 75px;
 }
@@ -136,14 +144,6 @@ li a {
 .alert{
     display: none;
 }
-
-/*.game-alert{*/
-/*    position: absolute;*/
-/*    bottom: 5px;*/
-/*    left:2%;*/
-/*    width: 96%;*/
-/*}*/
-
 
 
 /*  COLORS  */

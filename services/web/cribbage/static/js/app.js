@@ -36,6 +36,7 @@ $(document).ready(function() {
   $('form#send_message').submit(function(event) {
     socket.emit('send_message', {
       game: gameName, nickname: nickname, data: $('#message_content').val()});
+    $("#message_content").val("");
     return false;
   });
   socket.on('new_chat_message', function(msg, cb) {
@@ -85,7 +86,7 @@ $(document).ready(function() {
       socket.emit('deal_hands', {game: gameName});
       socket.emit('send_message', {game: sessionStorage.getItem('gameName'), nickname: 'cribbot', data: 'Time to discard!'});
     } else if ($(this).text() === 'Discard') {
-      let cardId = $('li.list-group-item.active').children()[0].id;
+      let cardId = $('li.list-group-item.selected').children()[0].id;
       socket.emit('discard', {game: gameName, nickname: nickname, cardId: cardId});
     } else if ($(this).text() === 'Cut deck') {
       socket.emit('cut_deck', {game: gameName, cut_card: sessionStorage.getItem('cut')});
@@ -107,10 +108,10 @@ $(document).ready(function() {
 });
 
 $(document).on('click', 'li.list-group-item', function(e) {
-  $(this).toggleClass('active');
-  if ($(this).hasClass('active')) {
+  $(this).toggleClass('selected');
+  if ($(this).hasClass('selected')) {
     $('#action-button').prop('disabled', false);
-  } else if($(this).siblings(".active").length == 0) {
+  } else if($(this).siblings(".selected").length == 0) {
     $('#action-button').prop('disabled', true);
   }
 });
