@@ -23,6 +23,11 @@ $(document).ready(function() {
     announcePlayerJoin(msg);
   });
 
+  // START GAME
+  socket.on('start_game', function (msg, cb) {
+    start(msg);
+  });
+
 
   $('#leave-game').click(function (event) {
     socket.emit('leave', {game: gameName, nickname: nickname});
@@ -43,13 +48,6 @@ $(document).ready(function() {
   socket.on('new_chat_message', function(msg, cb) {
     $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ': ' + msg.data).html());
   });
-
-
-  // START GAME
-  socket.on('start_game', function (msg, cb) {
-    start(msg);
-  });
-
 
   // DEAL
   socket.on('deal_hands', function (msg, cb) {

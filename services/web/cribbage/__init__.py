@@ -42,7 +42,7 @@ class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nickname = db.Column(db.String(128), unique=False, nullable=False)
     active = db.Column(db.Boolean(), default=True, nullable=False)
-    game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id', ondelete='CASCADE'), nullable=False)
     points = db.Column(db.Integer)
 
     def __init__(self, nickname, game_id):
@@ -92,7 +92,6 @@ def game():
         elif game.state == 'UNDERWAY' or game.state == 'FINISHED':
             pass
 
-
         player = Player.query.filter_by(nickname=nickname, game_id=game.id).first()
         if player is None:
             player = Player(nickname=nickname, game_id=game.id)
@@ -115,10 +114,10 @@ def join(message):
 @socketio.on('leave', namespace='/game')
 def leave(message):
     leave_room(message['game'])
-    # game = Game.query.filter_by(name=message['game']).first()
-    # player = Player.query.filter_by(nickname=message['game'], game_id=game.id).first()
-    # db.session.delete(player)
-    # db.session.commit()
+    game = Game.query.filter_by(name=message['game']).first()
+    player = Player.query.filter_by(nickname=message['nickname'], game_id=game.id).first()
+    db.session.delete(player)
+    db.session.commit()
     emit('player_leave',
          {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
 
@@ -135,7 +134,10 @@ def start_game(message):
     game.state = 'UNDERWAY'
     db.session.add(game)
     db.session.commit()
-    emit('start_game', {'game': game.name}, room=game.name)
+
+    player_names = [player.nickname for player in game.players]
+
+    emit('start_game', {'game': game.name, 'players': player_names}, room=game.name)
 
 
 @socketio.on('deal_hands', namespace='/game')
