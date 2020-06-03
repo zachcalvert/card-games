@@ -90,7 +90,7 @@ def game():
             db.session.add(game)
             db.session.commit()
         elif game.state == 'UNDERWAY' or game.state == 'FINISHED':
-            pass
+            return redirect(url_for('index'))
 
         player = Player.query.filter_by(nickname=nickname, game_id=game.id).first()
         if player is None:

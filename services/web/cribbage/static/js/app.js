@@ -14,6 +14,8 @@ $(document).ready(function() {
   const nickname = sessionStorage.getItem('nickname');
 
   let PLAYER_ORDER = [];
+  let DEALER = '';
+  let TURN = '';
 
   if (gameName !== null && nickname !== null) {
     socket.emit('join', {game: gameName, nickname: nickname});
@@ -26,6 +28,11 @@ $(document).ready(function() {
   // START GAME
   socket.on('start_game', function (msg, cb) {
     start(msg);
+    PLAYER_ORDER.push(msg.players);
+    DEALER = PLAYER_ORDER[0];
+    renderDealerIcon(DEALER);
+    console.log('player order: ' + PLAYER_ORDER);
+    console.log('crib belongs to '+ DEALER);
   });
 
 
@@ -55,17 +62,26 @@ $(document).ready(function() {
     $('#action-button').html('Discard').prop('disabled', true);
   });
 
+  // DISCARD
+  socket.on('post_discard', function (msg, cb) {
+    const readyToPeg = discard(msg);
+    if (readyToPeg) {
+      socket.emit('ready_to_peg', {game: gameName, nickname: nickname})
+    }
+  });
+
   // CUT
   socket.on('receive_cut_card', function (msg, cb) {
     displayFacedownCutCard(msg);
   });
 
-  socket.on('show_cut_card', function (msg, cb) {
-    displayCutCard(msg);
-  });
-
   socket.on('show_cut_deck_action', function (msg, cb) {
     showCutDeckAction();
+  });
+
+  socket.on('show_cut_card', function (msg, cb) {
+    displayCutCard(msg);
+    startPeggingRound(PLAYER_ORDER, DEALER);
   });
 
   socket.on('announce_cut_deck_action', function (msg, cb) {
@@ -75,16 +91,6 @@ $(document).ready(function() {
       data: 'Time to cut the deck!'
     });
   });
-
-
-  // DISCARD
-  socket.on('post_discard', function (msg, cb) {
-    const readyToPeg = discard(msg);
-    if (readyToPeg) {
-      socket.emit('ready_to_peg', {game: gameName, nickname: nickname})
-    }
-  });
-
 
   $('#action-button').click(function (event) {
     if ($(this).text() === 'Start Game') {
@@ -98,9 +104,42 @@ $(document).ready(function() {
       socket.emit('discard', {game: gameName, nickname: nickname, cardId: cardId});
     } else if ($(this).text() === 'Cut deck') {
       socket.emit('cut_deck', {game: gameName, cut_card: sessionStorage.getItem('cut')});
+    } else if ($(this).text() === 'Play') {
+      let cardId = $('li.list-group-item.selected').children()[0].id;
+      socket.emit('play_card', {game: gameName, card_id: cardId});
     }
+
     return false;
   });
+
+  function renderDealerIcon() {
+    // given the name of the current dealer, append an icon next to their name
+    $("#" + DEALER).find(".player-nickname").prepend('<span class="dealer-icon fas fa-star"></span>');
+  }
+
+  function renderTurnIcon() {
+    // given the name of who's turn it currently is, append an icon next to their name
+    $("#" + TURN).find(".panel-heading").css('background', 'pink');
+  }
+
+  function rotateDealer() {
+    let new_dealer = PLAYER_ORDER[PLAYER_ORDER.indexOf(DEALER) +1];
+    if (!new_dealer) {
+      new_dealer = PLAYER_ORDER[0];
+    }
+    DEALER = new_dealer;
+    renderDealerIcon();
+  }
+
+  function rotateTurn() {
+    let next_player = PLAYER_ORDER[PLAYER_ORDER.indexOf(TURN) +1];
+    if (!next_player) {
+      next_player = PLAYER_ORDER[0];
+    }
+    TURN = next_player;
+    renderTurnIcon();
+  }
+
 });
 
 $(document).on('click', 'li.list-group-item', function(e) {

@@ -8,6 +8,10 @@ export function displayFacedownCutCard(msg) {
   $('.cribbage-table').append(cutCardImage);
 }
 
+export function showCutDeckAction() {
+  $('#action-button').html('Cut deck');
+}
+
 export function displayCutCard(msg) {
   let cutCardImage = $('<img/>', {
     id: 'cutCard',
@@ -16,8 +20,4 @@ export function displayCutCard(msg) {
   });
   $('.cribbage-table').append(cutCardImage);
   $('#facedownCutCard').remove();
-}
-
-export function showCutDeckAction() {
-  $('#action-button').html('Cut deck');
 }
