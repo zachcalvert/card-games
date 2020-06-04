@@ -111,7 +111,7 @@ html, body {
 
 .current-turn-icon {
     padding-right: 5px;
-    color: pink;
+    color: #1CA1F2;
 }
 
 .player-action, .player-cards, .player-leave {

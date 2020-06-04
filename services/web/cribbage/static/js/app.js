@@ -3,6 +3,7 @@ import { announcePlayerLeave, clearSessionData } from "./leave.js";
 import { deal } from "./deal.js";
 import { discard } from "./discard.js";
 import { displayFacedownCutCard, displayCutCard, showCutDeckAction} from "./cut.js";
+import { removeCurrentTurnDisplay, renderCurrentTurnDisplay } from "./peg.js"
 import { start } from "./start.js";
 
 
@@ -13,9 +14,8 @@ $(document).ready(function() {
   const gameName = sessionStorage.getItem('gameName');
   const nickname = sessionStorage.getItem('nickname');
 
-  let PLAYER_ORDER = [];
-  let DEALER = '';
-  let TURN = '';
+  let DEALER = 0;
+  let TURN = 0;
 
   if (gameName !== null && nickname !== null) {
     socket.emit('join', {game: gameName, nickname: nickname});
@@ -28,11 +28,12 @@ $(document).ready(function() {
   // START GAME
   socket.on('start_game', function (msg, cb) {
     start(msg);
-    PLAYER_ORDER.push(msg.players);
-    DEALER = PLAYER_ORDER[0];
-    renderDealerIcon(DEALER);
-    console.log('player order: ' + PLAYER_ORDER);
-    console.log('crib belongs to '+ DEALER);
+    sessionStorage.setItem('players', JSON.stringify(msg.players));
+    let players = JSON.parse(sessionStorage.getItem('players'));
+
+    console.log('players: ' + players);
+    console.log('crib belongs to '+ players[DEALER]);
+    renderDealerIcon(players[DEALER]);
   });
 
 
@@ -79,11 +80,6 @@ $(document).ready(function() {
     showCutDeckAction();
   });
 
-  socket.on('show_cut_card', function (msg, cb) {
-    displayCutCard(msg);
-    startPeggingRound(PLAYER_ORDER, DEALER);
-  });
-
   socket.on('announce_cut_deck_action', function (msg, cb) {
     socket.emit('send_message', {
       game: gameName,
@@ -91,6 +87,45 @@ $(document).ready(function() {
       data: 'Time to cut the deck!'
     });
   });
+
+  socket.on('show_cut_card', function (msg, cb) {
+    displayCutCard(msg);
+    let players = JSON.parse(sessionStorage.getItem('players'));
+    TURN = DEALER + 1;
+    let player = players[TURN];
+    if (!player) {
+      TURN = 0;
+      player = players[TURN];
+    }
+    console.log('TURN is ' + TURN + ', player is ' + player);
+    $("#" + player).find(".panel-heading").css('background', 'pink');
+    $('#' + player + ' #action-button').text('Play').prop('disabled', false);
+  });
+
+  socket.on('show_card_played', function (msg, cb) {
+    let cardImage = $('<img/>', {
+      id: '#' + msg["card_id"],
+      class: 'playerCard',
+      src: msg["card_image"]
+    });
+    $('.cribbage-table').append(cardImage);
+    $('#' + msg.nickname + ' #' + msg['card_id']).removeClass('selected').hide();
+
+    let players = JSON.parse(sessionStorage.getItem('players'));
+    $("#" + players[TURN]).find(".panel-heading").css('background', 'rgb(21, 32, 43)');
+    $('#' + players[TURN] + ' #action-button').text('Play').prop('disabled', true);
+    TURN += 1;
+    let player = players[TURN];
+      if (!player) {
+        TURN = 0;
+        player = players[TURN];
+      }
+    console.log('TURN is ' + TURN + ', player is ' + player);
+    $("#" + player).find(".panel-heading").css('background', 'pink');
+    $('#' + player + ' #action-button').text('Play').prop('disabled', false);
+  });
+
+
 
   $('#action-button').click(function (event) {
     if ($(this).text() === 'Start Game') {
@@ -104,22 +139,17 @@ $(document).ready(function() {
       socket.emit('discard', {game: gameName, nickname: nickname, cardId: cardId});
     } else if ($(this).text() === 'Cut deck') {
       socket.emit('cut_deck', {game: gameName, cut_card: sessionStorage.getItem('cut')});
-    } else if ($(this).text() === 'Play') {
+    } else {
       let cardId = $('li.list-group-item.selected').children()[0].id;
-      socket.emit('play_card', {game: gameName, card_id: cardId});
+      console.log('cardId is ' + cardId);
+      socket.emit('play_card', {game: gameName, nickname: nickname, cardId: cardId});
     }
-
     return false;
   });
 
-  function renderDealerIcon() {
+  function renderDealerIcon(nickname) {
     // given the name of the current dealer, append an icon next to their name
-    $("#" + DEALER).find(".player-nickname").prepend('<span class="dealer-icon fas fa-star"></span>');
-  }
-
-  function renderTurnIcon() {
-    // given the name of who's turn it currently is, append an icon next to their name
-    $("#" + TURN).find(".panel-heading").css('background', 'pink');
+    $("#" + nickname).find(".player-nickname").prepend('<span class="dealer-icon fas fa-star"></span>');
   }
 
   function rotateDealer() {
@@ -129,15 +159,6 @@ $(document).ready(function() {
     }
     DEALER = new_dealer;
     renderDealerIcon();
-  }
-
-  function rotateTurn() {
-    let next_player = PLAYER_ORDER[PLAYER_ORDER.indexOf(TURN) +1];
-    if (!next_player) {
-      next_player = PLAYER_ORDER[0];
-    }
-    TURN = next_player;
-    renderTurnIcon();
   }
 
 });

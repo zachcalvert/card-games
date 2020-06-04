@@ -1,6 +1,8 @@
 export function discard(msg) {
   let readyToPeg = false;
   console.log(msg.nickname + ' just discarded');
+  console.log(msg.discarded + ' is the card id');
+
   if (sessionStorage.getItem('nickname') === msg.nickname) {
     // remove card image
     $('#' + msg.discarded).parent().remove();

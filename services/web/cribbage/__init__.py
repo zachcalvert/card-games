@@ -90,7 +90,8 @@ def game():
             db.session.add(game)
             db.session.commit()
         elif game.state == 'UNDERWAY' or game.state == 'FINISHED':
-            return redirect(url_for('index'))
+            pass
+            # return redirect(url_for('index'))
 
         player = Player.query.filter_by(nickname=nickname, game_id=game.id).first()
         if player is None:
@@ -144,9 +145,7 @@ def start_game(message):
 def deal_hands(message):
     game = Game.query.filter_by(name=message['game']).first()
 
-    deck = CARDS[:-1].copy()  # exclude the facedown card
-    random.shuffle(deck)
-    random.shuffle(deck)
+    deck = CARDS.copy()  # exclude the facedown card
 
     hands = {}
     for player in game.players:
@@ -154,17 +153,18 @@ def deal_hands(message):
         db.session.add(hand)
         db.session.commit()
 
-        dealt_cards = [deck.pop() for card in range(HAND_SIZE)]
+        dealt_cards = [deck.pop(random.choice(list(deck.keys()))) for card in range(HAND_SIZE)]
         hands[player.nickname] = dealt_cards
 
     emit('deal_hands', {'hands': hands}, room=game.name)
 
-    cut_card = deck.pop()
-    emit('receive_cut_card', {'cut_card': cut_card['id']}, room=game.name)
+    cut_card = random.choice(list(deck.keys()))
+    emit('receive_cut_card', {'cut_card': cut_card}, room=game.name)
 
 
 @socketio.on('discard', namespace='/game')
 def discard(message):
+    print('card_id is '.format(message["cardId"]))
     card_id = message['cardId']
     emit('post_discard', {'discarded': card_id, 'nickname': message['nickname']}, room=message['game'])
 
@@ -188,9 +188,16 @@ def ready_to_peg(message):
 @socketio.on('cut_deck', namespace='/game')
 def cut_deck(message):
     game = Game.query.filter_by(name=message['game']).first()
-    print(message["cut_card"])
-    cut_card = next(card for card in CARDS if card['id'] == message["cut_card"])
+    cut_card = CARDS[message["cut_card"]]
     emit('show_cut_card', {"cut_card": cut_card["image"]}, room=game.name)
+
+
+@socketio.on('play_card', namespace='/game')
+def play_card(message):
+    print(" heard about a card to play: {}".format(message["cardId"]))
+    card_played = CARDS[message["cardId"]]
+    print('card is {}'.format(card_played))
+    emit('show_card_played', {"card_id": message["cardId"], "card_image": card_played["image"]}, room=message["game"])
 
 
 if __name__ == '__main__':

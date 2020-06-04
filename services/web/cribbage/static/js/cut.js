@@ -16,7 +16,7 @@ export function displayCutCard(msg) {
   let cutCardImage = $('<img/>', {
     id: 'cutCard',
     class: 'playerCard',
-    src: '/static/img' + msg.cut_card
+    src: msg.cut_card
   });
   $('.cribbage-table').append(cutCardImage);
   $('#facedownCutCard').remove();
