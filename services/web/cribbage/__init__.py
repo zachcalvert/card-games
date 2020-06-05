@@ -3,11 +3,9 @@ import random
 import time
 
 from threading import Lock
-from flask import Flask, render_template, session, request, \
-    copy_current_request_context, Markup, redirect, url_for
+from flask import Flask, render_template, session, request, Markup, redirect, url_for, jsonify
 from flask_fontawesome import FontAwesome
-from flask_socketio import SocketIO, emit, join_room, leave_room, \
-    close_room, rooms, disconnect
+from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 from flask_sqlalchemy import SQLAlchemy
 
 from .cards import CARDS
@@ -182,7 +180,21 @@ def ready_to_peg(message):
     # if this game has no more Hands in a discarding state, dispatch the cut deck option
     if not Hand.query.filter_by(game_id=game.id, state='DISCARDING').first():
         emit('show_cut_deck_action', room=game.name)
-        emit('announce_cut_deck_action')
+
+
+@socketio.on('ready_to_score', namespace='/game')
+def ready_to_score(message):
+    game = Game.query.filter_by(name=message['game']).first()
+    player = Player.query.filter_by(nickname=message['nickname'], game_id=game.id).first()
+
+    hand = Hand.query.filter_by(player_id=player.id, game_id=game.id, state='PEGGING').first()
+    hand.state = 'SCORING'
+    db.session.add(hand)
+    db.session.commit()
+
+    # if this game has no more Hands in a pegging state, dispatch the score hands action
+    if not Hand.query.filter_by(game_id=game.id, state='PEGGING').first():
+        emit('show_score_hands_action', room=game.name)
 
 
 @socketio.on('cut_deck', namespace='/game')

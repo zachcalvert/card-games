@@ -13,6 +13,7 @@ export function discard(msg) {
     // check if ready to play
     if (card_ids.length === 4) {
       readyToPeg = true;
+      $('#' + msg.nickname + ' #action-button').text('Cut deck').prop('disabled', true);
     }
   } else {
     $("#" + msg.nickname).find('img').first().remove();

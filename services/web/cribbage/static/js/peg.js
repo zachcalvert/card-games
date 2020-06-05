@@ -9,17 +9,18 @@ export function renderCurrentTurnDisplay(player) {
 }
 
 export function moveCardFromHandToTable(msg) {
+  let card = $('#' + msg.card_id);
+  card.parent().removeClass('selected');
+  card.hide();
+
   let cardImage = $('<img/>', {
+    id: msg.card_id,
     class: 'playerCard',
     src: msg.card_image
   });
   $('.cribbage-table').append(cardImage);
-
-  let card = $('#' + msg.card_id);
-  card.parent().removeClass('selected');
-  card.hide();
 }
 
-export function showCardPlayScore(msg) {
+export function showCardPlayScore(cardId, points) {
   return;
 }

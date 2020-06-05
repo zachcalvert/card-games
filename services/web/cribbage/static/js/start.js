@@ -4,12 +4,7 @@ function renderDealerIcon(nickname) {
   $("#" + nickname + " #action-button").prop('disabled', false);
 }
 
-export function start(msg) {
-  console.log('started with players: ' + msg.players);
-  sessionStorage.setItem('players', JSON.stringify(msg.players));
-  let players = JSON.parse(sessionStorage.getItem('players'));
-  let dealer = players[0];
-  console.log('crib belongs to '+ dealer);
+export function start(dealer) {
   $('#action-button').html('Deal').prop('disabled', true);
   renderDealerIcon(dealer);
 }

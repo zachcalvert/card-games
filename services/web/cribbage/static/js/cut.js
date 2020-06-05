@@ -8,16 +8,19 @@ export function displayFacedownCutCard(msg) {
   $('.cribbage-table').append(cutCardImage);
 }
 
-export function showCutDeckAction() {
-  $('#action-button').html('Cut deck');
+export function showCutDeckAction(starting_player) {
+  console.log('showing cut deck action to '+ starting_player);
+  $('#' + starting_player + ' #action-button').text('Cut deck').prop('disabled', false);
+    $("#" + starting_player).find(".panel-heading").css('background', 'pink');
+
 }
 
-export function displayCutCard(msg) {
+export function displayCutCard(cardImage) {
+  $('#facedownCutCard').remove();
   let cutCardImage = $('<img/>', {
     id: 'cutCard',
     class: 'playerCard',
-    src: msg.cut_card
+    src: cardImage
   });
   $('.cribbage-table').append(cutCardImage);
-  $('#facedownCutCard').remove();
 }
