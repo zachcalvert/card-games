@@ -71,6 +71,14 @@ CARDS = {
       "image":"/static/img/cards/9H.png",
       "id":"9"
    },
+   "10": {
+      "suit": "hearts",
+      "value": 10,
+      "name": "Ten",
+      "rank": 10,
+      "image": "/static/img/cards/TH.png",
+      "id": "10"
+   },
    "11":{
       "suit":"hearts",
       "value":10,
@@ -207,6 +215,14 @@ CARDS = {
       "image":"/static/img/cards/AD.png",
       "id":"27"
    },
+   "28": {
+      "suit": "diamonds",
+      "value":21,
+      "name": "Two",
+      "rank": 2,
+      "image": "/static/img/cards/2D.png",
+      "id": "28"
+   },
    "29":{
       "suit":"diamonds",
       "value":3,
@@ -246,6 +262,14 @@ CARDS = {
       "rank":7,
       "image":"/static/img/cards/7D.png",
       "id":"33"
+   },
+   "34": {
+      "suit": "diamonds",
+      "value": 8,
+      "name": "Eight",
+      "rank": 8,
+      "image": "/static/img/cards/8D.png",
+      "id": "34"
    },
    "35":{
       "suit":"diamonds",
@@ -294,6 +318,14 @@ CARDS = {
       "rank":1,
       "image":"/static/img/cards/AS.png",
       "id":"40"
+   },
+   "41": {
+      "suit": "spades",
+      "value": 2,
+      "name": "Two",
+      "rank": 2,
+      "image": "/static/img/cards/2S.png",
+      "id": "41"
    },
    "42":{
       "suit":"spades",
