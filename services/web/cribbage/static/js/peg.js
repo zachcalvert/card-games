@@ -4,21 +4,21 @@ export function removeCurrentTurnDisplay(player) {
 }
 
 export function renderCurrentTurnDisplay(player) {
-  $("#" + player).find(".panel-heading").css('background', 'pink');
+  $("#" + player).find(".panel-heading").css('background', '#1CA1F2');
   $('#' + player + ' #action-button').text('Play').prop('disabled', false);
 }
 
-export function moveCardFromHandToTable(msg) {
-  let card = $('#' + msg.card_id);
-  card.parent().removeClass('selected');
-  card.hide();
+export function moveCardFromHandToTable(card) {
+  let handCard = $('#' + card.id);
+  handCard.parent().removeClass('selected');
+  handCard.hide();
 
   let cardImage = $('<img/>', {
-    id: msg.card_id,
-    class: 'playerCard',
-    src: msg.card_image
+    id: card.id,
+    class: 'playedCard',
+    src: '/static/img/cards/' + card.hash
   });
-  $('.cribbage-table').append(cardImage);
+  $('#play-area').append(cardImage);
 }
 
 export function showCardPlayScore(cardId, points) {

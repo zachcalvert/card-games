@@ -63,15 +63,16 @@ socket.on('deal_hands', function (msg, cb) {
 
 // DISCARD
 socket.on('post_discard', function (msg, cb) {
-  const readyToPeg = discard(msg);
+  const readyToPeg = discard(msg, DEALER);
   if (readyToPeg) {
-    socket.emit('ready_to_peg', {game: gameName, nickname: nickname})
+    socket.emit('ready_to_peg', {game: gameName, nickname: nickname});
   }
 });
 
 // CUT
 socket.on('receive_cut_card', function (msg, cb) {
-  displayFacedownCutCard(msg);
+  console.log('cut card is ' + msg.cut_card);
+  displayFacedownCutCard(msg.cut_card);
 });
 
 socket.on('show_cut_deck_action', function (msg, cb) {
@@ -94,8 +95,8 @@ socket.on('show_cut_card', function (msg, cb) {
 
 // PEG
 socket.on('show_card_played', function (msg, cb) {
-  moveCardFromHandToTable(msg);
-  showCardPlayScore(msg.card_id, msg.points);
+  moveCardFromHandToTable(msg.card);
+  showCardPlayScore(msg.card.id, msg.points);
   updateRunningTotal(msg.points);
   rotateTurn();
 });
@@ -121,7 +122,6 @@ function updateRunningTotal(points) {
 }
 
 
-
 $('#action-button').click(function (event) {
   if ($(this).text() === 'Start Game') {
     socket.emit('start_game', {game: gameName});
@@ -131,10 +131,10 @@ $('#action-button').click(function (event) {
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Time to discard!'});
   } else if ($(this).text() === 'Discard') {
     let cardId = $('li.list-group-item.selected').children()[0].id;
-    socket.emit('discard', {game: gameName, nickname: nickname, cardId: cardId});
+    socket.emit('discard', {game: gameName, nickname: nickname, dealer: DEALER, cardId: cardId});
   } else if ($(this).text() === 'Cut deck') {
     socket.emit('cut_deck', {game: gameName, cut_card: sessionStorage.getItem('cut')});
-  } elif ($(this).text() === 'Play') {
+  } else if ($(this).text() === 'Play') {
     let cardId = $('li.list-group-item.selected').children()[0].id;
     console.log('cardId is ' + cardId);
     socket.emit('play_card', {game: gameName, nickname: nickname, cardId: cardId});

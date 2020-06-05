@@ -8,27 +8,21 @@
         <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div class="container lobby">
-            <div class="pure-u-1-3"></div>
-            <div class="pure-u-1-3">
-                <div class="pure-form pure-form-aligned">
-                    <img src="/static/img/logo.png" />
-                    <form id="join" class="pure-form" method="POST" action='/game'>
-                        <div class="pure-control-group">
-                          <label for="join_nickname">Nickname</label>
-                          <input type="text" name="join_nickname" id="join_nickname" placeholder="johnny bravo">
-                        </div>
-                        <div class="pure-control-group">
-                          <label for="join_game_name">Game Name</label>
-                          <input type="text" name="join_game_name" id="join_game_name" placeholder="WWIII">
-                        </div>
-                        <div class="pure-controls">
-                          <button type="submit" class="pure-button">Join Game</button>
-                        </div>
-                    </form>
-                </div>
+        <div class="lobby">
+            <div class="h-100 row align-items-center">
+                <img class="playerCard" src="/static/img/cards/b0341XZ" />
+                <form id="join" class="pure-form" method="POST" action='/game'>
+                  <div class="input-group">
+                    <input type="text" name="join_nickname" id="join_nickname" placeholder="nickname">
+                    <input type="text" name="join_game_name" id="join_game_name" placeholder="game name">
+                    <div class="input-group-append">
+                      <button class="btn btn-secondary btn-sm" type="submit">
+                        Join
+                      </button>
+                    </div>
+                  </div>
+                </form>
             </div>
-            <div class="pure-u-1-3"></div>
         </div>
     </body>
     <script>

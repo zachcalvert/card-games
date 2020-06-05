@@ -155,16 +155,26 @@ def deal_hands(message):
         hands[player.nickname] = dealt_cards
 
     emit('deal_hands', {'hands': hands}, room=game.name)
-
     cut_card = random.choice(list(deck.keys()))
+    print('calling receive cut card with: '.format(cut_card))
     emit('receive_cut_card', {'cut_card': cut_card}, room=game.name)
 
 
 @socketio.on('discard', namespace='/game')
 def discard(message):
-    print('card_id is '.format(message["cardId"]))
-    card_id = message['cardId']
-    emit('post_discard', {'discarded': card_id, 'nickname': message['nickname']}, room=message['game'])
+    """
+    Add the discarded card to the crib of the dealer
+    :param message:
+    :return:
+    """
+    game = Game.query.filter_by(name=message['game']).first()
+    dealer = Player.query.filter_by(nickname=message['dealer'], game_id=game.id).first()
+
+    hand = Hand(game_id=game.id, player_id=dealer.id, state='CRIB')
+
+    print('cardId is '.format(message["cardId"]))
+    discarded = CARDS[message["cardId"]]
+    emit('post_discard', {'discarded': discarded, 'nickname': message['nickname']}, room=message['game'])
 
 
 @socketio.on('ready_to_peg', namespace='/game')
@@ -201,7 +211,7 @@ def ready_to_score(message):
 def cut_deck(message):
     game = Game.query.filter_by(name=message['game']).first()
     cut_card = CARDS[message["cut_card"]]
-    emit('show_cut_card', {"cut_card": cut_card["image"]}, room=game.name)
+    emit('show_cut_card', {"cut_card": cut_card}, room=game.name)
 
 
 @socketio.on('play_card', namespace='/game')
@@ -209,7 +219,7 @@ def play_card(message):
     print(" heard about a card to play: {}".format(message["cardId"]))
     card_played = CARDS[message["cardId"]]
     print('card is {}'.format(card_played))
-    emit('show_card_played', {"card_id": message["cardId"], "card_image": card_played["image"]}, room=message["game"])
+    emit('show_card_played', {"card": card_played}, room=message["game"])
 
 
 if __name__ == '__main__':
