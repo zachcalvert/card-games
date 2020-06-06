@@ -1,5 +1,6 @@
-function animateDiscard() {
+function animateDiscard(discarded) {
   let cardImage = $('<img/>', {
+    id: discarded,
     class: 'cribCard',
     src: '/static/img/cards/facedown.png'
   });
@@ -14,17 +15,17 @@ function animateDiscard() {
 export function discard(msg, dealer) {
   let readyToPeg = false;
   console.log(msg.nickname + ' just discarded');
-  console.log(msg.discarded.id + ' is the card id');
+  console.log(msg.discarded + ' is the card id');
 
   // append to crib area
   animateDiscard();
   if (sessionStorage.getItem('nickname') === msg.nickname) {
     // remove card image
-    $('#' + msg.discarded.id).parent().remove();
+    $('#' + msg.discarded).parent().remove();
 
     // update session
     let cards = JSON.parse(sessionStorage.getItem('cards'));
-    cards.splice($.inArray(msg.discarded.hash, cards), 1);
+    cards.splice($.inArray(msg.discarded, cards), 1);
     sessionStorage.setItem('cards', JSON.stringify(cards));
 
     // check if ready to play

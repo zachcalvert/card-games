@@ -78,7 +78,7 @@ html, body {
 }
 
 .opponents {
-    height: 30%;
+    height: 25%;
     align-items: center;
     justify-content: center;
 }
@@ -97,13 +97,13 @@ html, body {
 }
 
 .cribbage-table {
-    height: 30%;
+    height: 40%;
     text-align: center;
     padding: 15px;
 }
 
 .player {
-    height: 40%;
+    height: 35%;
 }
 
 .player-points {
@@ -154,7 +154,7 @@ html, body {
 .cribCard {
     width: 75px;
     height: auto;
-    margin: 0 -20px;
+    margin: 0 -25px;
     transition: transform 0.25s linear;
 }
 

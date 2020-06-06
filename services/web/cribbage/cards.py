@@ -1,1 +1,314 @@
-CARDS = {'24': {'hash': '110e6e5b19', 'name': 'Jack', 'image': '/static/img/cards/JC.png', 'rank': 11, 'value': 10, 'suit': 'clubs', 'id': '24'}, '25': {'hash': '04a70825ff', 'name': 'Queen', 'image': '/static/img/cards/QC.png', 'rank': 12, 'value': 10, 'suit': 'clubs', 'id': '25'}, '26': {'hash': 'ae2caea4bb', 'name': 'King', 'image': '/static/img/cards/KC.png', 'rank': 13, 'value': 10, 'suit': 'clubs', 'id': '26'}, '27': {'hash': '6d95c18472', 'name': 'Ace', 'image': '/static/img/cards/AD.png', 'rank': 1, 'value': 1, 'suit': 'diamonds', 'id': '27'}, '20': {'hash': 'c6f4900f82', 'name': 'Seven', 'image': '/static/img/cards/7C.png', 'rank': 7, 'value': 7, 'suit': 'clubs', 'id': '20'}, '21': {'hash': '4c8519af34', 'name': 'Eight', 'image': '/static/img/cards/8C.png', 'rank': 8, 'value': 8, 'suit': 'clubs', 'id': '21'}, '22': {'hash': '4dfe41e461', 'name': 'Nine', 'image': '/static/img/cards/9C.png', 'rank': 9, 'value': 9, 'suit': 'clubs', 'id': '22'}, '23': {'hash': '276f33cf69', 'name': 'Ten', 'image': '/static/img/cards/TC.png', 'rank': 10, 'value': 10, 'suit': 'clubs', 'id': '23'}, '28': {'hash': '3698fe0420', 'name': 'Two', 'image': '/static/img/cards/2D.png', 'rank': 2, 'value': 21, 'suit': 'diamonds', 'id': '28'}, '29': {'hash': '64fe85d796', 'name': 'Three', 'image': '/static/img/cards/3D.png', 'rank': 3, 'value': 3, 'suit': 'diamonds', 'id': '29'}, '2': {'hash': 'ace1293f8a', 'name': 'Two', 'image': '/static/img/cards/2H.png', 'rank': 2, 'value': 2, 'suit': 'hearts', 'id': '2'}, '4': {'hash': '83ef982410', 'name': 'Four', 'image': '/static/img/cards/4H.png', 'rank': 4, 'value': 4, 'suit': 'hearts', 'id': '4'}, '6': {'hash': 'c88523b677', 'name': 'Six', 'image': '/static/img/cards/6H.png', 'rank': 6, 'value': 6, 'suit': 'hearts', 'id': '6'}, '8': {'hash': '4de6b73ab8', 'name': 'Eight', 'image': '/static/img/cards/8H.png', 'rank': 8, 'value': 8, 'suit': 'hearts', 'id': '8'}, '11': {'hash': '56594b3880', 'name': 'Jack', 'image': '/static/img/cards/JH.png', 'rank': 11, 'value': 10, 'suit': 'hearts', 'id': '11'}, '10': {'hash': 'a482167f2a', 'name': 'Ten', 'image': '/static/img/cards/TH.png', 'rank': 10, 'value': 10, 'suit': 'hearts', 'id': '10'}, '13': {'hash': '36493dcc05', 'name': 'King', 'image': '/static/img/cards/KH.png', 'rank': 13, 'value': 10, 'suit': 'hearts', 'id': '13'}, '12': {'hash': 'a20b6dac2c', 'name': 'Queen', 'image': '/static/img/cards/QH.png', 'rank': 12, 'value': 10, 'suit': 'hearts', 'id': '12'}, '15': {'hash': 'd1c9fde8ef', 'name': 'Two', 'image': '/static/img/cards/2C.png', 'rank': 2, 'value': 2, 'suit': 'clubs', 'id': '15'}, '14': {'hash': 'b1fb3bec6f', 'name': 'Ace', 'image': '/static/img/cards/AC.png', 'rank': 1, 'value': 1, 'suit': 'clubs', 'id': '14'}, '17': {'hash': 'fc0f324620', 'name': 'Four', 'image': '/static/img/cards/4C.png', 'rank': 4, 'value': 4, 'suit': 'clubs', 'id': '17'}, '16': {'hash': '85ba715700', 'name': 'Three', 'image': '/static/img/cards/3C.png', 'rank': 3, 'value': 3, 'suit': 'clubs', 'id': '16'}, '19': {'hash': 'ff2de622d8', 'name': 'Six', 'image': '/static/img/cards/6C.png', 'rank': 6, 'value': 6, 'suit': 'clubs', 'id': '19'}, '18': {'hash': 'a6a3e792b4', 'name': 'Five', 'image': '/static/img/cards/5C.png', 'rank': 5, 'value': 5, 'suit': 'clubs', 'id': '18'}, '51': {'hash': '5e1e7e60ab', 'name': 'Queen', 'image': '/static/img/cards/QS.png', 'rank': 12, 'value': 10, 'suit': 'spades', 'id': '51'}, '50': {'hash': '95f92b2f0c', 'name': 'Jack', 'image': '/static/img/cards/JS.png', 'rank': 11, 'value': 10, 'suit': 'spades', 'id': '50'}, '52': {'hash': '75e734d054', 'name': 'King', 'image': '/static/img/cards/KS.png', 'rank': 13, 'value': 10, 'suit': 'spades', 'id': '52'}, '48': {'hash': 'de1c863a7f', 'name': 'Nine', 'image': '/static/img/cards/9S.png', 'rank': 9, 'value': 9, 'suit': 'spades', 'id': '48'}, '49': {'hash': 'd3a2460e93', 'name': 'Ten', 'image': '/static/img/cards/TS.png', 'rank': 10, 'value': 10, 'suit': 'spades', 'id': '49'}, '46': {'hash': '32f7615119', 'name': 'Seven', 'image': '/static/img/cards/7S.png', 'rank': 7, 'value': 7, 'suit': 'spades', 'id': '46'}, '47': {'hash': 'ce46b344a3', 'name': 'Eight', 'image': '/static/img/cards/8S.png', 'rank': 8, 'value': 8, 'suit': 'spades', 'id': '47'}, '44': {'hash': '30e1ddb610', 'name': 'Five', 'image': '/static/img/cards/5S.png', 'rank': 5, 'value': 5, 'suit': 'spades', 'id': '44'}, '45': {'hash': 'c88623fa16', 'name': 'Six', 'image': '/static/img/cards/6S.png', 'rank': 6, 'value': 6, 'suit': 'spades', 'id': '45'}, '42': {'hash': '04f17d1351', 'name': 'Three', 'image': '/static/img/cards/3S.png', 'rank': 3, 'value': 3, 'suit': 'spades', 'id': '42'}, '43': {'hash': '5c6bdd4fee', 'name': 'Four', 'image': '/static/img/cards/4S.png', 'rank': 4, 'value': 4, 'suit': 'spades', 'id': '43'}, '40': {'hash': 'd00bb3f3b7', 'name': 'Ace', 'image': '/static/img/cards/AS.png', 'rank': 1, 'value': 1, 'suit': 'spades', 'id': '40'}, '41': {'hash': 'e26d0bead3', 'name': 'Two', 'image': '/static/img/cards/2S.png', 'rank': 2, 'value': 2, 'suit': 'spades', 'id': '41'}, '1': {'hash': 'bd4b01946d', 'name': 'Ace', 'image': '/static/img/cards/AH.png', 'rank': 1, 'value': 1, 'suit': 'hearts', 'id': '1'}, '3': {'hash': 'f696d1f2d3', 'name': 'Three', 'image': '/static/img/cards/3H.png', 'rank': 3, 'value': 3, 'suit': 'hearts', 'id': '3'}, '5': {'hash': 'fa0873dd7d', 'name': 'Five', 'image': '/static/img/cards/5H.png', 'rank': 5, 'value': 5, 'suit': 'hearts', 'id': '5'}, '7': {'hash': 'def8effef6', 'name': 'Seven', 'image': '/static/img/cards/7H.png', 'rank': 7, 'value': 7, 'suit': 'hearts', 'id': '7'}, '9': {'hash': '597e4519ac', 'name': 'Nine', 'image': '/static/img/cards/9H.png', 'rank': 9, 'value': 9, 'suit': 'hearts', 'id': '9'}, '39': {'hash': '60575e1068', 'name': 'King', 'image': '/static/img/cards/KD.png', 'rank': 13, 'value': 10, 'suit': 'diamonds', 'id': '39'}, '38': {'hash': 'dd3749a1bc', 'name': 'Queen', 'image': '/static/img/cards/QD.png', 'rank': 12, 'value': 10, 'suit': 'diamonds', 'id': '38'}, '33': {'hash': '4f99bf15e5', 'name': 'Seven', 'image': '/static/img/cards/7D.png', 'rank': 7, 'value': 7, 'suit': 'diamonds', 'id': '33'}, '32': {'hash': '9aa045dd99', 'name': 'Six', 'image': '/static/img/cards/6D.png', 'rank': 6, 'value': 6, 'suit': 'diamonds', 'id': '32'}, '31': {'hash': 'd7ca85cf5e', 'name': 'Five', 'image': '/static/img/cards/5D.png', 'rank': 5, 'value': 5, 'suit': 'diamonds', 'id': '31'}, '30': {'hash': 'e356ece3fc', 'name': 'Four', 'image': '/static/img/cards/4D.png', 'rank': 4, 'value': 4, 'suit': 'diamonds', 'id': '30'}, '37': {'hash': '1d5eb77128', 'name': 'Jack', 'image': '/static/img/cards/JD.png', 'rank': 11, 'value': 10, 'suit': 'diamonds', 'id': '37'}, '36': {'hash': 'f6571e162f', 'name': 'Ten', 'image': '/static/img/cards/TD.png', 'rank': 10, 'value': 10, 'suit': 'diamonds', 'id': '36'}, '35': {'hash': '9eba093a9d', 'name': 'Nine', 'image': '/static/img/cards/9D.png', 'rank': 9, 'value': 9, 'suit': 'diamonds', 'id': '35'}, '34': {'hash': 'e4fc8b9004', 'name': 'Eight', 'image': '/static/img/cards/8D.png', 'rank': 8, 'value': 8, 'suit': 'diamonds', 'id': '34'}}
+CARDS = {
+  "110e6e5b19": {
+    "name": "Jack",
+    "rank": 11,
+    "value": 10,
+    "suit": "clubs"
+  },
+  "04a70825ff": {
+    "name": "Queen",
+    "rank": 12,
+    "value": 10,
+    "suit": "clubs"
+  },
+  "ae2caea4bb": {
+    "name": "King",
+    "rank": 13,
+    "value": 10,
+    "suit": "clubs"
+  },
+  "6d95c18472": {
+    "name": "Ace",
+    "rank": 1,
+    "value": 1,
+    "suit": "diamonds"
+  },
+  "c6f4900f82": {
+    "name": "Seven",
+    "rank": 7,
+    "value": 7,
+    "suit": "clubs"
+  },
+  "4c8519af34": {
+    "name": "Eight",
+    "rank": 8,
+    "value": 8,
+    "suit": "clubs"
+  },
+  "4dfe41e461": {
+    "name": "Nine",
+    "rank": 9,
+    "value": 9,
+    "suit": "clubs"
+  },
+  "276f33cf69": {
+    "name": "Ten",
+    "rank": 10,
+    "value": 10,
+    "suit": "clubs"
+  },
+  "3698fe0420": {
+    "name": "Two",
+    "rank": 2,
+    "value": 21,
+    "suit": "diamonds"
+  },
+  "64fe85d796": {
+    "name": "Three",
+    "rank": 3,
+    "value": 3,
+    "suit": "diamonds"
+  },
+  "ace1293f8a": {
+    "name": "Two",
+    "rank": 2,
+    "value": 2,
+    "suit": "hearts"
+  },
+  "83ef982410": {
+    "name": "Four",
+    "rank": 4,
+    "value": 4,
+    "suit": "hearts"
+  },
+  "c88523b677": {
+    "name": "Six",
+    "rank": 6,
+    "value": 6,
+    "suit": "hearts"
+  },
+  "4de6b73ab8": {
+    "name": "Eight",
+    "rank": 8,
+    "value": 8,
+    "suit": "hearts"
+  },
+  "56594b3880": {
+    "name": "Jack",
+    "rank": 11,
+    "value": 10,
+    "suit": "hearts"
+  },
+  "a482167f2a": {
+    "name": "Ten",
+    "rank": 10,
+    "value": 10,
+    "suit": "hearts"
+  },
+  "36493dcc05": {
+    "name": "King",
+    "rank": 13,
+    "value": 10,
+    "suit": "hearts"
+  },
+  "a20b6dac2c": {
+    "name": "Queen",
+    "rank": 12,
+    "value": 10,
+    "suit": "hearts"
+  },
+  "d1c9fde8ef": {
+    "name": "Two",
+    "rank": 2,
+    "value": 2,
+    "suit": "clubs"
+  },
+  "b1fb3bec6f": {
+    "name": "Ace",
+    "rank": 1,
+    "value": 1,
+    "suit": "clubs"
+  },
+  "fc0f324620": {
+    "name": "Four",
+    "rank": 4,
+    "value": 4,
+    "suit": "clubs"
+  },
+  "85ba715700": {
+    "name": "Three",
+    "rank": 3,
+    "value": 3,
+    "suit": "clubs"
+  },
+  "ff2de622d8": {
+    "name": "Six",
+    "rank": 6,
+    "value": 6,
+    "suit": "clubs"
+  },
+  "a6a3e792b4": {
+    "name": "Five",
+    "rank": 5,
+    "value": 5,
+    "suit": "clubs"
+  },
+  "5e1e7e60ab": {
+    "name": "Queen",
+    "rank": 12,
+    "value": 10,
+    "suit": "spades"
+  },
+  "95f92b2f0c": {
+    "name": "Jack",
+    "rank": 11,
+    "value": 10,
+    "suit": "spades"
+  },
+  "75e734d054": {
+    "name": "King",
+    "rank": 13,
+    "value": 10,
+    "suit": "spades"
+  },
+  "de1c863a7f": {
+    "name": "Nine",
+    "rank": 9,
+    "value": 9,
+    "suit": "spades"
+  },
+  "d3a2460e93": {
+    "name": "Ten",
+    "rank": 10,
+    "value": 10,
+    "suit": "spades"
+  },
+  "32f7615119": {
+    "name": "Seven",
+    "rank": 7,
+    "value": 7,
+    "suit": "spades"
+  },
+  "ce46b344a3": {
+    "name": "Eight",
+    "rank": 8,
+    "value": 8,
+    "suit": "spades"
+  },
+  "30e1ddb610": {
+    "name": "Five",
+    "rank": 5,
+    "value": 5,
+    "suit": "spades"
+  },
+  "c88623fa16": {
+    "name": "Six",
+    "rank": 6,
+    "value": 6,
+    "suit": "spades"
+  },
+  "04f17d1351": {
+    "name": "Three",
+    "rank": 3,
+    "value": 3,
+    "suit": "spades"
+  },
+  "5c6bdd4fee": {
+    "name": "Four",
+    "rank": 4,
+    "value": 4,
+    "suit": "spades"
+  },
+  "d00bb3f3b7": {
+    "name": "Ace",
+    "rank": 1,
+    "value": 1,
+    "suit": "spades"
+  },
+  "e26d0bead3": {
+    "name": "Two",
+    "rank": 2,
+    "value": 2,
+    "suit": "spades"
+  },
+  "bd4b01946d": {
+    "name": "Ace",
+    "rank": 1,
+    "value": 1,
+    "suit": "hearts"
+  },
+  "f696d1f2d3": {
+    "name": "Three",
+    "rank": 3,
+    "value": 3,
+    "suit": "hearts"
+  },
+  "fa0873dd7d": {
+    "name": "Five",
+    "rank": 5,
+    "value": 5,
+    "suit": "hearts"
+  },
+  "def8effef6": {
+    "name": "Seven",
+    "rank": 7,
+    "value": 7,
+    "suit": "hearts"
+  },
+  "597e4519ac": {
+    "name": "Nine",
+    "rank": 9,
+    "value": 9,
+    "suit": "hearts"
+  },
+  "60575e1068": {
+    "name": "King",
+    "rank": 13,
+    "value": 10,
+    "suit": "diamonds"
+  },
+  "dd3749a1bc": {
+    "name": "Queen",
+    "rank": 12,
+    "value": 10,
+    "suit": "diamonds"
+  },
+  "4f99bf15e5": {
+    "name": "Seven",
+    "rank": 7,
+    "value": 7,
+    "suit": "diamonds"
+  },
+  "9aa045dd99": {
+    "name": "Six",
+    "rank": 6,
+    "value": 6,
+    "suit": "diamonds"
+  },
+  "d7ca85cf5e": {
+    "name": "Five",
+    "rank": 5,
+    "value": 5,
+    "suit": "diamonds"
+  },
+  "e356ece3fc": {
+    "name": "Four",
+    "rank": 4,
+    "value": 4,
+    "suit": "diamonds"
+  },
+  "1d5eb77128": {
+    "name": "Jack",
+    "rank": 11,
+    "value": 10,
+    "suit": "diamonds"
+  },
+  "f6571e162f": {
+    "name": "Ten",
+    "rank": 10,
+    "value": 10,
+    "suit": "diamonds"
+  },
+  "9eba093a9d": {
+    "name": "Nine",
+    "rank": 9,
+    "value": 9,
+    "suit": "diamonds"
+  },
+  "e4fc8b9004": {
+    "name": "Eight",
+    "rank": 8,
+    "value": 8,
+    "suit": "diamonds"
+  }
+}

@@ -17,9 +17,9 @@ export function showCutDeckAction(starting_player) {
 
 export function displayCutCard(card) {
   let cutCardImage = $('<img/>', {
-    id: card.id,
+    id: card,
     class: 'cutCard',
-    src: '/static/img/cards/' + card.hash
+    src: '/static/img/cards/' + card
   });
   $('#deck-area').append(cutCardImage);
 }

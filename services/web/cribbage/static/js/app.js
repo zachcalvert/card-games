@@ -6,7 +6,6 @@ import { displayFacedownCutCard, displayCutCard, showCutDeckAction} from "./cut.
 import { moveCardFromHandToTable, removeCurrentTurnDisplay, renderCurrentTurnDisplay, showCardPlayScore } from "./peg.js";
 import { start } from "./start.js";
 
-
 const namespace = '/game';
 const socket = io(namespace);
 const gameName = sessionStorage.getItem('gameName');
@@ -95,9 +94,10 @@ socket.on('show_cut_card', function (msg, cb) {
 
 // PEG
 socket.on('show_card_played', function (msg, cb) {
-  moveCardFromHandToTable(msg.card);
-  showCardPlayScore(msg.card.id, msg.points);
-  updateRunningTotal(msg.points);
+  console.log("msg" + msg);
+  moveCardFromHandToTable(msg.card, msg.nickname);
+  showCardPlayScore(msg.card, msg.points, msg.nickname, msg.player_points);
+  updateRunningTotal(msg.new_total);
   rotateTurn();
 });
 
@@ -117,8 +117,8 @@ function rotateTurn() {
   renderCurrentTurnDisplay(next_turn);
 }
 
-function updateRunningTotal(points) {
-  return;
+function updateRunningTotal(new_total) {
+  $("#play-total").html(new_total);
 }
 
 
@@ -131,13 +131,25 @@ $('#action-button').click(function (event) {
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Time to discard!'});
   } else if ($(this).text() === 'Discard') {
     let cardId = $('li.list-group-item.selected').children()[0].id;
-    socket.emit('discard', {game: gameName, nickname: nickname, dealer: DEALER, cardId: cardId});
+    socket.emit('discard', {game: gameName, nickname: nickname, dealer: DEALER, discarded: cardId});
   } else if ($(this).text() === 'Cut deck') {
     socket.emit('cut_deck', {game: gameName, cut_card: sessionStorage.getItem('cut')});
   } else if ($(this).text() === 'Play') {
-    let cardId = $('li.list-group-item.selected').children()[0].id;
-    console.log('cardId is ' + cardId);
-    socket.emit('play_card', {game: gameName, nickname: nickname, cardId: cardId});
+      let card_played = $('li.list-group-item.selected').children()[0].id;
+      console.log('card is ' + card_played);
+
+      let previously_played_cards = [];
+      $("#play-pile > img").each((index, elem) => {
+        previously_played_cards.unshift(elem.id);
+      });
+      console.log('previously_played_cards ' + previously_played_cards);
+      socket.emit('play_card', {
+        game: gameName,
+        nickname: nickname,
+        card_played: card_played,
+        previously_played_cards: previously_played_cards,
+        running_total: $("#play-total").html()
+      });
   }
   return false;
 });

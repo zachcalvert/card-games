@@ -8,19 +8,21 @@ export function renderCurrentTurnDisplay(player) {
   $('#' + player + ' #action-button').text('Play').prop('disabled', false);
 }
 
-export function moveCardFromHandToTable(card) {
-  let handCard = $('#' + card.id);
+export function moveCardFromHandToTable(card, nickname) {
+  let handCard = $('#' + card);
   handCard.parent().removeClass('selected');
   handCard.hide();
 
   let cardImage = $('<img/>', {
-    id: card.id,
+    id: card,
     class: 'playedCard',
-    src: '/static/img/cards/' + card.hash
+    src: '/static/img/cards/' + card
   });
-  $('#play-area').append(cardImage);
+  cardImage.attr('belongsto', nickname);
+  $('#play-pile').append(cardImage);
 }
 
-export function showCardPlayScore(cardId, points) {
-  return;
+export function showCardPlayScore(card, points, nickname, playerPoints) {
+  $("#" + nickname).find(".player-points").html(playerPoints);
+  console.log(card, points);
 }

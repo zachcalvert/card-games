@@ -9,16 +9,16 @@ export function deal(msg) {
         });
         $.each(cards, function(index, card) {
           let cardImage = $('<img/>', {
-            id: card['id'],
+            id: card,
             class: 'playerCard',
-            src: '/static/img/cards/' + card.hash
+            src: '/static/img/cards/' + card
           });
           let cardListItem = $('<li/>', {
             class: 'list-group-item',
           });
           cardListItem.append(cardImage)
           $('#' + player + '-cards').append(cardListItem);
-          card_hashes.push(card['hash'])
+          card_hashes.push(card)
         });
         sessionStorage.setItem('cards', JSON.stringify(card_hashes));
     } else {

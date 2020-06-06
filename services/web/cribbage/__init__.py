@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 import random
 import time
 
@@ -9,6 +10,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, ro
 from flask_sqlalchemy import SQLAlchemy
 
 from .cards import CARDS
+from .scoring import HandScorer, PlayScorer
 
 async_mode = None
 
@@ -56,12 +58,13 @@ class Hand(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False)
     player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
     state = db.Column(db.String(20), unique=False, nullable=False, default='DISCARDING')
-    points = db.column(db.Integer)
+    points = db.Column(db.Integer)
 
-    def __init__(self, player_id, game_id, state):
+    def __init__(self, player_id, game_id, state, points=0):
         self.player_id = player_id
         self.game_id = game_id
         self.state = state
+        self.points = points
 
 
 fa = FontAwesome(app)
@@ -148,15 +151,17 @@ def deal_hands(message):
     hands = {}
     for player in game.players:
         hand = Hand(player_id=player.id, game_id=game.id, state='DISCARDING')
+        dealt_cards = [random.choice(list(deck.keys())) for card in range(HAND_SIZE)]
         db.session.add(hand)
         db.session.commit()
 
-        dealt_cards = [deck.pop(random.choice(list(deck.keys()))) for card in range(HAND_SIZE)]
         hands[player.nickname] = dealt_cards
 
+    print('dealt_cards: {}'.format(dealt_cards))
     emit('deal_hands', {'hands': hands}, room=game.name)
+
     cut_card = random.choice(list(deck.keys()))
-    print('calling receive cut card with: '.format(cut_card))
+    print('cut_card: {}'.format(cut_card))
     emit('receive_cut_card', {'cut_card': cut_card}, room=game.name)
 
 
@@ -169,11 +174,10 @@ def discard(message):
     """
     game = Game.query.filter_by(name=message['game']).first()
     dealer = Player.query.filter_by(nickname=message['dealer'], game_id=game.id).first()
-
     hand = Hand(game_id=game.id, player_id=dealer.id, state='CRIB')
 
-    print('cardId is '.format(message["cardId"]))
-    discarded = CARDS[message["cardId"]]
+    discarded = message["discarded"]
+    print('discarded is '.format(discarded))
     emit('post_discard', {'discarded': discarded, 'nickname': message['nickname']}, room=message['game'])
 
 
@@ -210,16 +214,31 @@ def ready_to_score(message):
 @socketio.on('cut_deck', namespace='/game')
 def cut_deck(message):
     game = Game.query.filter_by(name=message['game']).first()
-    cut_card = CARDS[message["cut_card"]]
+    cut_card = message["cut_card"]
+    print('cut_card is {}'.format(cut_card))
     emit('show_cut_card', {"cut_card": cut_card}, room=game.name)
 
 
 @socketio.on('play_card', namespace='/game')
 def play_card(message):
-    print(" heard about a card to play: {}".format(message["cardId"]))
-    card_played = CARDS[message["cardId"]]
-    print('card is {}'.format(card_played))
-    emit('show_card_played', {"card": card_played}, room=message["game"])
+    total = message["running_total"] or 0
+    card_played = message["card_played"]
+    print('card_played is {}'.format(card_played))
+    previously_played_cards = message["previously_played_cards"]
+    print('previously_played_cards is {}'.format(previously_played_cards))
+
+    scorer = PlayScorer(CARDS.get(card_played), previously_played_cards, total)
+    points, new_total = scorer.calculate_points()
+
+    game = Game.query.filter_by(name=message['game']).first()
+    player = Player.query.filter_by(nickname=message['nickname'], game_id=game.id).first()
+    player.points += points
+    db.session.add(player)
+    db.session.commit()
+
+    print('play earned {} points, new_total is {}, and player has {} total points'.format(points, new_total, player.points))
+    emit('show_card_played', {"nickname": message["nickname"], "card": card_played, "points": points,
+                              "player_points": player.points, "new_total": new_total}, room=message["game"])
 
 
 if __name__ == '__main__':
