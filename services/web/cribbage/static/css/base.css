@@ -78,7 +78,7 @@ html, body {
 }
 
 .opponents {
-    height: 25%;
+    height: 30%;
     align-items: center;
     justify-content: center;
 }
@@ -97,13 +97,13 @@ html, body {
 }
 
 .cribbage-table {
-    height: 40%;
+    height: 30%;
     text-align: center;
     padding: 15px;
 }
 
 .player {
-    height: 35%;
+    height: 40%;
 }
 
 .player-points {

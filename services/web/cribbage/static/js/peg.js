@@ -22,7 +22,19 @@ export function moveCardFromHandToTable(card, nickname) {
   $('#play-pile').append(cardImage);
 }
 
+
+function animatePlayScore(points) {
+  let pointsAlert = $('<span/>', {
+    id: 'pointsAlert',
+  });
+  $("#play-pile").append('+' + pointsAlert);
+  $("#pointsAlert").slideUp("slow", function () {
+    $("#pointsAlert").remove();
+  });
+}
+
 export function showCardPlayScore(card, points, nickname, playerPoints) {
   $("#" + nickname).find(".player-points").html(playerPoints);
   console.log(card, points);
+  // animatePlayScore(points);
 }

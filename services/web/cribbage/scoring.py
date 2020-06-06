@@ -23,10 +23,19 @@ class PlayScorer:
             points += 2
 
         if self.previously_played_cards:
-            most_recent = CARDS.get(self.previously_played_cards[0])
-            if self.card["rank"] == most_recent["rank"]:
-                print('found a pair')
-                points += 2
+
+            for count, _ in enumerate(self.previously_played_cards):
+                card = CARDS.get(self.previously_played_cards[count])
+                if self.card["rank"] == card["rank"]:
+                    if count == 0:
+                        points += 2
+                        print('found a pair')
+                    elif count == 1:
+                        print('found three of a kind')
+                        points += 4
+                    elif count == 2:
+                        print('found four of a kind')
+                        points += 6
 
         return points, new_total
 
