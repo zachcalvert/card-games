@@ -26,6 +26,7 @@ socket.on('player_join', function (msg, cb) {
 });
 
 socket.on('start_game', function (msg, cb) {
+  console.log('starting game!')
   sessionStorage.setItem('players', JSON.stringify(msg.players));
   PLAYERS = JSON.parse(sessionStorage.getItem('players'));
   console.log('started with players: ' + PLAYERS);
@@ -46,8 +47,7 @@ socket.on('player_leave', function (msg, cb) {
 
 // send message
 $('form#send_message').submit(function(event) {
-  socket.emit('send_message', {
-    game: gameName, nickname: nickname, data: $('#message_content').val()});
+  socket.emit('send_message', {game: gameName, nickname: nickname, data: $('#message_content').val()});
   $("#message_content").val("");
   return false;
 });
@@ -99,6 +99,12 @@ socket.on('show_card_played', function (msg, cb) {
 });
 
 
+// SCORE
+socket.on('show_score_hands_action', function (msg, cb) {
+  $('#action-button').text('Score Hands');
+});
+
+
 function rotateTurn() {
   let current_turn = PLAYERS[TURN];
   console.log('TURN is ' + TURN + ', player is ' + current_turn);
@@ -119,6 +125,7 @@ $('#action-button').click(function (event) {
   let action = $(this).text();
 
   if (action === 'Start Game') {
+    console.log('started game')
     socket.emit('start_game', {game: gameName});
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Start your engines!'});
     return;
