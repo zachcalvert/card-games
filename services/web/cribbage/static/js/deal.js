@@ -4,10 +4,6 @@ export function deal(msg) {
         let card_hashes = []
         console.log(cards);
         $.each(cards, function(index, card) {
-            console.log(index);
-            console.log(card);
-        });
-        $.each(cards, function(index, card) {
           let cardImage = $('<img/>', {
             id: card,
             class: 'playerCard',

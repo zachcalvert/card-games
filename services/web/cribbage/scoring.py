@@ -23,7 +23,7 @@ class PlayScorer:
             points += 2
 
         if self.previously_played_cards:
-
+            # evaluate pairs, threes, and fours
             for count, _ in enumerate(self.previously_played_cards):
                 card = CARDS.get(self.previously_played_cards[count])
                 if self.card["rank"] == card["rank"]:
@@ -36,6 +36,10 @@ class PlayScorer:
                     elif count == 2:
                         print('found four of a kind')
                         points += 6
+
+            # evaluate for runs
+            if len(self.previously_played_cards) >= 2:
+                pass
 
         return points, new_total
 

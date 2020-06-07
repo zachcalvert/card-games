@@ -3,7 +3,7 @@ import { announcePlayerLeave, clearSessionData } from "./leave.js";
 import { deal } from "./deal.js";
 import { discard } from "./discard.js";
 import { displayFacedownCutCard, displayCutCard, showCutDeckAction} from "./cut.js";
-import { moveCardFromHandToTable, removeCurrentTurnDisplay, renderCurrentTurnDisplay, showCardPlayScore } from "./peg.js";
+import { scorePlay, removeCurrentTurnDisplay, renderCurrentTurnDisplay } from "./peg.js";
 import { start } from "./start.js";
 
 const namespace = '/game';
@@ -14,7 +14,7 @@ const nickname = sessionStorage.getItem('nickname');
 let PLAYERS = [];
 let DEALER = 0;
 let TURN = 0;
-let RUNNING_TOTAL = 0;
+
 
 if (gameName !== null && nickname !== null) {
   socket.emit('join', {game: gameName, nickname: nickname});
@@ -22,7 +22,7 @@ if (gameName !== null && nickname !== null) {
 
 socket.on('player_join', function (msg, cb) {
   announcePlayerJoin(msg);
-  console.log(msg.nickname + ' just joined. PLAYERS is ' + PLAYERS);
+  console.log(msg.nickname + ' just joined.');
 });
 
 socket.on('start_game', function (msg, cb) {
@@ -94,10 +94,7 @@ socket.on('show_cut_card', function (msg, cb) {
 
 // PEG
 socket.on('show_card_played', function (msg, cb) {
-  console.log("msg" + msg);
-  moveCardFromHandToTable(msg.card, msg.nickname);
-  showCardPlayScore(msg.card, msg.points, msg.nickname, msg.player_points);
-  updateRunningTotal(msg.new_total);
+  scorePlay(msg);
   rotateTurn();
 });
 
@@ -117,24 +114,34 @@ function rotateTurn() {
   renderCurrentTurnDisplay(next_turn);
 }
 
-function updateRunningTotal(new_total) {
-  $("#play-total").html(new_total);
-}
-
 
 $('#action-button').click(function (event) {
-  if ($(this).text() === 'Start Game') {
+  let action = $(this).text();
+
+  if (action === 'Start Game') {
     socket.emit('start_game', {game: gameName});
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Start your engines!'});
-  } else if ($(this).text() === 'Deal') {
+    return;
+  }
+
+  if (action === 'Deal') {
     socket.emit('deal_hands', {game: gameName});
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Time to discard!'});
-  } else if ($(this).text() === 'Discard') {
+    return;
+  }
+
+  if (action === 'Discard') {
     let cardId = $('li.list-group-item.selected').children()[0].id;
     socket.emit('discard', {game: gameName, nickname: nickname, dealer: DEALER, discarded: cardId});
-  } else if ($(this).text() === 'Cut deck') {
+    return;
+
+  }
+
+  if (action === 'Cut deck') {
     socket.emit('cut_deck', {game: gameName, cut_card: sessionStorage.getItem('cut')});
-  } else if ($(this).text() === 'Play') {
+  }
+
+  if (action === 'Play') {
       let card_played = $('li.list-group-item.selected').children()[0].id;
       console.log('card is ' + card_played);
 
@@ -150,6 +157,12 @@ $('#action-button').click(function (event) {
         previously_played_cards: previously_played_cards,
         running_total: $("#play-total").html()
       });
+      return
+  }
+
+  if (action === 'Pass') {
+    rotateTurn();
+    return;
   }
   return false;
 });
