@@ -1,21 +1,17 @@
-export function displayFacedownCutCard(card) {
-  sessionStorage.setItem('cut', card);
+export function showCutDeckAction(cutter) {
   let deckImage = $('<img/>', {
     id: 'deck',
     class: 'playerCard',
     src: '/static/img/cards/facedown.png'
   });
   $('#deck-area').append(deckImage);
+
+  console.log('showing cut deck action to '+ cutter);
+  $('#' + cutter + ' #action-button').text('Cut deck').prop('disabled', false);
+  $("#" + cutter).find(".panel-heading").css('background', '#1CA1F2');
 }
 
-export function showCutDeckAction(starting_player) {
-  console.log('showing cut deck action to '+ starting_player);
-  $('#' + starting_player + ' #action-button').text('Cut deck').prop('disabled', false);
-  $("#" + starting_player).find(".panel-heading").css('background', '#1CA1F2');
-
-}
-
-export function displayCutCard(card) {
+export function revealCutCard(card) {
   let cutCardImage = $('<img/>', {
     id: card,
     class: 'cutCard',

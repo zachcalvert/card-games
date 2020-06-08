@@ -6,17 +6,17 @@ from .cards import CARDS
 
 
 class PlayScorer:
-    def __init__(self, card, previously_played_cards, running_total):
+    def __init__(self, card, previously_played_cards, total):
         self.card = card
         self.previously_played_cards = previously_played_cards
-        self.running_total = int(running_total)
+        self.total = int(total)
+        print(vars(self))
 
     def calculate_points(self):
         print("calculating points..")
         points = 0
 
-        new_total = self.running_total + self.card["value"]
-        print("new total is: {}".format(new_total))
+        new_total = self.total + self.card["value"]
         if new_total == 15:
             points += 2
         elif new_total == 31:

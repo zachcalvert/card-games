@@ -12,29 +12,14 @@ function animateDiscard(discarded) {
   $('#crib-area').append(cardImage);
 }
 
-export function discard(msg, dealer) {
-  let readyToPeg = false;
-  console.log(msg.nickname + ' just discarded');
-  console.log(msg.discarded + ' is the card id');
+export function discard(msg) {
+  console.log(msg.nickname + ' just discarded ' + msg.discarded);
 
-  // append to crib area
   animateDiscard();
   if (sessionStorage.getItem('nickname') === msg.nickname) {
     // remove card image
     $('#' + msg.discarded).parent().remove();
-
-    // update session
-    let cards = JSON.parse(sessionStorage.getItem('cards'));
-    cards.splice($.inArray(msg.discarded, cards), 1);
-    sessionStorage.setItem('cards', JSON.stringify(cards));
-
-    // check if ready to play
-    if (cards.length === 4) {
-      readyToPeg = true;
-      $('#' + msg.nickname + ' #action-button').text('Cut deck').prop('disabled', true);
-    }
   } else {
     $("#" + msg.nickname).find('img').first().remove();
   }
-  return readyToPeg;
 }
