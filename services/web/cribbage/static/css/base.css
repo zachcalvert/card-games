@@ -13,6 +13,12 @@ html, body {
     margin-left: 38%;
 }
 
+#leave-game {
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+
 .row {
   padding: 10px 0;
 }
@@ -125,14 +131,12 @@ html, body {
     color: #1CA1F2;
 }
 
-.player-action, .player-cards, .player-leave {
+.player-action, .player-cards {
     display: inline-block;
 }
-.player-action, .player-leave {
-    width: 15%;
-}
+
 .player-cards {
-    width: 65%;
+    width: 80%;
     display: flex;
     justify-content: center;
 }
