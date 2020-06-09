@@ -1,10 +1,11 @@
-import { announcePlayerJoin } from "./join.js";
-import { announcePlayerLeave, clearSessionData } from "./leave.js";
-import { deal } from "./deal.js";
-import { discard } from "./discard.js";
-import { revealCutCard, showCutDeckAction} from "./cut.js";
-import { scorePlay, removeCurrentTurnDisplay, renderCurrentTurnDisplay } from "./peg.js";
-import { start } from "./start.js";
+import { announcePlayerJoin } from "./actions/join.js";
+import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
+import { deal } from "./actions/deal.js";
+import { discard } from "./actions/discard.js";
+import { revealCutCard } from "./actions/cut.js";
+import { peg, renderCurrentTurnDisplay, clearPeggingArea } from "./actions/peg.js";
+import { start } from "./actions/start.js";
+import { awardPoints } from "./actions/score.js";
 
 const namespace = '/game';
 const socket = io(namespace);
@@ -44,75 +45,88 @@ socket.on('new_chat_message', function(msg, cb) {
   $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ': ' + msg.data).html());
 });
 
+
+socket.on('update_action_button', function(msg, cb) {
+  $('#action-button').text(msg.action);
+});
+
+socket.on('enable_action_button', function(msg, cb) {
+  renderCurrentTurnDisplay(msg.nickname, msg.action);
+});
+
+
 // DEAL
 socket.on('deal_hands', function (msg, cb) {
   deal(msg);
 });
 
-// DISCARD
 socket.on('post_discard', function (msg, cb) {
   discard(msg);
 });
 
 // CUT
-socket.on('show_cut_deck_action', function (msg, cb) {
-  socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: msg.cutter + ', time to cut the deck!'});
-  showCutDeckAction(msg.cutter);
-});
-
 socket.on('show_cut_card', function (msg, cb) {
   revealCutCard(msg.cut_card, msg.turn);
-  renderCurrentTurnDisplay(msg.turn, 'Play');
+  renderCurrentTurnDisplay(msg.turn, 'PLAY');
 });
-
 
 // PEG
 socket.on('show_card_played', function (msg, cb) {
-  scorePlay(msg);
+  peg(msg);
+  renderCurrentTurnDisplay(msg.next_player, msg.next_player_action);
+});
+
+socket.on('player_passed', function (msg, cb) {
+  renderCurrentTurnDisplay(msg.next_player, msg.next_player_action);
+});
+
+socket.on('clear_pegging_area', function (msg, cb) {
+  clearPeggingArea();
 });
 
 
-// SCORE
-socket.on('show_score_hands_action', function (msg, cb) {
-  $('#action-button').text('Score Hands');
+
+socket.on('award_points', function (msg, cb) {
+  awardPoints(msg.player, msg.amount, msg.reason);
 });
 
 
 $('#action-button').click(function (event) {
   let action = $(this).text();
 
-  if (action === 'Start Game') {
+  if (action === 'START') {
     socket.emit('start_game', {game: gameName});
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Start your engines!'});
     return;
   }
 
-  if (action === 'Deal') {
+  if (action === 'DEAL') {
     socket.emit('deal_hands', {game: gameName});
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Time to discard!'});
     return;
   }
 
-  if (action === 'Discard') {
+  if (action === 'DISCARD') {
     let discarded = $('li.list-group-item.selected').children()[0].id;
     socket.emit('discard', {game: gameName, nickname: nickname, discarded: discarded});
     return;
   }
 
-  if (action === 'Cut deck') {
+  if (action === 'CUT') {
     socket.emit('cut_deck', {game: gameName, cut_card: sessionStorage.getItem('cut')});
   }
 
-  if (action === 'Play') {
+  if (action === 'PLAY') {
     console.log('played card!')
     let card_played = $('li.list-group-item.selected').children()[0].id;
     socket.emit('play_card', {game: gameName, nickname: nickname, card_played: card_played});
     return;
   }
 
-  if (action === 'Pass') {
-    return;
+  if (action === 'PASS') {
+    socket.emit('pass', {game: gameName, nickname: nickname});
   }
+  $('#action-button').prop('disabled', true);
   return false;
 });
 

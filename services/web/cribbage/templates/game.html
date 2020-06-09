@@ -41,9 +41,14 @@
                     <div id="{{ player.nickname }}" class="opponent rounded panel panel-default">
                       <div class="panel-heading">
                         <span class="player-nickname">{{ player.nickname }}</span>
-                        <span class="player-points">{{ player.points }}</span>
+                        <b><span class="player-points">{{ player.points }}</span></b>
                       </div>
-                      <div id="{{ player.nickname }}-cards" class="panel-body d-flex justify-content-center"></div>
+                      <div id="{{ player.nickname }}-cards" class="panel-body d-flex justify-content-center">
+                      </div>
+                      <div class="player-play-area">
+                        <div class="prevous-peg-rounds"></div>
+                        <div class="play-pile"></div>
+                      </div>
                     </div>
                   {% endfor %}
               </div>
@@ -51,8 +56,7 @@
               <div class="cribbage-table d-flex justify-content-center">
                   <div id="deck-area"></div>
                   <div id="play-area">
-                      <div id="play-pile"></div>
-                      <div id="play-total"></div>
+                    <div id="play-total"></div>
                   </div>
                   <div id="crib-area"></div>
               </div>
@@ -63,7 +67,7 @@
                   </div>
                   <div class="panel-body d-flex justify-content-center">
                     <div class="player-action">
-                        <button id="action-button" type="button" class="btn btn-dark btn-lg">Start Game</button>
+                        <button id="action-button" type="button" class="btn btn-dark btn-lg">START</button>
                     </div>
 
                     <div class="player-cards">
@@ -72,7 +76,7 @@
                     </div>
 
                     <div class="player-leave">
-                        <button id="leave-game" type="submit" class="btn btn-outline-danger">Leave game</button>
+                        <button id="leave-game" type="submit" class="btn btn-outline-danger">LEAVE</button>
                     </div>
                   </div>
                 </div>

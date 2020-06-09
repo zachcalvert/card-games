@@ -36,50 +36,79 @@ def game():
     if request.method == 'POST':
         nickname = request.form.get('join_nickname')
         game_name = request.form['join_game_name']
-
         game_from_cache = cache.get(game_name)
-
         if not game_from_cache:
-            game_dict = {
+            g = {
                 "name": game_name,
                 "state": "INIT",
                 "players": {nickname: {'nickname': nickname, 'points': 0}},
             }
-            cache.set(game_name, json.dumps(game_dict))
+            cache.set(game_name, json.dumps(g))
         else:
-            game_dict = json.loads(game_from_cache)
-            if nickname not in game_dict["players"]:
-                game_dict["players"][nickname] = {'nickname': nickname, 'points': 0}
-                cache.set(game_name, json.dumps(game_dict))
+            g = json.loads(game_from_cache)
+            if nickname not in g["players"]:
+                g["players"][nickname] = {'nickname': nickname, 'points': 0}
+                cache.set(game_name, json.dumps(g))
 
-        if game_dict["state"] != 'INIT':
+        if g["state"] != 'INIT':
             pass
             # return redirect(url_for('index'))
 
-        other_players = [game_dict["players"][player] for player in game_dict["players"].keys() if player != nickname]
-        print('game = {}'.format(game_dict))
+        other_players = [g["players"][player] for player in g["players"].keys() if player != nickname]
+        print('game = {}'.format(g))
         print('this player: {}'.format(nickname))
-        print('all players: {}'.format(game_dict['players'].keys()))
+        print('all players: {}'.format(g['players'].keys()))
         print('other players: {}'.format(other_players))
-        return render_template('game.html', game=game_dict, player=game_dict['players'][nickname],
+        return render_template('game.html', game=g, player=g['players'][nickname],
                                other_players=other_players, async_mode=socketio.async_mode)
 
     return redirect(url_for('index'))
 
 
+def rotate_turn(current, players):
+    """
+    :param current:
+    :param players:
+    :return:
+    """
+    try:
+        next_player = players[players.index(current) + 1]
+    except IndexError:
+        next_player = players[0]
+    return next_player
+
+
+def play_or_pass(cards, pegging_total):
+    """
+    :param player:
+    :param cards:
+    :param pegging_total:
+    :return:
+    """
+    action = 'PASS'
+    card_values = [CARDS.get(card)['value'] for card in cards]
+    print('card values: {}'.format(card_values))
+    remainder = 31 - pegging_total
+    print('they must have a card with value less than or equal to {} to play'.format(remainder))
+    if any(value <= remainder for value in card_values):
+        print('since they have a card with value {}, they can play'.format(any(value <= remainder for value in card_values)))
+        action = 'PLAY'
+    return action
+
+
 @socketio.on('join', namespace='/game')
 def join(message):
     join_room(message['game'])
-    emit('player_join', {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
+    emit('player_join', {'nickname': message['nickname'], 'points': 0, 'gameName': message['game']}, room=message['game'])
 
 
 @socketio.on('leave', namespace='/game')
 def leave(message):
     leave_room(message['game'])
-    game_from_cache = cache.get(message['game'])
-    # cache.delete(player)
-    emit('player_leave',
-         {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
+    g = json.loads(cache.get(message['game']))
+    g['players'].pop(message['nickname'])
+    cache.set(message['game'], json.dumps(g))
+    emit('player_leave', {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
 
 
 @socketio.on('send_message', namespace='/game')
@@ -89,42 +118,49 @@ def send_message(message):
 
 @socketio.on('start_game', namespace='/game')
 def start_game(message):
-    game_dict = json.loads(cache.get(message['game']))
-    players = list(game_dict['players'].keys())
+    g = json.loads(cache.get(message['game']))
+    players = list(g['players'].keys())
     dealer = random.choice(players)
-    game_dict.update({
-        'state': 'DEALING',
+    g.update({
+        'state': 'DEAL',
         'dealer': dealer,
+        'deck': [],
         'hands': {},
         'played_cards': {},
         'crib': [],
         'turn': dealer,
         'pegging': {
             'total': 0,
-            'cards': []
+            'cards': [],
+            'passed': []
         },
     })
     for player in players:
-        game_dict['played_cards'][player] = []
+        g['played_cards'][player] = []
 
-    cache.set(message["game"], json.dumps(game_dict))
-    emit('start_game', {'game': game_dict["name"], 'players': list(game_dict["players"].keys()), 'dealer': dealer},
-         room=game_dict["name"])
+    cache.set(message['game'], json.dumps(g))
+    emit('start_game', {'game': g["name"], 'players': list(g["players"].keys()), 'dealer': dealer},
+         room=message['game'])
 
 
 @socketio.on('deal_hands', namespace='/game')
 def deal_hands(message):
-    game_dict = json.loads(cache.get(message['game']))
-    deck = CARDS.copy()  # exclude the facedown card
+    g = json.loads(cache.get(message['game']))
+    deck = list(CARDS.keys())
+    random.shuffle(deck)
 
-    for player in game_dict["players"].keys():
-        dealt_cards = [random.choice(list(deck.keys())) for card in range(HAND_SIZE)]
-        game_dict['hands'][player] = dealt_cards
-    print('hands: {}'.format(game_dict['hands']))
+    for player in g["players"].keys():
+        dealt_cards = [deck.pop() for card in range(HAND_SIZE)]
+        g['hands'][player] = dealt_cards
+        print('dealt a hand, the deck now has {} cards'.format(len(deck)))
 
-    game_dict['cut_card'] = random.choice(list(deck.keys()))
-    cache.set(game_dict["name"], json.dumps(game_dict))
-    emit('deal_hands', {'hands': game_dict['hands']}, room=game_dict["name"])
+    print('hands: {}'.format(g['hands']))
+
+    g['state'] = 'DISCARD'
+    g['deck'] = deck
+    cache.set(message['game'], json.dumps(g))
+    emit('deal_hands', {'hands': g['hands'], 'dealer': g['dealer']}, room=g['name'])
+    emit('update_action_button', {'action': 'DISCARD'}, room=g['name'])
 
 
 @socketio.on('discard', namespace='/game')
@@ -134,97 +170,136 @@ def discard(message):
     :param message:
     :return:
     """
-    game_dict = json.loads(cache.get(message['game']))
+    g = json.loads(cache.get(message['game']))
     card = message["discarded"]
     discarder = message['nickname']
 
-    game_dict['hands'][discarder].remove(card)
-    game_dict['crib'].append(card)
+    g['hands'][discarder].remove(card)
+    g['crib'].append(card)
 
     # if everyone's down to 4 cards
-    if all(len(game_dict['hands'][nickname]) == 4 for nickname, _ in game_dict['players'].items()):
-        game_dict['state'] = 'CUTTING'
-        players = list(game_dict['players'].keys())
-        turn = game_dict['turn']
+    if all(len(g['hands'][nickname]) == 4 for nickname, _ in g['players'].items()):
+        g['state'] = 'CUT'
+        players = list(g['players'].keys())
+        turn = g['turn']
         try:
             cutter = players[players.index(turn)+1]
         except IndexError:
             cutter = players[0]
 
-        game_dict['turn'] = cutter
+        g['turn'] = cutter
         print('showing cut to {}'.format(cutter))
-        emit('show_cut_deck_action', {'cutter': game_dict['turn']}, room=message['game'])
+        emit('enable_action_button', {'nickname': cutter, 'action': 'CUT'}, room=message['game'])
 
-    cache.set(message['game'], json.dumps(game_dict))
+    cache.set(message['game'], json.dumps(g))
     emit('post_discard', {'discarded': card, 'nickname': discarder}, room=message['game'])
 
 
 @socketio.on('cut_deck', namespace='/game')
 def cut_deck(message):
-    game_dict = json.loads(cache.get(message['game']))
-    game_dict['state'] = 'PLAYING'
-    cache.set(message['game'], json.dumps(game_dict))
-
-    print('cut_card is {}'.format(game_dict['cut_card']))
-    emit('show_cut_card', {"cut_card": game_dict['cut_card'], 'turn': game_dict['turn']}, room=message['game'])
+    g = json.loads(cache.get(message['game']))
+    g['cut_card'] = g['deck'].pop()
+    g['state'] = 'PLAYING'
+    cache.set(message['game'], json.dumps(g))
+    emit('show_cut_card', {"cut_card": g['cut_card'], 'turn': g['turn']}, room=message['game'])
 
 
 @socketio.on('play_card', namespace='/game')
 def play_card(message):
-    game_dict = json.loads(cache.get(message['game']))
+    g = json.loads(cache.get(message['game']))
     player = message['nickname']
     card_played = message['card_played']
 
-    # move played card into `played_cards` from player hand
-    game_dict['played_cards'][player].append(card_played)
-    game_dict['hands'][player].remove(card_played)
+    # update game dict with record of card being played
+    print('card_played: {}'.format(card_played))
+    print('player: {}'.format(player))
+    print('{}s hand: {}'.format(player, g['hands'][player]))
+    g['played_cards'][player].append(card_played)
+    g['hands'][player].remove(card_played)
+    g['pegging']['cards'].append(card_played)
 
     # score hand
-    scorer = PlayScorer(CARDS.get(card_played), game_dict['pegging']['cards'], game_dict['pegging']['total'])
+    scorer = PlayScorer(CARDS.get(card_played), g['pegging']['cards'], g['pegging']['total'])
     points_scored, new_total = scorer.calculate_points()
-
-    # write output to cache
-    game_dict['pegging']['cards'].append(card_played)
-    game_dict['pegging']['total'] = new_total
-    game_dict['players'][message['nickname']]['points'] += points_scored
-    cache.set(message['game'], json.dumps(game_dict))
-
-    # set next turn
-    turn = game_dict['turn']
-    players = list(game_dict['players'].keys())
-    try:
-        next_player = players[players.index(turn) + 1]
-    except IndexError:
-        next_player = players[0]
-
-    # determine if next player can pass or play
-    next_player_action = 'Pass'
-    next_player_cards = [CARDS.get(card) for card in game_dict['hands'][next_player]]
-    remainder = 31 - new_total
-    if any(card['value'] <= remainder for card in next_player_cards):
-        next_player_action = 'Play'
+    g['pegging']['total'] = new_total
 
     print('play earned {} points, new_total is {}'.format(points_scored, new_total))
+    if points_scored > 0:
+        g['players'][message['nickname']]['points'] += points_scored
+        emit('award_points', {'player': player, 'amount': points_scored, 'reason': 'pegging'}, room=message['game'])
+
+    # if no one has any cards left to play, end the pegging round
+    no_cards_left = all([not hand for player, hand in g['hands'].items()])
+    if no_cards_left:
+        g['state'] = 'SCORE'
+        g['pegging'].update({
+            'total': 0,
+            'cards': [],
+            'passed': []
+        })
+        cache.set(message['game'], json.dumps(g))
+        # send the players cards back to their hands, in game_dict and on screen
+        emit('enable_action_button', {'nickname': g['dealer'], 'action': 'SCORE'}, room=g['name'])
+
+    # determine next_player
+    next_player = rotate_turn(g['turn'], list(g['players'].keys()))
+    if next_player in g['pegging']['passed']:
+        print('we should be skipping {} since they already passed'.format(next_player))
+    next_player_action = play_or_pass(g['hands'][next_player], g['pegging']['total'])
+    print('next player is {} and they should {}'.format(next_player, next_player_action))
+
+    # write the game state
+    cache.set(message['game'], json.dumps(g))
     emit('show_card_played', {
-        'nickname': message['nickname'], 'card': card_played, 'points_scored': points_scored, 'new_total': new_total,
-        'next_player': next_player, 'next_player_action': next_player_action}, room=message["game"])
+         'nickname': message['nickname'], 'card': card_played, 'new_total': new_total,
+         'next_player': next_player, 'next_player_action': next_player_action}, room=message["game"])
+
+    # if they hit 31 on the nose, reset pegging round (they already received the 2 points)
+    if new_total == 31:
+        g['pegging'].update({
+            'total': 0,
+            'cards': [],
+            'passed': []
+        })
+        emit('clear_pegging_area', room=message['game'])
+        next_player_action = 'PLAY'
+
+    g['turn'] = next_player
+    cache.set(message['game'], json.dumps(g))
+    emit('show_card_played', {
+         'nickname': message['nickname'], 'card': card_played, 'new_total': new_total,
+         'next_player': next_player, 'next_player_action': next_player_action}, room=message["game"])
 
 
-@socketio.on('ready_to_score', namespace='/game')
-def ready_to_score(message):
-    game_dict = json.loads(cache.get(message['game']))
-    hand_dict = game_dict['players'][message['nickname']]['hand']
-    hand_dict['state'] = 'SCORING'
-    game_dict['players'][message['nickname']]['hand'] = hand_dict
-    cache.set(message['game'], json.dumps(game_dict))
+@socketio.on('pass', namespace='/game')
+def pass_on_play(message):
+    g = json.loads(cache.get(message['game']))
+    g['pegging']['passed'].append(message['nickname'])
 
-    # if this game has no more Hands in a discarding state, dispatch the cut deck option
-    for player_name, player_dict in game_dict["players"].items():
-        if player_name['hand']['state'] == 'PEGGING':
-            return
+    # check if everyone but the next player has passed at this point
+    next_player = rotate_turn(g['turn'], list(g['players'].keys()))
+    next_player_action = play_or_pass(g['hands'][next_player], g['pegging']['total'])
+    if set(g['players'].keys()) - set(g['pegging']['passed']) == {next_player}:
+        print('everyone but {} has passed'.format(next_player))
+        # if the next player would also pass, that means they played the card that made everyone else pass,
+        # so they get 1 point and they get to start the next round of pegging
+        if next_player_action == 'PASS':
+            print('{} cant play either, so we award them 1 point and reset the pegging round'.format(next_player))
+            g['pegging'].update({
+                'total': 0,
+                'cards': [],
+                'passed': []
+            })
+            emit('award_points', {'player': next_player, 'amount': 1, 'reason': '1 for go.'}, room=message['game'])
+            emit('clear_pegging_area', room=message['game'])
+            emit('enable_action_button', {'action': 'PLAY', 'nickname': next_player}, room=g['name'])
 
-    emit('show_score_hands_action', room=game.name)
+    else:
+        emit('player_passed', {'player': message['nickname'], 'next_player': next_player,
+                               'next_player_action': next_player_action}, room=message["game"])
 
+    g['turn'] = next_player
+    cache.set(message['game'], json.dumps(g))
 
 
 if __name__ == '__main__':

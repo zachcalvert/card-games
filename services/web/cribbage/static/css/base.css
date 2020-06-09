@@ -96,6 +96,11 @@ html, body {
     margin: 0 -10px;
 }
 
+.playedOpponentCard {
+    width: 60px;
+    margin: 0 -10px;
+}
+
 .cribbage-table {
     height: 30%;
     text-align: center;
@@ -141,9 +146,17 @@ html, body {
   opacity: 75%;
 }
 
+.list-group-item.played {
+  opacity: 75%;
+}
+
+.deck {
+    width: 75px;
+}
 
 .playerCard {
     width: 75px;
+    margin-top: 30%;
 }
 
 .playedCard {
@@ -161,17 +174,37 @@ html, body {
 #deck-area {
     width: 25%;
     text-align: left;
+    padding: 1%;
+}
+#deck {
+    width: 75px;
 }
 .cutCard {
     margin: 0 -60px;
     width: 80px;
 }
+
 #play-area {
     width: 50%;
-    text-align: left;
+    text-align: center;
 }
+
+#play-total {
+    font-size: 42px;
+    padding: 10%;
+}
+
+#prevous-peg-rounds {
+  float: left;
+}
+
+#prevous-peg-rounds img {
+  margin-left: -45px;
+}
+
 #crib-area {
     width: 25%;
+    padding: 1%;
 }
 
 

@@ -14,12 +14,6 @@ function animateDiscard(discarded) {
 
 export function discard(msg) {
   console.log(msg.nickname + ' just discarded ' + msg.discarded);
-
   animateDiscard();
-  if (sessionStorage.getItem('nickname') === msg.nickname) {
-    // remove card image
-    $('#' + msg.discarded).parent().remove();
-  } else {
-    $("#" + msg.nickname).find('img').first().remove();
-  }
+  $('#' + msg.discarded).remove();
 }
