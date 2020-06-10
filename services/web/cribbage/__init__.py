@@ -9,8 +9,10 @@ from flask import Flask, render_template, session, request, Markup, redirect, ur
 from flask_fontawesome import FontAwesome
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 
-from .cards import CARDS
-from .scoring import PlayScorer, Hand
+from cribbage.cards import CARDS
+from cribbage.scoring import PlayScorer, Hand
+from cribbage.utils import rotate_turn, play_or_pass, next_player_who_can_play_at_all, \
+    next_player_who_can_take_action_this_round
 
 async_mode = None
 
@@ -63,92 +65,6 @@ def game():
                                other_players=other_players, async_mode=socketio.async_mode)
 
     return redirect(url_for('index'))
-
-
-def rotate_turn(current, players):
-    """
-    :param current:
-    :param players:
-    :return:
-    """
-    try:
-        next_player = players[players.index(current) + 1]
-    except IndexError:
-        next_player = players[0]
-    return next_player
-
-
-def play_or_pass(cards, pegging_total):
-    """
-    :param player:
-    :param cards:
-    :param pegging_total:
-    :return:
-    """
-    action = 'PASS'
-    card_values = [CARDS.get(card)['value'] for card in cards]
-    print('card values: {}'.format(card_values))
-    remainder = 31 - pegging_total
-    print('they must have a card with value less than or equal to {} to play'.format(remainder))
-    if any(value <= remainder for value in card_values):
-        print('{}'.format(any(value <= remainder for value in card_values)))
-        action = 'PLAY'
-    return action
-
-
-def next_player_who_can_take_action_this_round(game_dict):
-    """
-    Return the next player who still has cards and has not passed
-    :return: nickname
-    """
-    if game_dict['pegging']['total'] >= 31:
-        # we should never get above 31, but just in case
-        return None
-
-    player_order = list(game_dict['players'].keys())
-    starting_point = player_order.index(game_dict['turn'])
-    players_to_check_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
-    for player in players_to_check_in_order:
-        print('checking if {} can play this round..'.format(player))
-        if player in game_dict['pegging']['passed']:  # if they've passed
-            print('{} has already passed, skipping them'.format(player))
-            continue
-        if not game_dict['hands'][player]:  # or have no cards left
-            print('{} has no cards left, skipping them'.format(player))
-            continue
-
-        # make sure that the next player isn't also the current player and they would have to pass
-        if player == game_dict['pegging']['last_played']:
-            print('weve circled back around to {}'.format(player))
-            next_action = play_or_pass(game_dict['hands'][player], game_dict['pegging']['total'])
-            if next_action == 'PASS':
-                print('they cant play either, so we are returning None')
-                return None
-
-        print('{} hasnt passed and has at least one card'.format(player))
-        return player
-
-    print('everyone has already passed or has no cards left')
-    return None
-
-
-def next_player_who_can_play_at_all(game_dict):
-    """
-    Return the next player who still has cards
-    :return:
-    """
-    player_order = list(game_dict['players'].keys())
-    starting_point = player_order.index(game_dict['turn'])
-    players_to_check_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
-    for player in players_to_check_in_order:
-        print('checking if {} can peg at all'.format(player))
-        if not game_dict['hands'][player]:  # or have no cards left
-            print('{} has no cards left, skipping them'.format(player))
-            continue
-        return player
-
-    print('everyone is out of cards')
-    return None
 
 
 @socketio.on('join', namespace='/game')
@@ -279,21 +195,25 @@ def peg_round_action(message):
     if 'card_played' in message.keys():
         # record card getting played
         card_played = message['card_played']
-        g['played_cards'][player].append(card_played)
-        g['hands'][player].remove(card_played)
-        g['pegging']['cards'].append(card_played)
-        g['pegging']['last_played'] = player
-        print('{} played {}, and their hand is now {}'.format(player, card_played, g['hands'][player]))
 
-        # score card play
+        # score play
         scorer = PlayScorer(CARDS.get(card_played), g['pegging']['cards'], g['pegging']['total'])
         points_scored, new_total = scorer.calculate_points()
+
+        # record play
+        g['hands'][player].remove(card_played)
+        g['played_cards'][player].append(card_played)
+        g['pegging']['cards'].append(card_played)
+        g['pegging']['last_played'] = player
         g['pegging']['total'] = new_total
+        print('{} played {}, and their hand is now {}'.format(player, card_played, g['hands'][player]))
 
         # show card getting played
         emit('show_card_played', {'nickname': message['nickname'], 'card': card_played, 'new_total': new_total}, room=message['game'])
-        print('play earned {} points, new_total is {}'.format(points_scored, new_total))
         if points_scored > 0:
+            msg = '{} scored {} from play'.format(player, points_scored)
+            emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
+
             g['players'][message['nickname']]['points'] += points_scored
             emit('award_points', {'player': player, 'amount': points_scored, 'reason': 'pegging'}, room=message['game'])
     else:
@@ -312,10 +232,16 @@ def peg_round_action(message):
         emit('send_turn', {'player': next_player, 'action': next_action}, room=message['game'])
     else:
         # award a point to current player for go (if they didn't already get em for 31) and reset
-        if g['pegging']['total'] != 31:
-            print('awarding a point to {} for go'.format(g['pegging']['last_played']))
+        if g['pegging']['total'] == 31:
+            msg = '{} scores 2 for 31'.format(g['pegging']['last_played'])
+            emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
+            emit('award_points', {'player': g['pegging']['last_played'], 'amount': 2, 'reason': '31'}, room=message['game'])
+        else:
+            msg = '{} gets 1 for go'.format(g['pegging']['last_played'])
+            emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
             emit('award_points', {'player': g['pegging']['last_played'], 'amount': 1, 'reason': 'go'}, room=message['game'])
-        print('about to tell the frontend to clean up the pegging area')
+
+        # clear the board
         emit('clear_pegging_area', room=message['game'])
         g['pegging'].update({
             'cards': [],

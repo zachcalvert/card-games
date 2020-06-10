@@ -2,7 +2,7 @@ from itertools import chain, combinations
 import more_itertools as mit
 import random
 
-from .cards import CARDS
+from cribbage.cards import CARDS
 
 
 class PlayScorer:
@@ -10,7 +10,6 @@ class PlayScorer:
         self.card = card
         self.previously_played_cards = previously_played_cards
         self.total = int(total)
-        print(vars(self))
 
     def calculate_points(self):
         print("calculating points..")
@@ -19,10 +18,11 @@ class PlayScorer:
         new_total = self.total + self.card["value"]
         if new_total == 15:
             points += 2
-        elif new_total == 31:
-            points += 2
+        # we handle 31s in the peg_round_action view
 
         if self.previously_played_cards:
+            print('previously played cards: {}'.format([CARDS.get(card) for card in self.previously_played_cards]))
+
             # evaluate pairs, threes, and fours
             for count, _ in enumerate(self.previously_played_cards):
                 card = CARDS.get(self.previously_played_cards[count])
