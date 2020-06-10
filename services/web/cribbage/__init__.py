@@ -234,6 +234,12 @@ def discard(message):
     g['hands'][discarder].remove(card)
     g['crib'].append(card)
 
+    done_discarding = False
+    if len(g['hands'][discarder]) == 4:
+        done_discarding = True
+
+    emit('post_discard', {'discarded': card, 'nickname': discarder, 'done_discarding': done_discarding}, room=message['game'])
+
     # if everyone's down to 4 cards
     if all(len(g['hands'][nickname]) == 4 for nickname, _ in g['players'].items()):
         g['state'] = 'CUT'
@@ -249,7 +255,6 @@ def discard(message):
         emit('send_turn', {'player': cutter, 'action': 'CUT'}, room=message['game'])
 
     cache.set(message['game'], json.dumps(g))
-    emit('post_discard', {'discarded': card, 'nickname': discarder}, room=message['game'])
 
 
 @socketio.on('cut_deck', namespace='/game')
@@ -367,22 +372,18 @@ def score_crib(message):
 
     scorer = HandScorer(g['crib'], g['cut_card'], is_crib=True)
     points = scorer.calculate_points()
-
     g['players'][player]['points'] += points
     cache.set(message['game'], json.dumps(g))
 
     msg = '{} got {} from their crib!'.format(player, points)
     emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
     emit('award_points', {'player': player, 'amount': points, 'reason': 'Points from crib'}, room=message['game'])
-
     emit('send_turn', {'player': g['dealer'], 'action': 'END ROUND'}, room=message['game'])
 
 
 @socketio.on('end_round', namespace='/game')
 def end_round(message):
     g = json.loads(cache.get(message['game']))
-
-    emit('clear_table', room=message['game'])
 
     next_to_deal = rotate_turn(g['dealer'], list(g['players'].keys()))
     next_to_score_first = rotate_turn(next_to_deal, list(g['players'].keys()))
@@ -397,7 +398,10 @@ def end_round(message):
         'scored_hands': [],
         'turn': next_to_deal,
     })
+    for player in list(g['players'].keys()):
+        g['played_cards'][player] = []
     cache.set(message['game'], json.dumps(g))
+    emit('clear_table', {'next_dealer': next_to_deal}, room=message['game'])
     emit('send_turn', {'player': g['dealer'], 'action': 'DEAL'}, room=message['game'])
 
 

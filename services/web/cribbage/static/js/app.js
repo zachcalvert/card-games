@@ -82,7 +82,7 @@ socket.on('reveal_crib', function (msg, cb) {
 
 socket.on('clear_table', function (msg, cb) {
   console.log('Clearing table');
-  clearTable();
+  clearTable(msg.next_dealer);
 });
 
 socket.on('award_points', function (msg, cb) {

@@ -9,7 +9,6 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
         <script type="module" src="/static/js/app.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
-
     </head>
     <body>
       <div class="game container-fluid h-100 bg-gradient-dark text-white">
@@ -63,14 +62,14 @@
               </div>
                 <div id="{{ player.nickname}}" class="player panel panel-default">
                   <div class="panel-heading">
-                    <button id="action-button" type="button" class="btn btn-outline-dark btn-lg pull-left">START</button>
                     <span class="player-nickname">{{ player.nickname }}</span>
                     <b><span class="player-points">{{ player.points }}</span></b>
                   </div>
-                  <div class="panel-body d-flex justify-content-center">
+                  <div class="player-play-area panel-body d-flex justify-content-center">
                     <div class="player-cards">
                       <ul id="{{ player.nickname }}-cards" class="list-group-flush list-group-horizontal"></ul>
                     </div>
+                    <button id="action-button" type="button" class="btn btn-outline-dark pull-left">START</button>
                   </div>
                 </div>
               </div>

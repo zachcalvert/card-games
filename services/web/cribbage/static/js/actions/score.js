@@ -1,3 +1,5 @@
+import {renderDealerIcon} from "./start.js";
+
 export function awardPoints(player, amount, reason) {
   console.log('awarding ' + amount + 'points to ' + player + ' for ' + reason);
   let playerPoints = $("#" + player).find(".player-points");
@@ -20,9 +22,10 @@ export function revealCrib() {
   });
 }
 
-export function clearTable() {
+export function clearTable(next_dealer) {
   $('.playedOpponentCard').remove();
   $('.cribCard').remove();
   $('.cutCard').remove();
   $('.playerCard').remove();
+  renderDealerIcon(next_dealer);
 }

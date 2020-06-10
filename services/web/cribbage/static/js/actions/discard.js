@@ -17,4 +17,10 @@ export function discard(msg) {
   console.log(msg.nickname + ' just discarded ' + msg.discarded);
   $('#' + msg.discarded).remove();
   animateDiscard(discarded);
+
+  if (msg.done_discarding) {
+    $('#' + msg.nickname).find(".panel-heading").css('background', 'rgb(21, 32, 43)');
+    $('#action-button').prop('disabled', true);
+  }
+
 }

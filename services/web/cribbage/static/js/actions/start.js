@@ -1,6 +1,7 @@
 import {renderCurrentTurnDisplay} from "./peg.js";
 
-function renderDealerIcon(dealer) {
+export function renderDealerIcon(dealer) {
+  $('.dealer-icon').remove();
   $("#" + dealer).find(".player-nickname").prepend('<span class="dealer-icon fas fa-star"></span>');
 }
 

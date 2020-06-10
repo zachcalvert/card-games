@@ -110,6 +110,7 @@ html, body {
 .cribbage-table {
     height: 30%;
     text-align: center;
+    align-items: center;
     padding: 15px;
 }
 
@@ -139,6 +140,8 @@ html, body {
     width: 100%;
     display: flex;
     justify-content: center;
+    height: 100%;
+    align-items: center;
 }
 
 .list-group-item {
@@ -156,6 +159,12 @@ html, body {
 
 .deck {
     width: 75px;
+}
+
+.player-play-area {
+  align-items: center;
+  height: 80%;
+  margin-right: 20px;
 }
 
 .playerCard {
@@ -241,7 +250,11 @@ li a {
     width: 150px;
     border-radius: 50%;
     border: 1px solid white;
+}
 
+#action-button {
+    height: 100px;
+    width: 100px;
 }
 
 
