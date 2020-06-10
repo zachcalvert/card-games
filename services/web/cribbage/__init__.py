@@ -10,7 +10,7 @@ from flask_fontawesome import FontAwesome
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 
 from .cards import CARDS
-from .scoring import PlayScorer, HandScorer
+from .scoring import PlayScorer, Hand
 
 async_mode = None
 
@@ -343,18 +343,18 @@ def peg_round_action(message):
 def score_hand(message):
     g = json.loads(cache.get(message['game']))
     player = message['nickname']
-    hand = g['played_cards'][player]
+    player_cards = g['played_cards'][player]
 
-    scorer = HandScorer(hand, g['cut_card'])
-    points = scorer.calculate_points()
+    hand = Hand(player_cards, g['cut_card'])
+    hand_points = hand.calculate_points()
 
-    g['players'][player]['points'] += points
+    g['players'][player]['points'] += hand_points
     g['scored_hands'].append(player)
     cache.set(message['game'], json.dumps(g))
 
-    msg = '{} scored {} with their hand!'.format(player, points)
+    msg = '{} scored {} with their hand!'.format(player, hand_points)
     emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
-    emit('award_points', {'player': player, 'amount': points, 'reason': 'Points from hand'}, room=message['game'])
+    emit('award_points', {'player': player, 'amount': hand_points, 'reason': 'Points from hand'}, room=message['game'])
 
     if set(g['scored_hands']) == set(g['players'].keys()):
         emit('send_turn', {'player': g['dealer'], 'action': 'SCORE CRIB'}, room=message['game'])
@@ -370,14 +370,14 @@ def score_crib(message):
 
     emit('reveal_crib', room=message['game'])
 
-    scorer = HandScorer(g['crib'], g['cut_card'], is_crib=True)
-    points = scorer.calculate_points()
-    g['players'][player]['points'] += points
+    crib = Hand(g['crib'], g['cut_card'], is_crib=True)
+    crib_points = crib.calculate_points()
+    g['players'][player]['points'] += crib_points
     cache.set(message['game'], json.dumps(g))
 
-    msg = '{} got {} from their crib!'.format(player, points)
+    msg = '{} got {} from their crib!'.format(player, crib_points)
     emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
-    emit('award_points', {'player': player, 'amount': points, 'reason': 'Points from crib'}, room=message['game'])
+    emit('award_points', {'player': player, 'amount': crib_points, 'reason': 'Points from crib'}, room=message['game'])
     emit('send_turn', {'player': g['dealer'], 'action': 'END ROUND'}, room=message['game'])
 
 

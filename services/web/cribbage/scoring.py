@@ -44,8 +44,7 @@ class PlayScorer:
         return points, new_total
 
 
-class HandScorer:
-
+class Hand:
     def __init__(self, cards, cut_card, is_crib=False):
         self.cards = [CARDS.get(card_id) for card_id in cards]
         self.cut_card = CARDS.get(cut_card)
@@ -53,17 +52,16 @@ class HandScorer:
 
         self.fifteens = {}
         self.pairs = None
-        self.run = None
+        self.runs = []
         self.flush_points = 0
         self.nobs = False
-
-        print('our cards are: {}'.format(self.cards))
-        print('our cut_card is: {}'.format(self.cut_card))
+        print('our hand is: {}'.format(self))
 
     def __str__(self):
         s = ''
-        for card in self.cards.items():
-            s += (str(card) + ", ")
+        for card in self.cards:
+            s += (card['name'] + card['suit'] + ", ")
+        s += "{}{}".format(self.cut_card['name'], self.cut_card['suit'])
         return s
 
     def _power_hand(self, values):
@@ -99,7 +97,6 @@ class HandScorer:
         all_combos = self._power_hand(values)
         for combo in all_combos:
             if self._sum_cards(combo) == 15:
-                print('{} add up to 15'.format(combo))
                 self.fifteens[counter] = combo
                 counter += 2
 
@@ -114,11 +111,23 @@ class HandScorer:
         return False
 
     def _has_runs(self):
-        ranks = [card["rank"] for card in self.cards] + [self.cut_card["rank"]]
-        groups = [list(group) for group in mit.consecutive_groups(ranks)]
+        ranks = sorted([card["rank"] for card in self.cards] + [self.cut_card["rank"]])
+        distinct_ranks = sorted(list(set(ranks)))
+
+        # print('the ranks are: {}'.format(ranks))
+        groups = [list(group) for group in mit.consecutive_groups(distinct_ranks)]
+        # print('the groups are: {}'.format(groups))
         for group in groups:
             if len(group) > 2:
-                self.run = group
+                multiples = False
+                # print('this group has at least three cards: {}'.format(group))
+                for card in group:
+                    if ranks.count(card) > 1:
+                        multiples = True
+                        for i in range(0,ranks.count(card)):
+                            self.runs.append(group)
+                if not multiples:
+                    self.runs.append(group)
                 return True
         return False
 
@@ -154,32 +163,36 @@ class HandScorer:
         points = 0
 
         if self._has_fifteens():
-            print('found some fifteens')
-            for fifteen in self.fifteens:
+            for fifteen, cards in self.fifteens.items():
+                print('Fifteen {} ({})'.format(fifteen, cards))
                 points += 2
 
         if self._has_pairs():
-            print('found some pairs')
             for pair in self.pairs:
-                print('One pair is: {}'.format(pair))
                 count = self.pairs.get(pair)
                 if count == 4:
                     points += 12
+                    print('four {}s for {}'.format(pair, points))
                 elif count == 3:
                     points += 6
+                    print('three {}s for {}'.format(pair, points))
                 else:
                     points += 2
+                    print('a pair of {}s for {}'.format(pair, points))
 
         if self._has_runs():
-            print('found a run')
-            points += len(self.run)
+            for run in self.runs:
+                points += len(run)
+                print('a run of {} for {} ({})'.format(len(run), points, run))
 
         if self._has_flush():
-            print('found a flush')
             points += self.flush_points
+            print('four {} for {}'.format(self.cards[0]['suit'], points))
 
         if self._has_nobs():
-            print('Nobs!')
             points += 1
-
+            if points > 1:
+                print('And nobs for {}'.format(points))
+            else:
+                print('Nobs for one')
         return points
