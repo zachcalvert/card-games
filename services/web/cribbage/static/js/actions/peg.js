@@ -5,8 +5,7 @@ export function renderCurrentTurnDisplay(player, action) {
   $('#action-button').html(action);
   if (player === 'all') {
     $('.panel-heading').css('background', '#1CA1F2');
-    // we dont enable the action button because this only applies to discarding, and players have to select a card
-    // for the action button to become active in that case
+    $('#action-button').prop('disabled', false);
   }
   else {
     // disable current turn display for all

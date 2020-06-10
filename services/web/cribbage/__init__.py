@@ -106,7 +106,8 @@ def start_game(message):
             'cards': [],
             'passed': []
         },
-        'scored_hands': []
+        'scored_hands': [],
+        'ok_with_next_round': [],
     })
     for player in players:
         g['played_cards'][player] = []
@@ -304,31 +305,35 @@ def score_crib(message):
     msg = '{} got {} from their crib!'.format(player, crib_points)
     emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
     emit('award_points', {'player': player, 'amount': crib_points, 'reason': 'Points from crib'}, room=message['game'])
-    emit('send_turn', {'player': g['dealer'], 'action': 'END ROUND'}, room=message['game'])
+    emit('send_turn', {'player': 'all', 'action': 'END ROUND'}, room=message['game'])
 
 
 @socketio.on('end_round', namespace='/game')
 def end_round(message):
     g = json.loads(cache.get(message['game']))
-
-    next_to_deal = rotate_turn(g['dealer'], list(g['players'].keys()))
-    next_to_score_first = rotate_turn(next_to_deal, list(g['players'].keys()))
-
-    g.update({
-        'state': 'DEAL',
-        'crib': [],
-        'dealer': next_to_deal,
-        'first_to_score': next_to_score_first,
-        'hands': {},
-        'played_cards': {},
-        'scored_hands': [],
-        'turn': next_to_deal,
-    })
-    for player in list(g['players'].keys()):
-        g['played_cards'][player] = []
+    player = message['nickname']
+    g['ok_with_next_round'].append(player)
     cache.set(message['game'], json.dumps(g))
-    emit('clear_table', {'next_dealer': next_to_deal}, room=message['game'])
-    emit('send_turn', {'player': g['dealer'], 'action': 'DEAL'}, room=message['game'])
+
+    if set(g['ok_with_next_round']) == set(g['players'].keys()):
+        next_to_deal = rotate_turn(g['dealer'], list(g['players'].keys()))
+        next_to_score_first = rotate_turn(next_to_deal, list(g['players'].keys()))
+
+        g.update({
+            'state': 'DEAL',
+            'crib': [],
+            'dealer': next_to_deal,
+            'first_to_score': next_to_score_first,
+            'hands': {},
+            'played_cards': {},
+            'scored_hands': [],
+            'turn': next_to_deal,
+        })
+        for player in list(g['players'].keys()):
+            g['played_cards'][player] = []
+        cache.set(message['game'], json.dumps(g))
+        emit('clear_table', {'next_dealer': next_to_deal}, room=message['game'])
+        emit('send_turn', {'player': g['dealer'], 'action': 'DEAL'}, room=message['game'])
 
 
 if __name__ == '__main__':
