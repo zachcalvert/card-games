@@ -46,16 +46,19 @@ class PlayScorer:
 
 class HandScorer:
 
-    def __init__(self, cards={}, cut_card={}, is_crib=False):
-        self.cards = cards
-        self.cut_card = cut_card
-        self.is_crib = True
+    def __init__(self, cards, cut_card, is_crib=False):
+        self.cards = [CARDS.get(card_id) for card_id in cards]
+        self.cut_card = CARDS.get(cut_card)
+        self.is_crib = is_crib
 
         self.fifteens = {}
         self.pairs = None
         self.run = None
         self.flush_points = 0
         self.nobs = False
+
+        print('our cards are: {}'.format(self.cards))
+        print('our cut_card is: {}'.format(self.cut_card))
 
     def __str__(self):
         s = ''
@@ -92,7 +95,7 @@ class HandScorer:
         Returns the number of points from 15s.
         """
         counter = 2
-        values = sorted([card["value"] for _, card in self.cards.items()] + [self.cut_card["value"]])
+        values = sorted([card["value"] for card in self.cards] + [self.cut_card["value"]])
         all_combos = self._power_hand(values)
         for combo in all_combos:
             if self._sum_cards(combo) == 15:
@@ -103,7 +106,7 @@ class HandScorer:
         return self.fifteens != {}
 
     def _has_pairs(self):
-        ranks = [card["rank"] for _, card in self.cards.items()] + [self.cut_card["rank"]]
+        ranks = [card["rank"] for card in self.cards] + [self.cut_card["rank"]]
         pairs = {rank: ranks.count(rank) for rank in ranks if ranks.count(rank) > 1}
         if pairs:
             self.pairs = pairs
@@ -111,7 +114,7 @@ class HandScorer:
         return False
 
     def _has_runs(self):
-        ranks = [card["rank"] for _, card in self.cards.items()] + [self.cut_card["rank"]]
+        ranks = [card["rank"] for card in self.cards] + [self.cut_card["rank"]]
         groups = [list(group) for group in mit.consecutive_groups(ranks)]
         for group in groups:
             if len(group) > 2:
@@ -122,9 +125,9 @@ class HandScorer:
     def _has_flush(self):
 
         def _cut_card_matches_hand():
-            return self.cut_card["suit"] == next(iter(self.cards.values()))["suit"]
+            return self.cut_card["suit"] == next(iter(self.cards))["suit"]
 
-        if all(card["suit"] == next(iter(self.cards.values()))["suit"] for _, card in self.cards.items()()):
+        if all(card["suit"] == next(iter(self.cards))["suit"] for card in self.cards):
             if self.is_crib:
                 if _cut_card_matches_hand():
                     self.flush_points = 5
@@ -139,7 +142,7 @@ class HandScorer:
         return False
 
     def _has_nobs(self):
-        jacks = [card for k, card in self.cards.items() if card["name"] == 'Jack']
+        jacks = [card for card in self.cards if card["name"] == 'Jack']
         if jacks:
             potential_nobs = [jack["suit"] for jack in jacks]
             if self.cut_card["suit"] in potential_nobs:

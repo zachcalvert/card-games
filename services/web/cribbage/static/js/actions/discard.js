@@ -13,7 +13,8 @@ function animateDiscard(discarded) {
 }
 
 export function discard(msg) {
+  let discarded = msg.discarded;
   console.log(msg.nickname + ' just discarded ' + msg.discarded);
-  animateDiscard();
   $('#' + msg.discarded).remove();
+  animateDiscard(discarded);
 }

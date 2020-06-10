@@ -190,6 +190,7 @@ def start_game(message):
             'cards': [],
             'passed': []
         },
+        'scored_hands': []
     })
     for player in players:
         g['played_cards'][player] = []
@@ -331,6 +332,73 @@ def peg_round_action(message):
     # write next player to cache
     cache.set(message['game'], json.dumps(g))
     return
+
+
+@socketio.on('score_hand', namespace='/game')
+def score_hand(message):
+    g = json.loads(cache.get(message['game']))
+    player = message['nickname']
+    hand = g['played_cards'][player]
+
+    scorer = HandScorer(hand, g['cut_card'])
+    points = scorer.calculate_points()
+
+    g['players'][player]['points'] += points
+    g['scored_hands'].append(player)
+    cache.set(message['game'], json.dumps(g))
+
+    msg = '{} scored {} with their hand!'.format(player, points)
+    emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
+    emit('award_points', {'player': player, 'amount': points, 'reason': 'Points from hand'}, room=message['game'])
+
+    if set(g['scored_hands']) == set(g['players'].keys()):
+        emit('send_turn', {'player': g['dealer'], 'action': 'SCORE CRIB'}, room=message['game'])
+    else:
+        next_to_score = rotate_turn(player, list(g['players'].keys()))
+        emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=message['game'])
+
+
+@socketio.on('score_crib', namespace='/game')
+def score_crib(message):
+    g = json.loads(cache.get(message['game']))
+    player = message['nickname']
+
+    emit('reveal_crib', room=message['game'])
+
+    scorer = HandScorer(g['crib'], g['cut_card'], is_crib=True)
+    points = scorer.calculate_points()
+
+    g['players'][player]['points'] += points
+    cache.set(message['game'], json.dumps(g))
+
+    msg = '{} got {} from their crib!'.format(player, points)
+    emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
+    emit('award_points', {'player': player, 'amount': points, 'reason': 'Points from crib'}, room=message['game'])
+
+    emit('send_turn', {'player': g['dealer'], 'action': 'END ROUND'}, room=message['game'])
+
+
+@socketio.on('end_round', namespace='/game')
+def end_round(message):
+    g = json.loads(cache.get(message['game']))
+
+    emit('clear_table', room=message['game'])
+
+    next_to_deal = rotate_turn(g['dealer'], list(g['players'].keys()))
+    next_to_score_first = rotate_turn(next_to_deal, list(g['players'].keys()))
+
+    g.update({
+        'state': 'DEAL',
+        'crib': [],
+        'dealer': next_to_deal,
+        'first_to_score': next_to_score_first,
+        'hands': {},
+        'played_cards': {},
+        'scored_hands': [],
+        'turn': next_to_deal,
+    })
+    cache.set(message['game'], json.dumps(g))
+    emit('send_turn', {'player': g['dealer'], 'action': 'DEAL'}, room=message['game'])
 
 
 if __name__ == '__main__':

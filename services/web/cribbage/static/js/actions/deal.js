@@ -1,8 +1,6 @@
 export function deal(msg) {
   $.each(msg.hands, function(player, cards) {
     if (player === sessionStorage.getItem('nickname')) {
-      let card_hashes = []
-      console.log(cards);
       $.each(cards, function(index, card) {
         let cardImage = $('<img/>', {
           id: card,
@@ -12,9 +10,8 @@ export function deal(msg) {
         let cardListItem = $('<li/>', {
           class: 'list-group-item',
         });
-        cardListItem.append(cardImage)
+        cardListItem.append(cardImage);
         $('#' + player + '-cards').append(cardListItem);
-        card_hashes.push(card)
       });
     } else {
       $.each(cards, function(index, card) {

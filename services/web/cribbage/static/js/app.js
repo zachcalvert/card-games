@@ -5,7 +5,7 @@ import { discard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
 import { peg, renderCurrentTurnDisplay, clearPeggingArea } from "./actions/peg.js";
 import { start } from "./actions/start.js";
-import { awardPoints } from "./actions/score.js";
+import { awardPoints, clearTable, revealCrib } from "./actions/score.js";
 
 const namespace = '/game';
 const socket = io(namespace);
@@ -75,7 +75,15 @@ socket.on('clear_pegging_area', function (msg, cb) {
   clearPeggingArea();
 });
 
+socket.on('reveal_crib', function (msg, cb) {
+  console.log('Revealing crib');
+  revealCrib();
+});
 
+socket.on('clear_table', function (msg, cb) {
+  console.log('Clearing table');
+  clearTable();
+});
 
 socket.on('award_points', function (msg, cb) {
   awardPoints(msg.player, msg.amount, msg.reason);
@@ -116,6 +124,18 @@ $('#action-button').click(function (event) {
 
   if (action === 'PASS') {
     socket.emit('peg_round_action', {game: gameName, nickname: nickname});
+  }
+
+  if (action === 'SCORE') {
+    socket.emit('score_hand', {game: gameName, nickname: nickname});
+  }
+
+  if (action === 'SCORE CRIB') {
+    socket.emit('score_crib', {game: gameName, nickname: nickname});
+  }
+
+  if (action === 'END ROUND') {
+    socket.emit('end_round', {game: gameName, nickname: nickname});
   }
   $('#action-button').prop('disabled', true);
   return false;

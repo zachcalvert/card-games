@@ -12,3 +12,17 @@ export function awardPoints(player, amount, reason) {
       }
   });
 }
+
+export function revealCrib() {
+  let cribCards = $('.cribCard');
+  $.each(cribCards, function(index, cribCard) {
+    $(cribCard).attr("src",'/static/img/cards/' + cribCard.id);
+  });
+}
+
+export function clearTable() {
+  $('.playedOpponentCard').remove();
+  $('.cribCard').remove();
+  $('.cutCard').remove();
+  $('.playerCard').remove();
+}
