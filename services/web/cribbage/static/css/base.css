@@ -257,6 +257,10 @@ li a {
     width: 100px;
 }
 
+#action-button:enabled {
+    background: #1CA1F2;
+}
+
 
 #pointsAlert {
     color: #34ce57;
