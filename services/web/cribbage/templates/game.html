@@ -63,14 +63,11 @@
               </div>
                 <div id="{{ player.nickname}}" class="player panel panel-default">
                   <div class="panel-heading">
+                    <button id="action-button" type="button" class="btn btn-outline-dark btn-lg pull-left">START</button>
                     <span class="player-nickname">{{ player.nickname }}</span>
                     <b><span class="player-points">{{ player.points }}</span></b>
                   </div>
                   <div class="panel-body d-flex justify-content-center">
-                    <div class="player-action">
-                        <button id="action-button" type="button" class="btn btn-dark btn-lg">START</button>
-                    </div>
-
                     <div class="player-cards">
                       <ul id="{{ player.nickname }}-cards" class="list-group-flush list-group-horizontal"></ul>
                     </div>

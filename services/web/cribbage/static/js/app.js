@@ -46,15 +46,6 @@ socket.on('new_chat_message', function(msg, cb) {
 });
 
 
-socket.on('update_action_button', function(msg, cb) {
-  $('#action-button').text(msg.action);
-});
-
-socket.on('enable_action_button', function(msg, cb) {
-  renderCurrentTurnDisplay(msg.nickname, msg.action);
-});
-
-
 // DEAL
 socket.on('deal_hands', function (msg, cb) {
   deal(msg);
@@ -73,14 +64,14 @@ socket.on('show_cut_card', function (msg, cb) {
 // PEG
 socket.on('show_card_played', function (msg, cb) {
   peg(msg);
-  renderCurrentTurnDisplay(msg.next_player, msg.next_player_action);
 });
 
-socket.on('player_passed', function (msg, cb) {
-  renderCurrentTurnDisplay(msg.next_player, msg.next_player_action);
+socket.on('send_turn', function(msg, cb) {
+  renderCurrentTurnDisplay(msg.player, msg.action);
 });
 
 socket.on('clear_pegging_area', function (msg, cb) {
+  console.log('I was told to reset the pegging area')
   clearPeggingArea();
 });
 
@@ -119,12 +110,12 @@ $('#action-button').click(function (event) {
   if (action === 'PLAY') {
     console.log('played card!')
     let card_played = $('li.list-group-item.selected').children()[0].id;
-    socket.emit('play_card', {game: gameName, nickname: nickname, card_played: card_played});
+    socket.emit('peg_round_action', {game: gameName, nickname: nickname, card_played: card_played});
     return;
   }
 
   if (action === 'PASS') {
-    socket.emit('pass', {game: gameName, nickname: nickname});
+    socket.emit('peg_round_action', {game: gameName, nickname: nickname});
   }
   $('#action-button').prop('disabled', true);
   return false;

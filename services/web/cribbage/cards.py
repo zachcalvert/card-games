@@ -50,7 +50,7 @@ CARDS = {
   "3698fe0420": {
     "name": "Two",
     "rank": 2,
-    "value": 21,
+    "value": 2,
     "suit": "diamonds"
   },
   "64fe85d796": {

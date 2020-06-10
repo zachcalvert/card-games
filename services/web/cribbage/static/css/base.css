@@ -93,17 +93,17 @@ html, body {
     display: inline-block;
     border: 1px solid #37434D;
     height: 100%;
-    width: 25%;
+    width: 30%;
     margin: 0 10px;
 }
 
 .opponentCard {
-    width: 40px;
+    width: 50px;
     margin: 0 -10px;
 }
 
 .playedOpponentCard {
-    width: 60px;
+    width: 70px;
     margin: 0 -10px;
 }
 
@@ -136,7 +136,7 @@ html, body {
 }
 
 .player-cards {
-    width: 80%;
+    width: 100%;
     display: flex;
     justify-content: center;
 }
@@ -159,8 +159,8 @@ html, body {
 }
 
 .playerCard {
-    width: 75px;
-    margin-top: 30%;
+    width: 90px;
+    margin-top: 5%;
 }
 
 .playedCard {

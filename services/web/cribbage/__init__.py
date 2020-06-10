@@ -91,9 +91,64 @@ def play_or_pass(cards, pegging_total):
     remainder = 31 - pegging_total
     print('they must have a card with value less than or equal to {} to play'.format(remainder))
     if any(value <= remainder for value in card_values):
-        print('since they have a card with value {}, they can play'.format(any(value <= remainder for value in card_values)))
+        print('{}'.format(any(value <= remainder for value in card_values)))
         action = 'PLAY'
     return action
+
+
+def next_player_who_can_take_action_this_round(game_dict):
+    """
+    Return the next player who still has cards and has not passed
+    :return: nickname
+    """
+    if game_dict['pegging']['total'] >= 31:
+        # we should never get above 31, but just in case
+        return None
+
+    player_order = list(game_dict['players'].keys())
+    starting_point = player_order.index(game_dict['turn'])
+    players_to_check_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
+    for player in players_to_check_in_order:
+        print('checking if {} can play this round..'.format(player))
+        if player in game_dict['pegging']['passed']:  # if they've passed
+            print('{} has already passed, skipping them'.format(player))
+            continue
+        if not game_dict['hands'][player]:  # or have no cards left
+            print('{} has no cards left, skipping them'.format(player))
+            continue
+
+        # make sure that the next player isn't also the current player and they would have to pass
+        if player == game_dict['pegging']['last_played']:
+            print('weve circled back around to {}'.format(player))
+            next_action = play_or_pass(game_dict['hands'][player], game_dict['pegging']['total'])
+            if next_action == 'PASS':
+                print('they cant play either, so we are returning None')
+                return None
+
+        print('{} hasnt passed and has at least one card'.format(player))
+        return player
+
+    print('everyone has already passed or has no cards left')
+    return None
+
+
+def next_player_who_can_play_at_all(game_dict):
+    """
+    Return the next player who still has cards
+    :return:
+    """
+    player_order = list(game_dict['players'].keys())
+    starting_point = player_order.index(game_dict['turn'])
+    players_to_check_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
+    for player in players_to_check_in_order:
+        print('checking if {} can peg at all'.format(player))
+        if not game_dict['hands'][player]:  # or have no cards left
+            print('{} has no cards left, skipping them'.format(player))
+            continue
+        return player
+
+    print('everyone is out of cards')
+    return None
 
 
 @socketio.on('join', namespace='/game')
@@ -124,6 +179,7 @@ def start_game(message):
     g.update({
         'state': 'DEAL',
         'dealer': dealer,
+        'first_to_score': rotate_turn(dealer, players),
         'deck': [],
         'hands': {},
         'played_cards': {},
@@ -160,7 +216,7 @@ def deal_hands(message):
     g['deck'] = deck
     cache.set(message['game'], json.dumps(g))
     emit('deal_hands', {'hands': g['hands'], 'dealer': g['dealer']}, room=g['name'])
-    emit('update_action_button', {'action': 'DISCARD'}, room=g['name'])
+    emit('send_turn', {'player': 'all', 'action': 'DISCARD'}, room=g['name'])
 
 
 @socketio.on('discard', namespace='/game')
@@ -189,7 +245,7 @@ def discard(message):
 
         g['turn'] = cutter
         print('showing cut to {}'.format(cutter))
-        emit('enable_action_button', {'nickname': cutter, 'action': 'CUT'}, room=message['game'])
+        emit('send_turn', {'player': cutter, 'action': 'CUT'}, room=message['game'])
 
     cache.set(message['game'], json.dumps(g))
     emit('post_discard', {'discarded': card, 'nickname': discarder}, room=message['game'])
@@ -204,102 +260,77 @@ def cut_deck(message):
     emit('show_cut_card', {"cut_card": g['cut_card'], 'turn': g['turn']}, room=message['game'])
 
 
-@socketio.on('play_card', namespace='/game')
-def play_card(message):
+@socketio.on('peg_round_action', namespace='/game')
+def peg_round_action(message):
+    """
+    Handles the playing of a card as well as passing on playing
+    :param message:
+    :return:
+    """
+    print('received a pef round action')
     g = json.loads(cache.get(message['game']))
     player = message['nickname']
-    card_played = message['card_played']
+    if 'card_played' in message.keys():
+        # record card getting played
+        card_played = message['card_played']
+        g['played_cards'][player].append(card_played)
+        g['hands'][player].remove(card_played)
+        g['pegging']['cards'].append(card_played)
+        g['pegging']['last_played'] = player
+        print('{} played {}, and their hand is now {}'.format(player, card_played, g['hands'][player]))
 
-    # update game dict with record of card being played
-    print('card_played: {}'.format(card_played))
-    print('player: {}'.format(player))
-    print('{}s hand: {}'.format(player, g['hands'][player]))
-    g['played_cards'][player].append(card_played)
-    g['hands'][player].remove(card_played)
-    g['pegging']['cards'].append(card_played)
+        # score card play
+        scorer = PlayScorer(CARDS.get(card_played), g['pegging']['cards'], g['pegging']['total'])
+        points_scored, new_total = scorer.calculate_points()
+        g['pegging']['total'] = new_total
 
-    # score hand
-    scorer = PlayScorer(CARDS.get(card_played), g['pegging']['cards'], g['pegging']['total'])
-    points_scored, new_total = scorer.calculate_points()
-    g['pegging']['total'] = new_total
-
-    print('play earned {} points, new_total is {}'.format(points_scored, new_total))
-    if points_scored > 0:
-        g['players'][message['nickname']]['points'] += points_scored
-        emit('award_points', {'player': player, 'amount': points_scored, 'reason': 'pegging'}, room=message['game'])
-
-    # if no one has any cards left to play, end the pegging round
-    no_cards_left = all([not hand for player, hand in g['hands'].items()])
-    if no_cards_left:
-        g['state'] = 'SCORE'
-        g['pegging'].update({
-            'total': 0,
-            'cards': [],
-            'passed': []
-        })
-        cache.set(message['game'], json.dumps(g))
-        # send the players cards back to their hands, in game_dict and on screen
-        emit('enable_action_button', {'nickname': g['dealer'], 'action': 'SCORE'}, room=g['name'])
-
-    # determine next_player
-    next_player = rotate_turn(g['turn'], list(g['players'].keys()))
-    if next_player in g['pegging']['passed']:
-        print('we should be skipping {} since they already passed'.format(next_player))
-    next_player_action = play_or_pass(g['hands'][next_player], g['pegging']['total'])
-    print('next player is {} and they should {}'.format(next_player, next_player_action))
-
-    # write the game state
-    cache.set(message['game'], json.dumps(g))
-    emit('show_card_played', {
-         'nickname': message['nickname'], 'card': card_played, 'new_total': new_total,
-         'next_player': next_player, 'next_player_action': next_player_action}, room=message["game"])
-
-    # if they hit 31 on the nose, reset pegging round (they already received the 2 points)
-    if new_total == 31:
-        g['pegging'].update({
-            'total': 0,
-            'cards': [],
-            'passed': []
-        })
-        emit('clear_pegging_area', room=message['game'])
-        next_player_action = 'PLAY'
-
-    g['turn'] = next_player
-    cache.set(message['game'], json.dumps(g))
-    emit('show_card_played', {
-         'nickname': message['nickname'], 'card': card_played, 'new_total': new_total,
-         'next_player': next_player, 'next_player_action': next_player_action}, room=message["game"])
-
-
-@socketio.on('pass', namespace='/game')
-def pass_on_play(message):
-    g = json.loads(cache.get(message['game']))
-    g['pegging']['passed'].append(message['nickname'])
-
-    # check if everyone but the next player has passed at this point
-    next_player = rotate_turn(g['turn'], list(g['players'].keys()))
-    next_player_action = play_or_pass(g['hands'][next_player], g['pegging']['total'])
-    if set(g['players'].keys()) - set(g['pegging']['passed']) == {next_player}:
-        print('everyone but {} has passed'.format(next_player))
-        # if the next player would also pass, that means they played the card that made everyone else pass,
-        # so they get 1 point and they get to start the next round of pegging
-        if next_player_action == 'PASS':
-            print('{} cant play either, so we award them 1 point and reset the pegging round'.format(next_player))
-            g['pegging'].update({
-                'total': 0,
-                'cards': [],
-                'passed': []
-            })
-            emit('award_points', {'player': next_player, 'amount': 1, 'reason': '1 for go.'}, room=message['game'])
-            emit('clear_pegging_area', room=message['game'])
-            emit('enable_action_button', {'action': 'PLAY', 'nickname': next_player}, room=g['name'])
-
+        # show card getting played
+        emit('show_card_played', {'nickname': message['nickname'], 'card': card_played, 'new_total': new_total}, room=message['game'])
+        print('play earned {} points, new_total is {}'.format(points_scored, new_total))
+        if points_scored > 0:
+            g['players'][message['nickname']]['points'] += points_scored
+            emit('award_points', {'player': player, 'amount': points_scored, 'reason': 'pegging'}, room=message['game'])
     else:
-        emit('player_passed', {'player': message['nickname'], 'next_player': next_player,
-                               'next_player_action': next_player_action}, room=message["game"])
+        # player passed
+        g['pegging']['passed'].append(message['nickname'])
 
-    g['turn'] = next_player
+    # write to cache
     cache.set(message['game'], json.dumps(g))
+
+    # determine what happens next
+    next_player = next_player_who_can_take_action_this_round(g)
+    if next_player:
+        g['turn'] = next_player
+        next_action = play_or_pass(g['hands'][next_player], g['pegging']['total'])
+        print('It is time for {} to {}'.format(next_player, next_action))
+        emit('send_turn', {'player': next_player, 'action': next_action}, room=message['game'])
+    else:
+        # award a point to current player for go (if they didn't already get em for 31) and reset
+        if g['pegging']['total'] != 31:
+            print('awarding a point to {} for go'.format(g['pegging']['last_played']))
+            emit('award_points', {'player': g['pegging']['last_played'], 'amount': 1, 'reason': 'go'}, room=message['game'])
+        print('about to tell the frontend to clean up the pegging area')
+        emit('clear_pegging_area', room=message['game'])
+        g['pegging'].update({
+            'cards': [],
+            'last_played': '',
+            'passed': [],
+            'total': 0
+        })
+        next_player = next_player_who_can_play_at_all(g)
+        if next_player:
+            g['turn'] = next_player
+            print('It is time for {} to {}'.format(next_player, 'PLAY'))
+            emit('send_turn', {'player': next_player, 'action': 'PLAY'}, room=message['game'])
+        else:
+            # nobody has any cards left
+            g['turn'] = g['first_to_score']
+            print('It is time for {} to {}'.format(next_player, 'SCORE'))
+            emit('send_turn', {'player': g['first_to_score'], 'action': 'SCORE'}, room=message['game'])
+
+    # write next player to cache
+    cache.set(message['game'], json.dumps(g))
+    return
 
 
 if __name__ == '__main__':

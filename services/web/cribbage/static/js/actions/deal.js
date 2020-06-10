@@ -27,5 +27,4 @@ export function deal(msg) {
       });
     }
   });
-  $('#action-button').html('Discard').prop('disabled', true);
 };

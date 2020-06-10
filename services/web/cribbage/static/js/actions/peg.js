@@ -2,11 +2,23 @@ import { awardPoints } from "./score.js";
 
 export function renderCurrentTurnDisplay(player, action) {
   console.log('Time for ' + player + ' to ' + action);
-  $('.panel-heading').css('background', 'rgb(21, 32, 43)');
-  $('#' + player).find(".panel-heading").css('background', '#1CA1F2');
-  $('#action-button').html(action).prop('disabled', true);
-  if (player === sessionStorage.getItem('nickname')) {
-    $('#action-button').prop('disabled', false);
+  $('#action-button').html(action);
+  if (player === 'all') {
+    $('.panel-heading').css('background', '#1CA1F2');
+    // we dont enable the action button because this only applies to discarding, and players have to select a card
+    // for the action button to become active in that case
+  }
+  else {
+    // disable current turn display for all
+    $('.panel-heading').css('background', 'rgb(21, 32, 43)');
+
+    // enable current turn display for player
+    $('#' + player).find(".panel-heading").css('background', '#1CA1F2');
+    $('#action-button').prop('disabled', true);
+
+    if (player === sessionStorage.getItem('nickname')) {
+      $('#action-button').prop('disabled', false);
+    }
   }
 }
 
@@ -24,7 +36,6 @@ function moveCardFromHandToPlayArea(card, nickname) {
   }
 }
 
-
 function updateRunningTotal(new_total) {
   let current = $("#play-total").text();
 
@@ -38,32 +49,13 @@ function updateRunningTotal(new_total) {
   });
 }
 
-function animatePlayScore(card, points) {
-  console.log('playing card ' + card + ' earned ' + points + ' points');
-  if (points > 0) {
-    let pointsAlert = $('<div/>', {
-      id: 'pointsAlert',
-      html: '+' + points
-    });
-    $("#play-pile").append(pointsAlert);
-    $("#pointsAlert").animate({"top": "-=50px"}, 500,"linear",function() {
-      $(this).remove();
-    });
-  }
-}
-
 export function peg(msg) {
   moveCardFromHandToPlayArea(msg.card, msg.nickname);
-  if (msg.points_scored > 0) {
-    animatePlayScore(msg.card, msg.points_scored);
-    awardPoints(msg.nickname, msg.points_scored);
-  }
   updateRunningTotal(msg.new_total);
 }
 
 export function clearPeggingArea() {
-  let peggingCards = $('.playedCard');
-  $('#play-total').text(0);
-  $('#prevous-peg-rounds').append(peggingCards);
-  $('#play-pile .playedCard').hide();
+  console.log('Im clearing the pegging area');
+  $('#play-total').html(0);
+  console.log('pegging area cleared');
 }
