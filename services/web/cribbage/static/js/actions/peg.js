@@ -62,3 +62,7 @@ export function clearPeggingArea() {
   $('#play-total').html(0);
   console.log('pegging area cleared');
 }
+
+export function invalidCard(card) {
+  $('#' + card).parent().toggleClass('selected');
+}

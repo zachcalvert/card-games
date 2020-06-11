@@ -169,6 +169,14 @@ def discard(message):
 def cut_deck(message):
     g = json.loads(cache.get(message['game']))
     g['cut_card'] = g['deck'].pop()
+
+    if g['cut_card'] in ['56594b3880', '95f92b2f0c', '1d5eb77128', '110e6e5b19']:
+        player = g['dealer']
+        g['players'][player]['points'] += 2
+        msg = 'A Jack! 2 points for {}.'.format(g['dealer'])
+        emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
+        emit('award_points', {'player': player, 'amount': 2, 'reason': 'Cutting a Jack'}, room=message['game'])
+
     g['state'] = 'PLAYING'
     cache.set(message['game'], json.dumps(g))
     emit('show_cut_card', {"cut_card": g['cut_card'], 'turn': g['turn']}, room=message['game'])
@@ -187,6 +195,11 @@ def peg_round_action(message):
     if 'card_played' in message.keys():
         # record card getting played
         card_played = message['card_played']
+
+        # make sure it's a valid card
+        if CARDS.get(card_played)['value'] > 31 - g['pegging']['total']:
+            emit('invalid_card', {'card': card_played})
+            return
 
         # score play
         scorer = PlayScorer(card_played, g['pegging']['cards'], g['pegging']['run'], g['pegging']['total'])
