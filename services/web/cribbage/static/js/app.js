@@ -43,6 +43,7 @@ $('form#send_message').submit(function(event) {
 });
 socket.on('new_chat_message', function(msg, cb) {
   $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ': ' + msg.data).html());
+  $("#game-log").scrollTop($('#game-log').height());
 });
 
 
