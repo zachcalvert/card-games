@@ -59,9 +59,12 @@ html, body {
 }
 
 #game-log {
-  position: absolute;
-  bottom: 100px;
-  padding: 0 15px;
+    position: absolute;
+    bottom: 100px;
+    padding: 0 15px;
+    height: 78%;
+    width: 100%;
+    overflow-y: scroll;
 }
 
 #message_content {

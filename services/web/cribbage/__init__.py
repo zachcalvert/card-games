@@ -24,6 +24,8 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
 
+POINTS_TO_WIN = 10
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -103,6 +105,7 @@ def start_game(message):
         },
         'scored_hands': [],
         'ok_with_next_round': [],
+        'play_again': [],
     })
     for player in players:
         g['played_cards'][player] = []
@@ -177,6 +180,12 @@ def cut_deck(message):
         emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
         emit('award_points', {'player': player, 'amount': 2, 'reason': 'Cutting a Jack'}, room=message['game'])
 
+        if g['players'][player]['points'] >= POINTS_TO_WIN:
+            g['winner'] = player
+            emit('new_chat_message', {'data': '{} points! {} wins!'.format(POINTS_TO_WIN, player), 'nickname': 'cribbot'},
+                 room=message['game'])
+            emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=message['game'])
+
     g['state'] = 'PLAYING'
     cache.set(message['game'], json.dumps(g))
     emit('show_cut_card', {"cut_card": g['cut_card'], 'turn': g['turn']}, room=message['game'])
@@ -223,6 +232,12 @@ def peg_round_action(message):
 
             g['players'][message['nickname']]['points'] += points_scored
             emit('award_points', {'player': player, 'amount': points_scored, 'reason': 'pegging'}, room=message['game'])
+
+            if g['players'][player]['points'] >= POINTS_TO_WIN:
+                g['winner'] = player
+                emit('new_chat_message', {'data': '{} points! {} wins!'.format(POINTS_TO_WIN, player), 'nickname': 'cribbot'},
+                     room=message['game'])
+                emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=message['game'])
     else:
         # player passed
         g['pegging']['passed'].append(message['nickname'])
@@ -239,10 +254,12 @@ def peg_round_action(message):
     else:
         # award a point to current player for go (if they didn't already get em for 31) and reset
         if g['pegging']['total'] == 31:
+            g['players'][message['nickname']]['points'] += 2
             msg = '{} scores 2 for 31'.format(g['pegging']['last_played'])
             emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
             emit('award_points', {'player': g['pegging']['last_played'], 'amount': 2, 'reason': '31'}, room=message['game'])
         else:
+            g['players'][message['nickname']]['points'] += 1
             msg = '{} gets 1 for go'.format(g['pegging']['last_played'])
             emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
             emit('award_points', {'player': g['pegging']['last_played'], 'amount': 1, 'reason': 'go'}, room=message['game'])
@@ -287,6 +304,13 @@ def score_hand(message):
     emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
     emit('award_points', {'player': player, 'amount': hand_points, 'reason': 'Points from hand'}, room=message['game'])
 
+    if g['players'][player]['points'] >= POINTS_TO_WIN:
+        g['winner'] = player
+        emit('new_chat_message', {'data': '{} points! {} wins!'.format(POINTS_TO_WIN, player), 'nickname': 'cribbot'},
+             room=message['game'])
+        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=message['game'])
+        return
+
     if set(g['scored_hands']) == set(g['players'].keys()):
         emit('send_turn', {'player': g['dealer'], 'action': 'SCORE CRIB'}, room=message['game'])
     else:
@@ -304,11 +328,20 @@ def score_crib(message):
     crib = Hand(g['crib'], g['cut_card'], is_crib=True)
     crib_points = crib.calculate_points()
     g['players'][player]['points'] += crib_points
+
     cache.set(message['game'], json.dumps(g))
 
     msg = '{} got {} from their crib!'.format(player, crib_points)
     emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
     emit('award_points', {'player': player, 'amount': crib_points, 'reason': 'Points from crib'}, room=message['game'])
+
+    if g['players'][player]['points'] >= POINTS_TO_WIN:
+        g['winner'] = player
+        emit('new_chat_message', {'data': '{} points! {} wins!'.format(POINTS_TO_WIN, player), 'nickname': 'cribbot'},
+             room=message['game'])
+        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=message['game'])
+        return
+
     emit('send_turn', {'player': 'all', 'action': 'END ROUND'}, room=message['game'])
 
 
@@ -341,6 +374,51 @@ def end_round(message):
         msg = "New round! It is now {}'s crib.".format(next_to_deal)
         emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
         emit('send_turn', {'player': g['dealer'], 'action': 'DEAL'}, room=message['game'])
+
+
+@socketio.on('play_again', namespace='/game')
+def play_again(message):
+    print('{} has agreed to play again!'.format(message['nickname']))
+    g = json.loads(cache.get(message['game']))
+    player = message['nickname']
+    g['play_again'].append(player)
+    cache.set(message['game'], json.dumps(g))
+
+    if set(g['play_again']) == set(g['players'].keys()):
+        players = list(g['players'].keys())
+        dealer = random.choice(players)
+
+        g = {
+            'name': message['game'],
+            'players': {},
+            'state': 'DEAL',
+            'dealer': dealer,
+            'first_to_score': rotate_turn(dealer, players),
+            'deck': [],
+            'hand_size': 6 if len(players) == 2 else 5,
+            'hands': {},
+            'played_cards': {},
+            'crib': [],
+            'turn': dealer,
+            'pegging': {
+                'cards': [],
+                'passed': [],
+                'run': [],
+                'total': 0
+            },
+            'scored_hands': [],
+            'ok_with_next_round': [],
+            'play_again': [],
+        }
+        for player in players:
+            g['players'][player] = {'nickname': player, 'points': 0}
+            g['hands'][player] = []
+            g['played_cards'][player] = []
+
+        cache.set(message['game'], json.dumps(g))
+        emit('reset_table', room=message['game'])
+        emit('start_game', {'game': g["name"], 'players': list(g["players"].keys()), 'dealer': dealer},
+             room=message['game'])
 
 
 if __name__ == '__main__':

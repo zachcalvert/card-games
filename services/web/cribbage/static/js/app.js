@@ -4,7 +4,7 @@ import { deal } from "./actions/deal.js";
 import { discard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
 import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
-import { start } from "./actions/start.js";
+import { start, resetTable } from "./actions/start.js";
 import { awardPoints, clearTable, revealCrib } from "./actions/score.js";
 
 const namespace = '/game';
@@ -75,24 +75,24 @@ socket.on('send_turn', function(msg, cb) {
 });
 
 socket.on('clear_pegging_area', function (msg, cb) {
-  console.log('I was told to reset the pegging area')
   clearPeggingArea();
 });
 
 socket.on('reveal_crib', function (msg, cb) {
-  console.log('Revealing crib');
   revealCrib();
 });
 
 socket.on('clear_table', function (msg, cb) {
-  console.log('Clearing table');
   clearTable(msg.next_dealer);
+});
+
+socket.on('reset_table', function (msg, cb) {
+  resetTable();
 });
 
 socket.on('award_points', function (msg, cb) {
   awardPoints(msg.player, msg.amount, msg.reason);
 });
-
 
 $('#action-button').click(function (event) {
   let action = $(this).text();
@@ -120,7 +120,6 @@ $('#action-button').click(function (event) {
   }
 
   if (action === 'PLAY') {
-    console.log('played card!')
     let card_played = $('li.list-group-item.selected').children()[0].id;
     socket.emit('peg_round_action', {game: gameName, nickname: nickname, card_played: card_played});
     return;
@@ -141,6 +140,11 @@ $('#action-button').click(function (event) {
   if (action === 'END ROUND') {
     socket.emit('end_round', {game: gameName, nickname: nickname});
   }
+
+  if (action === 'PLAY AGAIN') {
+    socket.emit('play_again', {game: gameName, nickname: nickname});
+  }
+
   $('#action-button').prop('disabled', true);
   return false;
 });

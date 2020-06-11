@@ -13,8 +13,16 @@ function renderDeck() {
   $('#deck-area').append(deckImage);
 }
 
+export function resetTable() {
+  $('.playedOpponentCard').remove();
+  $('.cribCard').remove();
+  $('.cutCard').remove();
+  $('.playerCard').remove();
+  $('.player-points').text(0);
+  $('#play-total').text(0);
+}
+
 export function start(dealer) {
   renderCurrentTurnDisplay(dealer, 'DEAL');
   renderDealerIcon(dealer);
-  renderDeck();
 }
