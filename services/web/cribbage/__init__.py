@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import itertools
 import json
 import random
 import redis
@@ -24,8 +23,6 @@ socketio = SocketIO(app, async_mode=async_mode)
 
 thread = None
 thread_lock = Lock()
-
-HAND_SIZE = 6
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -57,10 +54,6 @@ def game():
             # return redirect(url_for('index'))
 
         other_players = [g["players"][player] for player in g["players"].keys() if player != nickname]
-        print('game = {}'.format(g))
-        print('this player: {}'.format(nickname))
-        print('all players: {}'.format(g['players'].keys()))
-        print('other players: {}'.format(other_players))
         return render_template('game.html', game=g, player=g['players'][nickname],
                                other_players=other_players, async_mode=socketio.async_mode)
 
@@ -97,14 +90,16 @@ def start_game(message):
         'dealer': dealer,
         'first_to_score': rotate_turn(dealer, players),
         'deck': [],
+        'hand_size': 6 if len(players) == 2 else 5,
         'hands': {},
         'played_cards': {},
         'crib': [],
         'turn': dealer,
         'pegging': {
-            'total': 0,
             'cards': [],
-            'passed': []
+            'passed': [],
+            'run': [],
+            'total': 0
         },
         'scored_hands': [],
         'ok_with_next_round': [],
@@ -124,11 +119,8 @@ def deal_hands(message):
     random.shuffle(deck)
 
     for player in g["players"].keys():
-        dealt_cards = [deck.pop() for card in range(HAND_SIZE)]
+        dealt_cards = [deck.pop() for card in range(g['hand_size'])]
         g['hands'][player] = dealt_cards
-        print('dealt a hand, the deck now has {} cards'.format(len(deck)))
-
-    print('hands: {}'.format(g['hands']))
 
     g['state'] = 'DISCARD'
     g['deck'] = deck
@@ -168,7 +160,6 @@ def discard(message):
             cutter = players[0]
 
         g['turn'] = cutter
-        print('showing cut to {}'.format(cutter))
         emit('send_turn', {'player': cutter, 'action': 'CUT'}, room=message['game'])
 
     cache.set(message['game'], json.dumps(g))
@@ -198,8 +189,8 @@ def peg_round_action(message):
         card_played = message['card_played']
 
         # score play
-        scorer = PlayScorer(CARDS.get(card_played), g['pegging']['cards'], g['pegging']['total'])
-        points_scored, new_total = scorer.calculate_points()
+        scorer = PlayScorer(card_played, g['pegging']['cards'], g['pegging']['run'], g['pegging']['total'])
+        points_scored, new_total, run = scorer.calculate_points()
 
         # record play
         g['hands'][player].remove(card_played)
@@ -207,7 +198,9 @@ def peg_round_action(message):
         g['pegging']['cards'].append(card_played)
         g['pegging']['last_played'] = player
         g['pegging']['total'] = new_total
-        print('{} played {}, and their hand is now {}'.format(player, card_played, g['hands'][player]))
+
+        if run:
+            g['pegging']['run'] = run
 
         # show card getting played
         emit('show_card_played', {'nickname': message['nickname'], 'card': card_played, 'new_total': new_total}, room=message['game'])
@@ -229,7 +222,6 @@ def peg_round_action(message):
     if next_player:
         g['turn'] = next_player
         next_action = play_or_pass(g['hands'][next_player], g['pegging']['total'])
-        print('It is time for {} to {}'.format(next_player, next_action))
         emit('send_turn', {'player': next_player, 'action': next_action}, room=message['game'])
     else:
         # award a point to current player for go (if they didn't already get em for 31) and reset
@@ -248,17 +240,16 @@ def peg_round_action(message):
             'cards': [],
             'last_played': '',
             'passed': [],
+            'run': [],
             'total': 0
         })
         next_player = next_player_who_can_play_at_all(g)
         if next_player:
             g['turn'] = next_player
-            print('It is time for {} to {}'.format(next_player, 'PLAY'))
             emit('send_turn', {'player': next_player, 'action': 'PLAY'}, room=message['game'])
         else:
             # nobody has any cards left
             g['turn'] = g['first_to_score']
-            print('It is time for {} to {}'.format(next_player, 'SCORE'))
             emit('send_turn', {'player': g['first_to_score'], 'action': 'SCORE'}, room=message['game'])
 
     # write next player to cache
@@ -325,6 +316,7 @@ def end_round(message):
             'dealer': next_to_deal,
             'first_to_score': next_to_score_first,
             'hands': {},
+            'ok_with_next_round': [],
             'played_cards': {},
             'scored_hands': [],
             'turn': next_to_deal,
@@ -333,6 +325,8 @@ def end_round(message):
             g['played_cards'][player] = []
         cache.set(message['game'], json.dumps(g))
         emit('clear_table', {'next_dealer': next_to_deal}, room=message['game'])
+        msg = "New round! It is now {}'s crib.".format(next_to_deal)
+        emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
         emit('send_turn', {'player': g['dealer'], 'action': 'DEAL'}, room=message['game'])
 
 

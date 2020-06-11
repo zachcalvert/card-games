@@ -1,47 +1,64 @@
 from itertools import chain, combinations
 import more_itertools as mit
-import random
 
 from cribbage.cards import CARDS
 
 
 class PlayScorer:
-    def __init__(self, card, previously_played_cards, total):
-        self.card = card
-        self.previously_played_cards = previously_played_cards
+    def __init__(self, card, previously_played_cards, run, total):
+        self.card = CARDS.get(card)
+        self.previously_played_cards = [CARDS.get(card_id) for card_id in previously_played_cards]
+        self.run = run
         self.total = int(total)
 
     def calculate_points(self):
+        """
+        Runs and pairs/threes/fours are mutually exclusive in the ry
+        :return:
+        """
         print("calculating points..")
         points = 0
 
         new_total = self.total + self.card["value"]
         if new_total == 15:
             points += 2
-        # we handle 31s in the peg_round_action view
 
         if self.previously_played_cards:
-            print('previously played cards: {}'.format([CARDS.get(card) for card in self.previously_played_cards]))
+            print('previously played cards: {}'.format(self.previously_played_cards))
 
             # evaluate pairs, threes, and fours
-            for count, _ in enumerate(self.previously_played_cards):
-                card = CARDS.get(self.previously_played_cards[count])
-                if self.card["rank"] == card["rank"]:
-                    if count == 0:
-                        points += 2
-                        print('found a pair')
-                    elif count == 1:
-                        print('found three of a kind')
-                        points += 4
-                    elif count == 2:
-                        print('found four of a kind')
+            most_recent = self.previously_played_cards[0]
+            if self.card['rank'] == most_recent['rank']:
+                if len(self.previously_played_cards) > 1:
+                    if self.card['rank'] == self.previously_played_cards[1]['rank']:
+                        if len(self.previously_played_cards) > 2:
+                            if self.card['rank'] == self.previously_played_cards[2]['rank']:
+                                print('four of a kind!')
+                                points += 12
+                                return points, new_total, []
+                        print('three of a kind!')
                         points += 6
+                        return points, new_total, []
+                print('a pair!')
+                points += 2
+                return points, new_total, []
 
-            # evaluate for runs
-            if len(self.previously_played_cards) >= 2:
+            # Is there already a run going? If so, see if this one has added to it
+            if self.run:
                 pass
 
-        return points, new_total
+            # or, has this card itself made a run
+            elif len(self.previously_played_cards) == 2:
+                # just get the most recent 2 played
+                ranks = sorted([card["rank"] for card in self.previously_played_cards[:2]] + [self.card["rank"]])
+                groups = [list(group) for group in mit.consecutive_groups(ranks)]
+                for group in groups:
+                    if len(group) > 2:
+                        self.run = group
+                        points += len(group)
+                        continue
+
+        return points, new_total, self.run
 
 
 class Hand:
@@ -55,7 +72,6 @@ class Hand:
         self.runs = []
         self.flush_points = 0
         self.nobs = False
-        print('our hand is: {}'.format(self))
 
     def __str__(self):
         s = ''
