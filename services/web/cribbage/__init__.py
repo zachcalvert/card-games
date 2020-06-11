@@ -217,7 +217,7 @@ def peg_round_action(message):
         # record play
         g['hands'][player].remove(card_played)
         g['played_cards'][player].append(card_played)
-        g['pegging']['cards'].append(card_played)
+        g['pegging']['cards'].insert(0, card_played)
         g['pegging']['last_played'] = player
         g['pegging']['total'] = new_total
 
@@ -378,10 +378,8 @@ def end_round(message):
 
 @socketio.on('play_again', namespace='/game')
 def play_again(message):
-    print('{} has agreed to play again!'.format(message['nickname']))
     g = json.loads(cache.get(message['game']))
-    player = message['nickname']
-    g['play_again'].append(player)
+    g['play_again'].append(message['nickname'])
     cache.set(message['game'], json.dumps(g))
 
     if set(g['play_again']) == set(g['players'].keys()):

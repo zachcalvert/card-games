@@ -13,8 +13,7 @@ class PlayScorer:
 
     def calculate_points(self):
         """
-        Runs and pairs/threes/fours are mutually exclusive in the ry
-        :return:
+        Runs and pairs/threes/fours are mutually exclusive in the run of play
         """
         print("calculating points..")
         points = 0
@@ -25,6 +24,30 @@ class PlayScorer:
 
         if self.previously_played_cards:
             print('previously played cards: {}'.format(self.previously_played_cards))
+            # Is there already a run going? If so, try to add to it
+            if self.run:
+                ranks = sorted(self.run + [self.card['rank']])
+                groups = [list(group) for group in mit.consecutive_groups(ranks)]
+                extended = False
+                for group in groups:
+                    if len(group) == len(ranks):
+                        extended = True
+                        self.run = group
+                        points += len(group)
+                        continue
+                if not extended:
+                    self.run = []
+
+            # or, maybe this card itself has made a run
+            elif len(self.previously_played_cards) == 2:
+                # just get the most recent 2 played
+                ranks = sorted([card["rank"] for card in self.previously_played_cards[:2]] + [self.card["rank"]])
+                groups = [list(group) for group in mit.consecutive_groups(ranks)]
+                for group in groups:
+                    if len(group) > 2:
+                        self.run = group
+                        points += len(group)
+                        continue
 
             # evaluate pairs, threes, and fours
             most_recent = self.previously_played_cards[0]
@@ -42,21 +65,6 @@ class PlayScorer:
                 print('a pair!')
                 points += 2
                 return points, new_total, []
-
-            # Is there already a run going? If so, see if this one has added to it
-            if self.run:
-                pass
-
-            # or, has this card itself made a run
-            elif len(self.previously_played_cards) == 2:
-                # just get the most recent 2 played
-                ranks = sorted([card["rank"] for card in self.previously_played_cards[:2]] + [self.card["rank"]])
-                groups = [list(group) for group in mit.consecutive_groups(ranks)]
-                for group in groups:
-                    if len(group) > 2:
-                        self.run = group
-                        points += len(group)
-                        continue
 
         return points, new_total, self.run
 
