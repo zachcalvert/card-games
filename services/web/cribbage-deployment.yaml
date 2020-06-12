@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cribbage
+  labels:
+    app: cribbage
+spec:
+  selector:
+    matchLabels:
+      app: cribbage
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: cribbage
+        tier: web
+    spec:
+      containers:
+      - name: cribbage
+        image: gcr.io/google-samples/hello-app:1.0
+        ports:
+        - containerPort: 8080

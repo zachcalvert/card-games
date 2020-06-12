@@ -1,4 +1,4 @@
-from cribbage.cards import CARDS
+from .cards import CARDS
 
 
 def rotate_turn(current, players):

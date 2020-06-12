@@ -18,3 +18,6 @@ COPY . /usr/src/app/
 
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+
+# https://stackoverflow.com/questions/59047536/kubernetes-ingress-websockets-socket-io
+# CMD ["gunicorn", "-k", "geventwebsocket.gunicorn.workers.GeventWebSocketWorker", "-w", "1", "--bind", "0.0.0.0:3001", "--timeout", "180", "--access-logfile", "-", "--chdir", "/root/rest-api/", "app:app"]
