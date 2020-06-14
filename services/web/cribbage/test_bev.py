@@ -1,5 +1,6 @@
 import fakeredis
 import json
+import mock
 
 from cribbage import bev
 from cribbage.cards import CARDS
@@ -89,6 +90,7 @@ class TestNextPlayer:
         assert g['pegging']['total'] == 30
         assert bev.get_player_action('test', g['turn']) == 'PASS'
 
+    @mock.patch('cribbage.app.award_points', mock.MagicMock(return_value=True))
     def test_everyone_has_passed_and_tom_still_has_cards(self):
         fake_redis = fakeredis.FakeRedis()
         game_dict = {
@@ -220,6 +222,7 @@ class TestNextPlayer:
         assert g['state'] == 'SCORE'
         assert g['turn'] == 'tom'
 
+    @mock.patch('cribbage.app.award_points', mock.MagicMock(return_value=True))
     def test_no_one_has_cards_left(self):
         """
         Kathy just hit 24, and everyone is out of cards
