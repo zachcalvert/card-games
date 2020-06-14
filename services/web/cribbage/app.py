@@ -22,7 +22,7 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
 
-POINTS_TO_WIN = 121
+POINTS_TO_WIN = 10
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -56,7 +56,9 @@ def award_points(game, player, amount, total_points):
 
     if total_points > POINTS_TO_WIN:
         emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribbot'}, room=game)
-        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=message['game'])
+        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
+        return True
+    return False
 
 
 def clear_pegging_area(game):
@@ -107,8 +109,10 @@ def discard(msg):
 
 @socketio.on('cut_deck', namespace='/game')
 def cut_deck(msg):
-    cut_card, turn = bev.cut_deck(msg['game'])
+    cut_card, turn, winning_cut = bev.cut_deck(msg['game'])
     emit('show_cut_card', {"cut_card": cut_card, 'turn': turn}, room=msg['game'])
+    if winning_cut:
+        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
 
 
 @socketio.on('peg_round_action', namespace='/game')
@@ -123,14 +127,25 @@ def peg_round_action(msg):
         if CARDS.get(msg['card_played'])['value'] > (31 - total):
             emit('invalid_card', {'card': msg['card_played']})
             return
-        bev.score_play(msg['game'], msg['player'], msg['card_played'])
+
+        if msg['player'] != bev.get_current_turn(msg['game']):
+            emit('invalid_card', {'card': msg['card_played']})
+            return
+
+        just_won = bev.score_play(msg['game'], msg['player'], msg['card_played'])
         new_total = bev.record_play(msg['game'], msg['player'], msg['card_played'])
-        emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total},
-             room=msg['game'])
+        if just_won:
+            emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
+        else:
+            emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total},
+                 room=msg['game'])
     else:
         bev.record_pass(msg['game'], msg['nickname'])
 
-    next_player = bev.next_player(msg['game'])
+    next_player, go_point_wins = bev.next_player(msg['game'])
+    if go_point_wins:
+        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
+        return
     print('next player: {}'.format(next_player))
     next_action = bev.get_player_action(msg['game'], next_player)
     print('next action: {}'.format(next_action))
@@ -139,8 +154,10 @@ def peg_round_action(msg):
 
 @socketio.on('score_hand', namespace='/game')
 def score_hand(msg):
-    next_to_score = bev.score_hand(msg['game'], msg['nickname'])
-    if next_to_score:
+    next_to_score, just_won = bev.score_hand(msg['game'], msg['nickname'])
+    if just_won:
+        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=msg['game'])
+    elif next_to_score:
         emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
         dealer = bev.get_dealer(msg['game'])
@@ -150,13 +167,15 @@ def score_hand(msg):
 @socketio.on('score_crib', namespace='/game')
 def score_crib(msg):
     emit('reveal_crib', room=msg['game'])
-    bev.score_crib(msg['game'], msg['nickname'])
-    emit('send_turn', {'player': 'all', 'action': 'END ROUND'}, room=msg['game'])
+    just_won = bev.score_crib(msg['game'], msg['nickname'])
+    if just_won:
+        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
+    else:
+        emit('send_turn', {'player': 'all', 'action': 'END ROUND'}, room=msg['game'])
 
 
 @socketio.on('end_round', namespace='/game')
 def end_round(msg):
-
     all_have_ended = bev.end_round(msg['game'], msg['nickname'])
     if all_have_ended:
         dealer = bev.get_dealer(msg['game'])
@@ -167,46 +186,13 @@ def end_round(msg):
 
 
 @socketio.on('play_again', namespace='/game')
-def play_again(message):
-    g = json.loads(cache.get(message['game']))
-    g['play_again'].append(message['nickname'])
-    cache.set(message['game'], json.dumps(g))
-
-    if set(g['play_again']) == set(g['players'].keys()):
-        players = list(g['players'].keys())
-        dealer = random.choice(players)
-
-        g = {
-            'name': message['game'],
-            'players': {},
-            'state': 'DEAL',
-            'dealer': dealer,
-            'first_to_score': rotate_turn(dealer, players),
-            'deck': [],
-            'hand_size': 6 if len(players) == 2 else 5,
-            'hands': {},
-            'played_cards': {},
-            'crib': [],
-            'turn': dealer,
-            'pegging': {
-                'cards': [],
-                'passed': [],
-                'run': [],
-                'total': 0
-            },
-            'scored_hands': [],
-            'ok_with_next_round': [],
-            'play_again': [],
-        }
-        for player in players:
-            g['players'][player] = {'nickname': player, 'points': 0}
-            g['hands'][player] = []
-            g['played_cards'][player] = []
-
-        cache.set(message['game'], json.dumps(g))
-        emit('reset_table', room=message['game'])
-        emit('start_game', {'game': g["name"], 'players': list(g["players"].keys()), 'dealer': dealer},
-             room=message['game'])
+def play_again(msg):
+    all_want_to_play_again = bev.play_again(msg['game'], msg['nickname'])
+    if all_want_to_play_again:
+        bev.reset_game_dict(msg['game'])
+        emit('reset_table', room=msg['game'])
+        dealer = bev.start_game(msg['game'])
+        emit('start_game', {'dealer': dealer}, room=msg['game'])
 
 
 if __name__ == '__main__':

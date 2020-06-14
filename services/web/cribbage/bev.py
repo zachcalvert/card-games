@@ -125,18 +125,25 @@ def get_dealer(game):
     return g['dealer']
 
 
+def get_current_turn(game):
+    g = json.loads(cache.get(game))
+    return g['turn']
+
+
 def cut_deck(game):
     from cribbage.app import award_points
+    just_won = False
+
     g = json.loads(cache.get(game))
     g['cut_card'] = g['deck'].pop()
     g['state'] = 'PLAYING'
 
     if g['cut_card'] in ['56594b3880', '95f92b2f0c', '1d5eb77128', '110e6e5b19']:
         g['players'][g['dealer']]['points'] += 2
-        award_points(game, g['dealer'], 2, g['players'][g['dealer']]['points'])
+        just_won = award_points(game, g['dealer'], 2, g['players'][g['dealer']]['points'])
 
     cache.set(game, json.dumps(g))
-    return g['cut_card'], g['turn']
+    return g['cut_card'], g['turn'], just_won
 
 
 def get_pegging_total(game):
@@ -147,6 +154,7 @@ def get_pegging_total(game):
 def score_play(game, player, card):
     from cribbage.app import award_points, clear_pegging_area
 
+    just_won = False
     g = json.loads(cache.get(game))
     card_played = CARDS[card]
     cards_on_table = [CARDS.get(card) for card in g['pegging']['cards']]
@@ -181,9 +189,10 @@ def score_play(game, player, card):
 
     if points > 0:
         g['players'][player]['points'] += points
-        award_points(game, player, points, g['players'][player]['points'])
+        just_won = award_points(game, player, points, g['players'][player]['points'])
 
     cache.set(game, json.dumps(g))
+    return just_won
 
 
 def record_play(game, player, card):
@@ -231,6 +240,7 @@ def next_player_who_has_cards(players_to_check_in_order, hands):
 def next_player(game):
     from cribbage.app import award_points, clear_pegging_area
 
+    just_won = False
     g = json.loads(cache.get(game))
     player_order = list(g['players'].keys())
     starting_point = player_order.index(g['turn'])
@@ -254,7 +264,7 @@ def next_player(game):
         if not next:
             last_played = g['pegging']['last_played']
             g['players'][last_played]['points'] += 1
-            award_points(game, last_played, 1, g['players'][last_played]['points'])
+            just_won = award_points(game, last_played, 1, g['players'][last_played]['points'])
             if g['hands'][last_played]:
                 next = last_played
             else:
@@ -273,7 +283,7 @@ def next_player(game):
 
     g['turn'] = next
     cache.set(game, json.dumps(g))
-    return next
+    return next, just_won
 
 
 def get_player_action(game, player):
@@ -290,9 +300,9 @@ def get_player_action(game, player):
     return next_action
 
 
-
 def score_hand(game, player):
     from cribbage.app import award_points
+    next_to_score = None
 
     g = json.loads(cache.get(game))
     player_cards = g['played_cards'][player]
@@ -300,14 +310,14 @@ def score_hand(game, player):
     hand_points = hand.calculate_points()
 
     g['players'][player]['points'] += hand_points
-    award_points(game, player, hand_points, g['players'][player]['points'])
+    just_won = award_points(game, player, hand_points, g['players'][player]['points'])
 
     g['scored_hands'].append(player)
     cache.set(game, json.dumps(g))
 
     if set(g['scored_hands']) != set(g['players'].keys()):
-        return rotate_turn(player, list(g['players'].keys()))
-    return None
+        next_to_score = rotate_turn(player, list(g['players'].keys()))
+    return next_to_score, just_won
 
 
 def score_crib(game, player):
@@ -317,8 +327,9 @@ def score_crib(game, player):
     crib = Hand(g['crib'], g['cut_card'], is_crib=True)
     crib_points = crib.calculate_points()
     g['players'][player]['points'] += crib_points
-    award_points(game, player, crib_points, g['players'][player]['points'])
+    just_won = award_points(game, player, crib_points, g['players'][player]['points'])
     cache.set(game, json.dumps(g))
+    return just_won
 
 
 def end_round(game, player):
@@ -348,3 +359,28 @@ def end_round(game, player):
         cache.set(game, json.dumps(g))
 
     return all_have_ended
+
+
+def play_again(game, player):
+    g = json.loads(cache.get(game))
+    g['play_again'].append(player)
+    cache.set(game, json.dumps(g))
+
+    if set(g['play_again']) == set(g['players'].keys()):
+        return True
+    return False
+
+
+def reset_game_dict(game):
+    g = json.loads(cache.get(game))
+    players = list(g['players'].keys())
+    game_dict = {
+        'players': {},
+        "name": game,
+        "state": "INIT",
+    }
+    for player in players:
+        game_dict['players'][player] = {'nickname': player, 'points': 0}
+
+    cache.set(game, json.dumps(game_dict))
+
