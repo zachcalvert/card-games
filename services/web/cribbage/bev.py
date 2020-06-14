@@ -7,6 +7,7 @@ from itertools import chain, combinations
 import more_itertools as mit
 
 from cribbage.cards import CARDS
+from cribbage.scoring import Hand
 from cribbage.utils import rotate_turn, play_or_pass
 
 cache = redis.Redis(host='redis', port=6379)
@@ -121,6 +122,11 @@ class Bev:
         return g['cutter']
 
     @staticmethod
+    def get_dealer(game):
+        g = json.loads(cache.get(game))
+        return g['dealer']
+
+    @staticmethod
     def cut_deck(game):
         from cribbage.app import award_points
         g = json.loads(cache.get(game))
@@ -205,6 +211,7 @@ class Bev:
         player_order = list(g['players'].keys())
         starting_point = player_order.index(g['turn'])
         players_to_check_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
+
         def _clear_pegging_data():
             g['pegging'].update({
                 'cards': [],
@@ -216,10 +223,9 @@ class Bev:
 
         def _next_player_for_this_round():
             for player in players_to_check_in_order:
-                if g['pegging']['total'] == 31:
+                if g['pegging']['total'] >= 31:
                     return None
 
-                print('checking {}'.format(player))
                 if g['hands'][player] and player not in g['pegging']['passed'] and player != g['pegging']['last_played']:
                     return player
 
@@ -251,3 +257,62 @@ class Bev:
         g['turn'] = next_player
         cache.set(game, json.dumps(g))
         return next_player, next_action
+
+    @staticmethod
+    def score_hand(game, player):
+        from cribbage.app import award_points
+
+        g = json.loads(cache.get(game))
+        player_cards = g['played_cards'][player]
+        hand = Hand(player_cards, g['cut_card'])
+        hand_points = hand.calculate_points()
+
+        g['players'][player]['points'] += hand_points
+        award_points(game, player, hand_points, g['players'][player]['points'])
+
+        g['scored_hands'].append(player)
+        cache.set(game, json.dumps(g))
+
+        if set(g['scored_hands']) != set(g['players'].keys()):
+            return rotate_turn(player, list(g['players'].keys()))
+        return None
+
+    @staticmethod
+    def score_crib(game, player):
+        from cribbage.app import award_points
+
+        g = json.loads(cache.get(game))
+        crib = Hand(g['crib'], g['cut_card'], is_crib=True)
+        crib_points = crib.calculate_points()
+        g['players'][player]['points'] += crib_points
+        award_points(game, player, crib_points, g['players'][player]['points'])
+        cache.set(game, json.dumps(g))
+
+    @staticmethod
+    def end_round(game, player):
+        g = json.loads(cache.get(game))
+        g['ok_with_next_round'].append(player)
+        cache.set(game, json.dumps(g))
+
+        all_have_ended = False
+        if set(g['ok_with_next_round']) == set(g['players'].keys()):
+            all_have_ended = True
+            next_to_deal = rotate_turn(g['dealer'], list(g['players'].keys()))
+            next_to_score_first = rotate_turn(next_to_deal, list(g['players'].keys()))
+
+            g.update({
+                'state': 'DEAL',
+                'crib': [],
+                'dealer': next_to_deal,
+                'first_to_score': next_to_score_first,
+                'hands': {},
+                'ok_with_next_round': [],
+                'played_cards': {},
+                'scored_hands': [],
+                'turn': next_to_deal,
+            })
+            for player in list(g['players'].keys()):
+                g['played_cards'][player] = []
+            cache.set(game, json.dumps(g))
+
+        return all_have_ended

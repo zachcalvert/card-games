@@ -10,7 +10,6 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, ro
 
 from cribbage.bev import Bev
 from cribbage.cards import CARDS
-from cribbage.scoring import Hand
 from cribbage.utils import rotate_turn, play_or_pass
 
 async_mode = None
@@ -57,6 +56,7 @@ def award_points(game, player, amount, total_points):
 
     if total_points > POINTS_TO_WIN:
         emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribbot'}, room=game)
+        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=message['game'])
 
 
 def clear_pegging_area(game):
@@ -135,92 +135,32 @@ def peg_round_action(msg):
 
 
 @socketio.on('score_hand', namespace='/game')
-def score_hand(message):
-    g = json.loads(cache.get(message['game']))
-    player = message['nickname']
-    player_cards = g['played_cards'][player]
-
-    hand = Hand(player_cards, g['cut_card'])
-    hand_points = hand.calculate_points()
-
-    g['players'][player]['points'] += hand_points
-    g['scored_hands'].append(player)
-    cache.set(message['game'], json.dumps(g))
-
-    msg = '{} scored {} with their hand!'.format(player, hand_points)
-    emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
-    emit('award_points', {'player': player, 'amount': hand_points, 'reason': 'Points from hand'}, room=message['game'])
-
-    if g['players'][player]['points'] >= POINTS_TO_WIN:
-        g['winner'] = player
-        emit('new_chat_message', {'data': '{} points! {} wins!'.format(POINTS_TO_WIN, player), 'nickname': 'cribbot'},
-             room=message['game'])
-        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=message['game'])
-        return
-
-    if set(g['scored_hands']) == set(g['players'].keys()):
-        emit('send_turn', {'player': g['dealer'], 'action': 'SCORE CRIB'}, room=message['game'])
+def score_hand(msg):
+    next_to_score = Bev.score_hand(msg['game'], msg['nickname'])
+    if next_to_score:
+        emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
-        next_to_score = rotate_turn(player, list(g['players'].keys()))
-        emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=message['game'])
+        dealer = Bev.get_dealer(msg['game'])
+        emit('send_turn', {'player': dealer, 'action': 'SCORE CRIB'}, room=msg['game'])
 
 
 @socketio.on('score_crib', namespace='/game')
-def score_crib(message):
-    g = json.loads(cache.get(message['game']))
-    player = message['nickname']
-
-    emit('reveal_crib', room=message['game'])
-
-    crib = Hand(g['crib'], g['cut_card'], is_crib=True)
-    crib_points = crib.calculate_points()
-    g['players'][player]['points'] += crib_points
-
-    cache.set(message['game'], json.dumps(g))
-
-    msg = '{} got {} from their crib!'.format(player, crib_points)
-    emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
-    emit('award_points', {'player': player, 'amount': crib_points, 'reason': 'Points from crib'}, room=message['game'])
-
-    if g['players'][player]['points'] >= POINTS_TO_WIN:
-        g['winner'] = player
-        emit('new_chat_message', {'data': '{} points! {} wins!'.format(POINTS_TO_WIN, player), 'nickname': 'cribbot'},
-             room=message['game'])
-        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=message['game'])
-        return
-
-    emit('send_turn', {'player': 'all', 'action': 'END ROUND'}, room=message['game'])
+def score_crib(msg):
+    emit('reveal_crib', room=msg['game'])
+    Bev.score_crib(msg['game'], msg['nickname'])
+    emit('send_turn', {'player': 'all', 'action': 'END ROUND'}, room=msg['game'])
 
 
 @socketio.on('end_round', namespace='/game')
-def end_round(message):
-    g = json.loads(cache.get(message['game']))
-    player = message['nickname']
-    g['ok_with_next_round'].append(player)
-    cache.set(message['game'], json.dumps(g))
+def end_round(msg):
 
-    if set(g['ok_with_next_round']) == set(g['players'].keys()):
-        next_to_deal = rotate_turn(g['dealer'], list(g['players'].keys()))
-        next_to_score_first = rotate_turn(next_to_deal, list(g['players'].keys()))
-
-        g.update({
-            'state': 'DEAL',
-            'crib': [],
-            'dealer': next_to_deal,
-            'first_to_score': next_to_score_first,
-            'hands': {},
-            'ok_with_next_round': [],
-            'played_cards': {},
-            'scored_hands': [],
-            'turn': next_to_deal,
-        })
-        for player in list(g['players'].keys()):
-            g['played_cards'][player] = []
-        cache.set(message['game'], json.dumps(g))
-        emit('clear_table', {'next_dealer': next_to_deal}, room=message['game'])
-        msg = "New round! It is now {}'s crib.".format(next_to_deal)
-        emit('new_chat_message', {'data': msg, 'nickname': 'cribbot'}, room=message['game'])
-        emit('send_turn', {'player': g['dealer'], 'action': 'DEAL'}, room=message['game'])
+    all_have_ended = Bev.end_round(msg['game'], msg['nickname'])
+    if all_have_ended:
+        dealer = Bev.get_dealer(msg['game'])
+        emit('clear_table', {'next_dealer': dealer}, room=msg['game'])
+        message = "New round! It is now {}'s crib.".format(dealer)
+        emit('new_chat_message', {'data': message, 'nickname': 'cribbot'}, room=msg['game'])
+        emit('send_turn', {'player': dealer, 'action': 'DEAL'}, room=msg['game'])
 
 
 @socketio.on('play_again', namespace='/game')
