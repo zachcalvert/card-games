@@ -8,7 +8,7 @@ from flask import Flask, render_template, session, request, Markup, redirect, ur
 from flask_fontawesome import FontAwesome
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 
-from cribbage.bev import Bev
+from cribbage import bev
 from cribbage.cards import CARDS
 from cribbage.utils import rotate_turn, play_or_pass
 
@@ -36,12 +36,12 @@ def game_detail():
         game_name = request.form['join_game_name']
         player = request.form.get('join_nickname')
 
-        game = Bev.get_game(game_name)
+        game = bev.get_game(game_name)
         if not game:
-            game = Bev.setup_game(name=game_name, player=player)
+            game = bev.setup_game(name=game_name, player=player)
 
         if player not in game["players"]:
-            game = Bev.add_player(game_name, player)
+            game = bev.add_player(game_name, player)
 
         other_players = [game["players"][p] for p in game["players"].keys() if p != player]
         return render_template('game.html', game=game, player=game['players'][player], other_players=other_players,
@@ -72,7 +72,7 @@ def join(message):
 @socketio.on('leave', namespace='/game')
 def leave(message):
     leave_room(message['game'])
-    Bev.remove_player(message['game'], message['nickname'])
+    bev.remove_player(message['game'], message['nickname'])
     emit('player_leave', {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
 
 
@@ -83,13 +83,13 @@ def send_message(message):
 
 @socketio.on('start_game', namespace='/game')
 def start_game(message):
-    dealer = Bev.start_game(message['game'])
+    dealer = bev.start_game(message['game'])
     emit('start_game', {'dealer': dealer}, room=message['game'])
 
 
 @socketio.on('deal_hands', namespace='/game')
 def deal_hands(msg):
-    hands = Bev.deal_hands(msg['game'])
+    hands = bev.deal_hands(msg['game'])
     emit('deal_hands', {'hands': hands}, room=msg['game'])
     emit('send_turn', {'player': 'all', 'action': 'DISCARD'}, room=msg['game'])
 
@@ -98,16 +98,16 @@ def deal_hands(msg):
 def discard(msg):
     """
     """
-    player_done, all_done = Bev.discard(msg['game'], msg['player'], msg["card"])
+    player_done, all_done = bev.discard(msg['game'], msg['player'], msg["card"])
     emit('discard', {'card': msg['card'], 'nickname': msg['player'], 'done': player_done}, room=msg['game'])
     if all_done:
-        cutter = Bev.get_cutter(msg['game'])
+        cutter = bev.get_cutter(msg['game'])
         emit('send_turn', {'player': cutter, 'action': 'CUT'}, room=msg['game'])
 
 
 @socketio.on('cut_deck', namespace='/game')
 def cut_deck(msg):
-    cut_card, turn = Bev.cut_deck(msg['game'])
+    cut_card, turn = bev.cut_deck(msg['game'])
     emit('show_cut_card', {"cut_card": cut_card, 'turn': turn}, room=msg['game'])
 
 
@@ -119,44 +119,47 @@ def peg_round_action(msg):
     :return:
     """
     if 'card_played' in msg.keys():
-        total = Bev.get_pegging_total(msg['game'])
+        total = bev.get_pegging_total(msg['game'])
         if CARDS.get(msg['card_played'])['value'] > (31 - total):
             emit('invalid_card', {'card': msg['card_played']})
             return
-        Bev.score_play(msg['game'], msg['player'], msg['card_played'])
-        new_total = Bev.record_play(msg['game'], msg['player'], msg['card_played'])
+        bev.score_play(msg['game'], msg['player'], msg['card_played'])
+        new_total = bev.record_play(msg['game'], msg['player'], msg['card_played'])
         emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total},
              room=msg['game'])
     else:
-        Bev.record_pass(msg['game'], msg['nickname'])
+        bev.record_pass(msg['game'], msg['nickname'])
 
-    next_player, next_action = Bev.next_player_and_action(msg['game'])
+    next_player = bev.next_player(msg['game'])
+    print('next player: {}'.format(next_player))
+    next_action = bev.get_player_action(msg['game'], next_player)
+    print('next action: {}'.format(next_action))
     emit('send_turn', {'player': next_player, 'action': next_action}, room=msg['game'])
 
 
 @socketio.on('score_hand', namespace='/game')
 def score_hand(msg):
-    next_to_score = Bev.score_hand(msg['game'], msg['nickname'])
+    next_to_score = bev.score_hand(msg['game'], msg['nickname'])
     if next_to_score:
         emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
-        dealer = Bev.get_dealer(msg['game'])
+        dealer = bev.get_dealer(msg['game'])
         emit('send_turn', {'player': dealer, 'action': 'SCORE CRIB'}, room=msg['game'])
 
 
 @socketio.on('score_crib', namespace='/game')
 def score_crib(msg):
     emit('reveal_crib', room=msg['game'])
-    Bev.score_crib(msg['game'], msg['nickname'])
+    bev.score_crib(msg['game'], msg['nickname'])
     emit('send_turn', {'player': 'all', 'action': 'END ROUND'}, room=msg['game'])
 
 
 @socketio.on('end_round', namespace='/game')
 def end_round(msg):
 
-    all_have_ended = Bev.end_round(msg['game'], msg['nickname'])
+    all_have_ended = bev.end_round(msg['game'], msg['nickname'])
     if all_have_ended:
-        dealer = Bev.get_dealer(msg['game'])
+        dealer = bev.get_dealer(msg['game'])
         emit('clear_table', {'next_dealer': dealer}, room=msg['game'])
         message = "New round! It is now {}'s crib.".format(dealer)
         emit('new_chat_message', {'data': message, 'nickname': 'cribbot'}, room=msg['game'])

@@ -27,5 +27,6 @@ export function clearTable(next_dealer) {
   $('.cribCard').remove();
   $('.cutCard').remove();
   $('.playerCard').remove();
+  $('#play-total').text();
   renderDealerIcon(next_dealer);
 }

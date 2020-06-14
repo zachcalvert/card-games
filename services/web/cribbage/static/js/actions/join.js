@@ -1,7 +1,7 @@
 export function announcePlayerJoin(msg) {
   if ($("#" + msg.nickname).length === 0) {
     let playerName = $('<span/>', {
-      class: 'player-name',
+      class: 'player-nickname',
       html: msg.nickname
     });
 
