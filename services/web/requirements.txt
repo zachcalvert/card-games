@@ -7,8 +7,9 @@ Jinja2==2.10.2
 MarkupSafe==1.1.0
 python-engineio
 python-socketio
-six==1.11.0
+six>=1.12
 Flask-FontAwesome
 more_itertools
 redis==3.5.3
 pytest
+fakeredis

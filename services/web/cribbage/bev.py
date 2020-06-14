@@ -204,6 +204,30 @@ def record_pass(game, player):
     cache.set(game, json.dumps(g))
 
 
+def next_player_for_this_round(players_to_check_in_order, hands, passed_list):
+    """
+    Find the next player who still has cards and has not passed
+    :param players_to_check_in_order:
+    :param hands:
+    :param passed_list:
+    :return:
+    """
+    for player in players_to_check_in_order:
+        if hands[player] and player not in passed_list:
+            return player
+    return None
+
+
+def next_player_who_has_cards(players_to_check_in_order, hands):
+    """
+    Find the next player who still has cards
+    """
+    for player in players_to_check_in_order:
+        if hands[player]:
+            return player
+    return None
+
+
 def next_player(game):
     from cribbage.app import award_points, clear_pegging_area
 
@@ -212,23 +236,11 @@ def next_player(game):
     starting_point = player_order.index(g['turn'])
     players_to_check_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
 
-    def _next_player_for_this_round():
-        if g['pegging']['total'] >= 31:
-            return None
-
-        for player in players_to_check_in_order:
-            if g['hands'][player] and player not in g['pegging']['passed']:
-                if player != g['pegging']['last_played']:
-                    return player
-
-                card_values = [CARDS[card]['value'] for card in g['hands'][player]]
-                if play_or_pass(card_values, g['pegging']['total']) == 'PLAY':
-                    return player
-
-        if g['pegging']['total'] != 31:  # player will get their two points for 31 during score_play()
-            g['players'][g['pegging']['last_played']]['points'] += 1
-            award_points(game, player, 1, g['players'][g['pegging']['last_played']]['points'])
-
+    if g['pegging']['total'] == 31:
+        if g['hands'][g['pegging']['last_played']]:  # if the person who hit 31 still has cards, it's their turn
+            next = g['pegging']['last_played']
+        else:
+            next = next_player_who_has_cards(players_to_check_in_order, g['hands'])
         g['pegging'].update({
             'cards': [],
             'last_played': '',
@@ -236,22 +248,32 @@ def next_player(game):
             'run': [],
             'total': 0
         })
-        return None
+    else:
+        next = next_player_for_this_round(players_to_check_in_order, g['hands'], g['pegging']['passed'])
+        # if no one can play this round, award the last to play one point and look for the next player with cards
+        if not next:
+            last_played = g['pegging']['last_played']
+            g['players'][last_played]['points'] += 1
+            award_points(game, last_played, 1, g['players'][last_played]['points'])
+            if g['hands'][last_played]:
+                next = last_played
+            else:
+                next = next_player_who_has_cards(players_to_check_in_order, g['hands'])
+            g['pegging'].update({
+                'cards': [],
+                'last_played': '',
+                'passed': [],
+                'run': [],
+                'total': 0
+            })
 
-    def _next_player_who_has_cards():
-        for player in players_to_check_in_order:
-            if g['hands'][player]:  # has cards left
-                return player
-        return None
-
-    next_player = _next_player_for_this_round() or _next_player_who_has_cards()
-    if not next_player:
-        next_player = g['first_to_score']
+    if not next:
+        next = g['first_to_score']
         g['state'] = 'SCORE'
 
-    g['turn'] = next_player
+    g['turn'] = next
     cache.set(game, json.dumps(g))
-    return next_player
+    return next
 
 
 def get_player_action(game, player):
@@ -259,7 +281,7 @@ def get_player_action(game, player):
     if g['state'] == 'SCORE':
         next_action = 'SCORE'
     else:
-        if g['pegging']['total'] >= 31:
+        if g['pegging']['total'] == 31:
             return 'PLAY'
         card_values = [CARDS[card]['value'] for card in g['hands'][player]]
         next_action = play_or_pass(card_values, g['pegging']['total'])

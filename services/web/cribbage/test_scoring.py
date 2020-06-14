@@ -156,81 +156,81 @@ class TestHandScoring:
         assert hand.points == 29
 
 
-class TestPlayScoring:
-    def test_fifteen_two(self):
-        card = '4c8519af34'
-        previously_played_cards = ['32f7615119']
-        play = PlayScorer(card, previously_played_cards, [], 7)
-        assert str(play) == 'on the table: Seven of spades, played: Eight of clubs'
-        points, new_total, run = play.calculate_points()
-        assert points == 2
-
-    def test_pair(self):
-        card = 'a6a3e792b4'
-        previously_played_cards = ['30e1ddb610', '1d5eb77128']
-        play = PlayScorer(card, previously_played_cards, [], 15)
-        assert str(play) == 'on the table: Five of spades, Jack of diamonds, played: Five of clubs'
-        points, new_total, run = play.calculate_points()
-        assert points == 2
-
-    def test_three_of_a_kind(self):
-        card = 'a6a3e792b4'
-        previously_played_cards = ['30e1ddb610', 'fa0873dd7d', '1d5eb77128']
-        play = PlayScorer(card, previously_played_cards, [], 15)
-        assert str(play) == 'on the table: Five of spades, Five of hearts, Jack of diamonds, played: Five of clubs'
-        points, new_total, run = play.calculate_points()
-        assert points == 6
-
-    def test_four_of_a_kind(self):
-        card = 'a6a3e792b4'
-        previously_played_cards = ['30e1ddb610', 'fa0873dd7d', 'd7ca85cf5e', '1d5eb77128']
-        play = PlayScorer(card, previously_played_cards, [], 15)
-        assert str(play) == 'on the table: Five of spades, Five of hearts, Five of diamonds, Jack of diamonds, played: Five of clubs'
-        points, new_total, run = play.calculate_points()
-        assert points == 12
-
-    def test_run_of_three(self):
-        card = '3698fe0420'
-        previously_played_cards = ['5c6bdd4fee', '85ba715700']
-        play = PlayScorer(card, previously_played_cards, [3,4], 7)
-        assert str(play) == 'on the table: Four of spades, Three of clubs, played: Two of diamonds'
-        points, new_total, run = play.calculate_points()
-        assert run == [2, 3, 4]
-        assert points == 3
-
-    def test_run_of_four(self):
-        card = 'd7ca85cf5e'
-        previously_played_cards = ['3698fe0420', '5c6bdd4fee', '85ba715700']
-        play = PlayScorer(card, previously_played_cards, [2, 3, 4], 9)
-        assert str(play) == 'on the table: Two of diamonds, Four of spades, Three of clubs, played: Five of diamonds'
-        points, new_total, run = play.calculate_points()
-        assert run == [2, 3, 4, 5]
-        assert points == 4
-
-    def test_run_of_five_and_fifteen_two(self):
-        card = 'bd4b01946d'
-        previously_played_cards = ['d7ca85cf5e', '3698fe0420', '5c6bdd4fee', '85ba715700']
-        play = PlayScorer(card, previously_played_cards, [2, 3, 4, 5], 14)
-        assert str(play) == 'on the table: Five of diamonds, Two of diamonds, Four of spades, Three of clubs, played: Ace of hearts'
-        points, new_total, run = play.calculate_points()
-        assert new_total == 15
-        assert run == [1, 2, 3, 4, 5]
-        assert points == 7
-
-    def test_fifteen_two_and_a_pair(self):
-        card = '64fe85d796'
-        previously_played_cards = ['85ba715700', 'de1c863a7f']
-        play = PlayScorer(card, previously_played_cards, [], 12)
-        assert str(play) == 'on the table: Three of clubs, Nine of spades, played: Three of diamonds'
-        points, new_total, run = play.calculate_points()
-        assert new_total == 15
-        assert points == 4
-
-    def test_fifteen_two_and_three_of_a_kind(self):
-        card = '64fe85d796'
-        previously_played_cards = ['85ba715700', '04f17d1351', 'c88623fa16']
-        play = PlayScorer(card, previously_played_cards, [], 12)
-        assert str(play) == 'on the table: Three of clubs, Three of spades, Six of spades, played: Three of diamonds'
-        points, new_total, run = play.calculate_points()
-        assert new_total == 15
-        assert points == 8
+# class TestPlayScoring:
+#     def test_fifteen_two(self):
+#         card = '4c8519af34'
+#         previously_played_cards = ['32f7615119']
+#         play = PlayScorer(card, previously_played_cards, [], 7)
+#         assert str(play) == 'on the table: Seven of spades, played: Eight of clubs'
+#         points, new_total, run = play.calculate_points()
+#         assert points == 2
+#
+#     def test_pair(self):
+#         card = 'a6a3e792b4'
+#         previously_played_cards = ['30e1ddb610', '1d5eb77128']
+#         play = PlayScorer(card, previously_played_cards, [], 15)
+#         assert str(play) == 'on the table: Five of spades, Jack of diamonds, played: Five of clubs'
+#         points, new_total, run = play.calculate_points()
+#         assert points == 2
+#
+#     def test_three_of_a_kind(self):
+#         card = 'a6a3e792b4'
+#         previously_played_cards = ['30e1ddb610', 'fa0873dd7d', '1d5eb77128']
+#         play = PlayScorer(card, previously_played_cards, [], 15)
+#         assert str(play) == 'on the table: Five of spades, Five of hearts, Jack of diamonds, played: Five of clubs'
+#         points, new_total, run = play.calculate_points()
+#         assert points == 6
+#
+#     def test_four_of_a_kind(self):
+#         card = 'a6a3e792b4'
+#         previously_played_cards = ['30e1ddb610', 'fa0873dd7d', 'd7ca85cf5e', '1d5eb77128']
+#         play = PlayScorer(card, previously_played_cards, [], 15)
+#         assert str(play) == 'on the table: Five of spades, Five of hearts, Five of diamonds, Jack of diamonds, played: Five of clubs'
+#         points, new_total, run = play.calculate_points()
+#         assert points == 12
+#
+#     def test_run_of_three(self):
+#         card = '3698fe0420'
+#         previously_played_cards = ['5c6bdd4fee', '85ba715700']
+#         play = PlayScorer(card, previously_played_cards, [3,4], 7)
+#         assert str(play) == 'on the table: Four of spades, Three of clubs, played: Two of diamonds'
+#         points, new_total, run = play.calculate_points()
+#         assert run == [2, 3, 4]
+#         assert points == 3
+#
+#     def test_run_of_four(self):
+#         card = 'd7ca85cf5e'
+#         previously_played_cards = ['3698fe0420', '5c6bdd4fee', '85ba715700']
+#         play = PlayScorer(card, previously_played_cards, [2, 3, 4], 9)
+#         assert str(play) == 'on the table: Two of diamonds, Four of spades, Three of clubs, played: Five of diamonds'
+#         points, new_total, run = play.calculate_points()
+#         assert run == [2, 3, 4, 5]
+#         assert points == 4
+#
+#     def test_run_of_five_and_fifteen_two(self):
+#         card = 'bd4b01946d'
+#         previously_played_cards = ['d7ca85cf5e', '3698fe0420', '5c6bdd4fee', '85ba715700']
+#         play = PlayScorer(card, previously_played_cards, [2, 3, 4, 5], 14)
+#         assert str(play) == 'on the table: Five of diamonds, Two of diamonds, Four of spades, Three of clubs, played: Ace of hearts'
+#         points, new_total, run = play.calculate_points()
+#         assert new_total == 15
+#         assert run == [1, 2, 3, 4, 5]
+#         assert points == 7
+#
+#     def test_fifteen_two_and_a_pair(self):
+#         card = '64fe85d796'
+#         previously_played_cards = ['85ba715700', 'de1c863a7f']
+#         play = PlayScorer(card, previously_played_cards, [], 12)
+#         assert str(play) == 'on the table: Three of clubs, Nine of spades, played: Three of diamonds'
+#         points, new_total, run = play.calculate_points()
+#         assert new_total == 15
+#         assert points == 4
+#
+#     def test_fifteen_two_and_three_of_a_kind(self):
+#         card = '64fe85d796'
+#         previously_played_cards = ['85ba715700', '04f17d1351', 'c88623fa16']
+#         play = PlayScorer(card, previously_played_cards, [], 12)
+#         assert str(play) == 'on the table: Three of clubs, Three of spades, Six of spades, played: Three of diamonds'
+#         points, new_total, run = play.calculate_points()
+#         assert new_total == 15
+#         assert points == 8
