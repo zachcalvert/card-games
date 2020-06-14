@@ -1,6 +1,11 @@
-Built with a lot of help from:
+### To run the cribbage server locally:
+* docker-compose build
+* docker-compose up
 
-1. https://flask-socketio.readthedocs.io/en/latest/
-2. 
+### To run the tests
+* docker-compose run --rm web pytest
 
-https://cloud.google.com/memorystore/docs/redis/quickstart-gcloud
+### To launch a shell
+* docker-compose run --rm web python manage.py shell
+
+Built with a lot of help from: https://flask-socketio.readthedocs.io/en/latest/
