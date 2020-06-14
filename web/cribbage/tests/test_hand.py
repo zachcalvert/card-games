@@ -1,8 +1,8 @@
-from .cards import CARDS
-from .scoring import Hand
+from cribbage.cards import CARDS
+from cribbage.hand import Hand
 
 
-class TestHandScoring:
+class TestHand:
     """
     Test that various hand combinations are scored correctly
     """

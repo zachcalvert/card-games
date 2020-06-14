@@ -11,7 +11,7 @@ from itertools import chain, combinations
 import more_itertools as mit
 
 from cribbage.cards import CARDS
-from cribbage.scoring import Hand
+from cribbage.hand import Hand
 from cribbage.utils import rotate_turn, play_or_pass
 
 cache = redis.Redis(host='redis', port=6379)
