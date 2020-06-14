@@ -9,17 +9,13 @@ export function renderCurrentTurnDisplay(player, action) {
   }
   else {
     // disable current turn display for all
-    console.log('Disabling the current turn display for all');
     $('.panel-heading').css('background', 'rgb(21, 32, 43)');
     $('#action-button').prop('disabled', true);
-    console.log('action button is now ' + $('#action-button').prop('disabled'));
 
     // enable current turn display for player
-    console.log('Enabling the current turn display for ' + player);
     $('#' + player).find(".panel-heading").css('background', '#1CA1F2');
 
     if (player === sessionStorage.getItem('nickname')) {
-      console.log('this is ' + player + ' so we are enabling the action button');
       $('#action-button').prop('disabled', false);
     }
   }

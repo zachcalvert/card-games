@@ -52,7 +52,7 @@ socket.on('deal_hands', function (msg, cb) {
   deal(msg);
 });
 
-socket.on('post_discard', function (msg, cb) {
+socket.on('discard', function (msg, cb) {
   discard(msg);
 });
 
@@ -101,19 +101,16 @@ $('#action-button').click(function (event) {
   if (action === 'START') {
     socket.emit('start_game', {game: gameName});
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Start your engines!'});
-    return;
   }
 
   if (action === 'DEAL') {
     socket.emit('deal_hands', {game: gameName});
     socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Time to discard!'});
-    return;
   }
 
   if (action === 'DISCARD') {
-    let discarded = $('li.list-group-item.selected').children()[0].id;
-    socket.emit('discard', {game: gameName, nickname: nickname, discarded: discarded});
-    return;
+    let card = $('li.list-group-item.selected').children()[0].id;
+    socket.emit('discard', {game: gameName, player: nickname, card: card});
   }
 
   if (action === 'CUT') {
@@ -122,8 +119,7 @@ $('#action-button').click(function (event) {
 
   if (action === 'PLAY') {
     let card_played = $('li.list-group-item.selected').children()[0].id;
-    socket.emit('peg_round_action', {game: gameName, nickname: nickname, card_played: card_played});
-    return;
+    socket.emit('peg_round_action', {game: gameName, player: nickname, card_played: card_played});
   }
 
   if (action === 'PASS') {

@@ -8,7 +8,6 @@
         <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
         <script type="module" src="/static/js/app.js"></script>
-        <script src="/static/js/bootstrap.min.js"></script>
     </head>
     <body>
       <div class="game container-fluid h-100 bg-gradient-dark text-white">
@@ -43,10 +42,15 @@
                         <b><span class="player-points">{{ player.points }}</span></b>
                       </div>
                       <div id="{{ player.nickname }}-cards" class="panel-body d-flex justify-content-center">
+                          {% for card in game.hands %}
+                            {{card}}
+                            <img id="{{ card }}" class="opponentCard" src="/static/img/cards/{{ card }}" />
+                          {% endfor %}
                       </div>
                       <div class="player-play-area">
                         <div class="prevous-peg-rounds"></div>
-                        <div class="play-pile"></div>
+                        <div class="play-pile">
+                        </div>
                       </div>
                     </div>
                   {% endfor %}
@@ -54,11 +58,25 @@
               </div>
 
               <div class="cribbage-table d-flex justify-content-center">
-                  <div id="deck-area"></div>
-                  <div id="play-area">
-                    <div id="play-total"></div>
+                  <div id="deck-area">
+                      <img id="deck" src="/static/img/cards/facedown.png">
+                      {% if game.cut_card %}
+                        <img id="{{ g.cut_card }}" class="cutCard" src="/static/img/cards/{{ game.cut_card }}" />
+                      {% endif %}
                   </div>
-                  <div id="crib-area"></div>
+                  <div id="play-area">
+                    <div id="play-total">
+                        {% if game.pegging %}
+                            {{ game.pegging.total }}
+                        {% endif %}
+                    </div>
+
+                  </div>
+                  <div id="crib-area">
+                    {% for card in game.crib %}
+                      <img id="{{ card }}" class="cribCard" src="/static/img/cards/facedown.png" />
+                    {% endfor %}
+                  </div>
               </div>
                 <div id="{{ player.nickname}}" class="player panel panel-default">
                   <div class="panel-heading">
@@ -67,7 +85,15 @@
                   </div>
                   <div class="player-play-area panel-body d-flex justify-content-center">
                     <div class="player-cards">
-                      <ul id="{{ player.nickname }}-cards" class="list-group-flush list-group-horizontal"></ul>
+                      <ul id="{{ player.nickname }}-cards" class="list-group-flush list-group-horizontal">
+                          {% for p in game.hands %}
+                          {% if p == player %}
+                          {% for card in p %}
+                            <img id="{{ card }}" class="playerCard" src="/static/img/cards/{{ card }}" />
+                          {% endfor %}
+                          {% endif %}
+                          {% endfor %}
+                      </ul>
                     </div>
                     <button id="action-button" type="button" class="btn btn-outline-dark pull-left">START</button>
                   </div>

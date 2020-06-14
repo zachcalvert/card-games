@@ -13,12 +13,12 @@ function animateDiscard(discarded) {
 }
 
 export function discard(msg) {
-  let discarded = msg.discarded;
-  console.log(msg.nickname + ' just discarded ' + msg.discarded);
-  $('#' + msg.discarded).remove();
+  let discarded = msg.card;
+  console.log(msg.nickname + ' just discarded ' + discarded);
+  $('#' + discarded).remove();
   animateDiscard(discarded);
 
-  if (msg.done_discarding) {
+  if (msg.done) {
     $('#' + msg.nickname).find(".panel-heading").css('background', 'rgb(21, 32, 43)');
     $('#action-button').prop('disabled', true);
   }

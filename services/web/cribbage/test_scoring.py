@@ -1,7 +1,5 @@
-import pytest
-
 from .cards import CARDS
-from .scoring import Hand, PlayScorer
+from .scoring import Hand
 
 
 class TestHandScoring:

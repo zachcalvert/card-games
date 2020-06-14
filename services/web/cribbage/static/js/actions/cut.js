@@ -5,4 +5,5 @@ export function revealCutCard(card) {
     src: '/static/img/cards/' + card
   });
   $('#deck-area').append(cutCardImage);
+  $('#play-total').text(0);
 }
