@@ -295,4 +295,10 @@ li a {
     margin-left: -10px;
     width: 40px
   }
+  .cribCard {
+      width: 60px;
+  }
+  .playerCard {
+      width: 70px;
+  }
 }
