@@ -162,10 +162,12 @@ $('#action-button').click(function (event) {
 });
 
 $(document).on('click', '.playerCard', function(e) {
-  $(this).toggleClass('selected');
-  if ($(this).hasClass('selected')) {
-    $('#action-button').prop('disabled', false);
-  } else if($(this).siblings(".selected").length == 0) {
-    $('#action-button').prop('disabled', true);
+  if (!$(this).hasClass("played")) {
+    $(this).toggleClass('selected');
+    if ($(this).hasClass('selected')) {
+      $('#action-button').prop('disabled', false);
+    } else if($(this).siblings(".selected").length == 0) {
+      $('#action-button').prop('disabled', true);
+    }
   }
 });
