@@ -283,3 +283,16 @@ li a {
 .chat-message {
     padding: 2px 0;
 }
+
+
+
+
+@media (max-width: 768px) {
+  .opponent {
+    width: 40%;
+   }
+  .opponentCard {
+    margin-left: -10px;
+    width: 40px
+  }
+}
