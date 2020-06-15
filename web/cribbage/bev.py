@@ -147,7 +147,7 @@ def cut_deck(game):
 
     g = json.loads(cache.get(game))
     g['cut_card'] = g['deck'].pop()
-    g['state'] = 'PLAYING'
+    g['state'] = 'PLAY'
 
     if g['cut_card'] in ['56594b3880', '95f92b2f0c', '1d5eb77128', '110e6e5b19']:
         g['players'][g['dealer']] += 2

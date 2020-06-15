@@ -6,3 +6,6 @@
 * docker-compose exec -T web pytest
 
 Built with a lot of help from: https://flask-socketio.readthedocs.io/en/latest/
+
+### To launch a shell
+* docker-compose exec -T web python manage.py shell
