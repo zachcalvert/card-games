@@ -1,5 +1,5 @@
 from cribbage.cards import CARDS
-from cribbage.utils import rotate_turn, play_or_pass
+from cribbage.utils import rotate_turn, rotate_reverse, play_or_pass
 
 
 class TestRotateTurn:
@@ -12,6 +12,18 @@ class TestRotateTurn:
         players = ['mom', 'dad', 'paul', 'leah']
         next = rotate_turn('leah', players)
         assert next == 'mom'
+
+
+class TestRotateReverse:
+    def test_rotate_turn(self):
+        players = ['mom', 'dad', 'paul', 'leah']
+        next = rotate_reverse('leah', players)
+        assert next == 'paul'
+
+    def test_rotate_turn_loop_around(self):
+        players = ['mom', 'dad', 'paul', 'leah']
+        next = rotate_reverse('mom', players)
+        assert next == 'leah'
 
 
 class TestPlayOrPass:
