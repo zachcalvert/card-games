@@ -1,7 +1,7 @@
 import { announcePlayerJoin } from "./actions/join.js";
 import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
 import { deal } from "./actions/deal.js";
-import { discard } from "./actions/discard.js";
+import { discard, animateDiscard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
 import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
 import { start, resetTable } from "./actions/start.js";
@@ -67,6 +67,10 @@ socket.on('deal_hands', function (msg, cb) {
 
 socket.on('discard', function (msg, cb) {
   discard(msg);
+});
+
+socket.on('deal_extra_crib_card', function (msg, cb) {
+  animateDiscard(msg.card);
 });
 
 // CUT

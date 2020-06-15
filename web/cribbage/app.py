@@ -66,6 +66,10 @@ def award_points(game, player, amount, total_points, reason):
     return False
 
 
+def deal_extra_crib_card(game, card):
+    emit('deal_extra_crib_card', {'card': card}, room=game)
+
+
 def clear_pegging_area(game):
     emit('clear_pegging_area', room=game)
 

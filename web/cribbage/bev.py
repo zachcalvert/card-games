@@ -120,6 +120,8 @@ def deal_hands(game):
 
 
 def discard(game, player, card):
+    from cribbage.app import deal_extra_crib_card
+
     g = json.loads(cache.get(game))
 
     g['hands'][player].remove(card)
@@ -128,6 +130,11 @@ def discard(game, player, card):
     player_done = len(g['hands'][player]) == 4
     all_done = all(len(g['hands'][nickname]) == 4 for nickname in g['players'].keys())
     if all_done:
+        if len(g['players'].keys()) == 3:
+            # deal and extra one from the deck
+            extra_crib_card = g['deck'].pop()
+            deal_extra_crib_card(game, extra_crib_card)
+
         g['state'] = 'CUT'
 
     cache.set(game, json.dumps(g))

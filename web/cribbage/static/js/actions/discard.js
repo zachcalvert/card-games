@@ -1,4 +1,4 @@
-function animateDiscard(discarded) {
+export function animateDiscard(discarded) {
   let cardImage = $('<img/>', {
     id: discarded,
     class: 'cribCard',
