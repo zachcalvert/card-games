@@ -46,9 +46,10 @@ def game_detail():
         if player not in game["players"]:
             game = bev.add_player(game_name, player)
 
-        other_players = [game["players"][p] for p in game["players"].keys() if p != player]
-        return render_template('game.html', game=game, player=game['players'][player], other_players=other_players,
-                               async_mode=socketio.async_mode)
+        player_points = game['players'].pop(player)
+
+        return render_template('game.html', game=game, player_name=player, player_points=player_points,
+                               opponents=game['players'], async_mode=socketio.async_mode)
 
     return redirect(url_for('index'))
 

@@ -13,7 +13,7 @@ class TestStartGame:
         game_dict = {
             'name': 'cheers',
             'state': 'INIT',
-            'players': {'sam': {'nickname': 'sam', 'points': 0}, 'diane': {'nickname': 'diane', 'points': 0}}
+            'players': {'sam': 0, 'diane': 0}
         }
         fake_redis.set('cheers', json.dumps(game_dict))
         bev.cache = fake_redis
@@ -31,9 +31,10 @@ class TestStartGame:
             'name': 'cheers',
             'state': 'INIT',
             'players': {
-                'sam': {'nickname': 'sam', 'points': 0},
-                'diane': {'nickname': 'diane', 'points': 0},
-                'norm': {'nickname': 'norm', 'points': 0}}
+                'sam': 0,
+                'diane': 0,
+                'norm': 0
+            }
         }
         fake_redis.set('cheers', json.dumps(game_dict))
         bev.cache = fake_redis
@@ -55,9 +56,10 @@ class TestDeal:
             'name': 'cheers',
             'state': 'DEAL',
             'players': {
-                'sam': {'nickname': 'sam', 'points': 0},
-                'diane': {'nickname': 'diane', 'points': 0},
-                'norm': {'nickname': 'norm', 'points': 0}}
+                'sam': 0,
+                'diane': 0,
+                'norm': 0
+            }
         }
         fake_redis.set('cheers', json.dumps(game_dict))
         bev.cache = fake_redis
@@ -78,8 +80,8 @@ class TestDiscard:
             'name': 'cheers',
             'state': 'DEAL',
             'players': {
-                'sam': {'nickname': 'sam', 'points': 0},
-                'diane': {'nickname': 'diane', 'points': 0},
+                'sam': 0,
+                'diane': 0
             }
         }
         fake_redis.set('cheers', json.dumps(game_dict))
@@ -99,8 +101,8 @@ class TestDiscard:
             'name': 'cheers',
             'state': 'DEAL',
             'players': {
-                'sam': {'nickname': 'sam', 'points': 0},
-                'diane': {'nickname': 'diane', 'points': 0},
+                'sam': 0,
+                'diane': 0
             }
         }
         fake_redis.set('cheers', json.dumps(game_dict))
@@ -121,8 +123,8 @@ class TestDiscard:
             'name': 'cheers',
             'state': 'DEAL',
             'players': {
-                'sam': {'nickname': 'sam', 'points': 0},
-                'diane': {'nickname': 'diane', 'points': 0},
+                'sam': 0,
+                'diane': 0
             }
         }
         fake_redis.set('cheers', json.dumps(game_dict))
@@ -159,11 +161,15 @@ class TestNextPlayer:
                 'last_played': 'tom',
                 'passed': [],
                 'run': [],
-                'total': 30},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 0},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+                'total': 30
+            },
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
             'state': 'PLAY',
-            'turn': 'tom'}
+            'turn': 'tom'
+        }
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         bev.next_player('test')
@@ -187,8 +193,10 @@ class TestNextPlayer:
                 'passed': [],
                 'run': [],
                 'total': 30},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 0},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
             'state': 'PLAY',
             'turn': 'tom'}
         fake_redis.set('test', json.dumps(game_dict))
@@ -214,15 +222,17 @@ class TestNextPlayer:
                 'passed': ['kathy'],
                 'run': [],
                 'total': 30},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 0},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
             'state': 'PLAY',
             'turn': 'kathy'}
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
-        assert g['players']['tom']['points'] == 0
+        assert g['players']['tom'] == 0
         assert g['turn'] == 'tom'
         assert g['pegging']['total'] == 30
         assert bev.get_player_action('test', g['turn']) == 'PASS'
@@ -238,15 +248,17 @@ class TestNextPlayer:
                 'passed': ['kathy', 'tom'],
                 'run': [],
                 'total': 30},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 0},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
             'state': 'PLAY',
             'turn': 'kathy'}
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
-        assert g['players']['tom']['points'] == 1
+        assert g['players']['tom'] == 1
         assert g['turn'] == 'tom'
         assert g['pegging']['total'] == 0
         assert bev.get_player_action('test', g['turn']) == 'PLAY'
@@ -266,15 +278,17 @@ class TestNextPlayer:
                 'passed': ['kathy'],
                 'run': [],
                 'total': 30},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 0},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
             'state': 'PLAY',
             'turn': 'kathy'}
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
-        assert g['players']['tom']['points'] == 0
+        assert g['players']['tom'] == 0
         assert g['turn'] == 'tom'
         assert g['pegging']['total'] == 30
         assert bev.get_player_action('test', g['turn']) == 'PLAY'
@@ -294,14 +308,16 @@ class TestNextPlayer:
                 'passed': [],
                 'run': [],
                 'total': 31},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 2},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+            'players': {
+                'tom': 0,
+                'kathy': 2
+            },
             'turn': 'kathy'}
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
-        assert g['players']['kathy']['points'] == 2
+        assert g['players']['kathy'] == 2
         assert g['turn'] == 'kathy'
         assert g['pegging']['total'] == 0
 
@@ -320,14 +336,16 @@ class TestNextPlayer:
                 'passed': [],
                 'run': [],
                 'total': 31},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 2},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+            'players': {
+                'tom': 0,
+                'kathy': 2
+            },
             'turn': 'kathy'}
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
-        assert g['players']['kathy']['points'] == 2
+        assert g['players']['kathy'] == 2
         assert g['turn'] == 'tom'
         assert g['pegging']['total'] == 0
 
@@ -347,14 +365,16 @@ class TestNextPlayer:
                 'passed': [],
                 'run': [],
                 'total': 31},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 2},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+            'players': {
+                'tom': 0,
+                'kathy': 2
+            },
             'turn': 'kathy'}
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
-        assert g['players']['kathy']['points'] == 2
+        assert g['players']['kathy'] == 2
         assert g['pegging']['total'] == 0
         assert g['state'] == 'SCORE'
         assert g['turn'] == 'tom'
@@ -376,14 +396,16 @@ class TestNextPlayer:
                 'passed': [],
                 'run': [],
                 'total': 24},
-            'players': {'kathy': {'nickname': 'kathy', 'points': 2},
-                        'tom': {'nickname': 'tom', 'points': 0}},
+            'players': {
+                'tom': 0,
+                'kathy': 2
+            },
             'turn': 'kathy'}
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
-        assert g['players']['kathy']['points'] == 3
+        assert g['players']['kathy'] == 3
         assert g['pegging']['total'] == 0
         assert g['state'] == 'SCORE'
         assert g['turn'] == 'tom'
