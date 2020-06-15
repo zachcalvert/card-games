@@ -9,8 +9,8 @@ html, body {
   height: 100%;
 }
 
-#join {
-    margin-left: 38%;
+.join-game-input {
+    margin-bottom: 0!important;
 }
 
 #leave-game {
