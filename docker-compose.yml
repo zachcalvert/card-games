@@ -3,9 +3,8 @@ version: '3.7'
 services:
   web:
     build: ./web
-    command: python manage.py run -h 0.0.0.0
     volumes:
-      - ./web/:/usr/src/app/
+      - ./web/:/code
     ports:
       - 5000:5000
     env_file:

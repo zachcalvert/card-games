@@ -1,16 +1,14 @@
-# pull official base image
 FROM python:3.8.1-slim-buster
 
-# set work directory
-WORKDIR /usr/src/app
-
-# install dependencies
-RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
+COPY ./requirements.txt /code/requirements.txt
+WORKDIR /code
 RUN pip install -r requirements.txt
+COPY . /code
 
-# copy project
-COPY . /usr/src/app/
+ENV FLASK_DEBUG 1
+ENV FLASK_ENV development
+ENV FLASK_APP app.py
 
-# run entrypoint.sh
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+EXPOSE 5000
+
+ENTRYPOINT [ "flask", "run", "--host=0.0.0.0" ]
