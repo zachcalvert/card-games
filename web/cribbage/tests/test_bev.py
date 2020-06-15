@@ -6,6 +6,143 @@ from cribbage import bev
 from cribbage.cards import CARDS
 
 
+class TestStartGame:
+
+    def test_start_with_two_players(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'name': 'cheers',
+            'state': 'INIT',
+            'players': {'sam': {'nickname': 'sam', 'points': 0}, 'diane': {'nickname': 'diane', 'points': 0}}
+        }
+        fake_redis.set('cheers', json.dumps(game_dict))
+        bev.cache = fake_redis
+        bev.start_game('cheers')
+        g = json.loads(fake_redis.get('cheers'))
+        assert g['state'] == 'DEAL'
+        assert g['hand_size'] == 6
+        assert g['dealer'] != g['cutter']
+        assert g['dealer'] != g['first_to_score']
+        assert g['turn'] == g['dealer']
+
+    def test_start_with_three_players(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'name': 'cheers',
+            'state': 'INIT',
+            'players': {
+                'sam': {'nickname': 'sam', 'points': 0},
+                'diane': {'nickname': 'diane', 'points': 0},
+                'norm': {'nickname': 'norm', 'points': 0}}
+        }
+        fake_redis.set('cheers', json.dumps(game_dict))
+        bev.cache = fake_redis
+        bev.start_game('cheers')
+        g = json.loads(fake_redis.get('cheers'))
+        assert g['state'] == 'DEAL'
+        assert g['hand_size'] == 5
+        assert g['dealer'] != g['cutter']
+        assert g['dealer'] != g['first_to_score']
+        assert g['cutter'] != g['first_to_score']
+        assert g['turn'] == g['dealer']
+
+
+class TestDeal:
+
+    def test_deal_unique_cards(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'name': 'cheers',
+            'state': 'DEAL',
+            'players': {
+                'sam': {'nickname': 'sam', 'points': 0},
+                'diane': {'nickname': 'diane', 'points': 0},
+                'norm': {'nickname': 'norm', 'points': 0}}
+        }
+        fake_redis.set('cheers', json.dumps(game_dict))
+        bev.cache = fake_redis
+        bev.start_game('cheers')
+        bev.deal_hands('cheers')
+        g = json.loads(fake_redis.get('cheers'))
+        assert g['state'] == 'DISCARD'
+        for player in game_dict['players'].keys():
+            assert player in g['hands'].keys()
+            assert len(g['hands'][player]) == g['hand_size']
+
+
+class TestDiscard:
+
+    def test_first_discard(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'name': 'cheers',
+            'state': 'DEAL',
+            'players': {
+                'sam': {'nickname': 'sam', 'points': 0},
+                'diane': {'nickname': 'diane', 'points': 0},
+            }
+        }
+        fake_redis.set('cheers', json.dumps(game_dict))
+        bev.cache = fake_redis
+        bev.start_game('cheers')
+        bev.deal_hands('cheers')
+
+        g = json.loads(fake_redis.get('cheers'))
+        player_done, all_done = bev.discard('cheers', 'sam', g['hands']['sam'][0])
+        assert not player_done
+        assert not all_done
+        assert g['state'] == 'DISCARD'
+
+    def test_first_to_be_done_discarding(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'name': 'cheers',
+            'state': 'DEAL',
+            'players': {
+                'sam': {'nickname': 'sam', 'points': 0},
+                'diane': {'nickname': 'diane', 'points': 0},
+            }
+        }
+        fake_redis.set('cheers', json.dumps(game_dict))
+        bev.cache = fake_redis
+        bev.start_game('cheers')
+        bev.deal_hands('cheers')
+
+        g = json.loads(fake_redis.get('cheers'))
+        _, _ = bev.discard('cheers', 'sam', g['hands']['sam'][0])
+        player_done, all_done = bev.discard('cheers', 'sam', g['hands']['sam'][1])
+        assert player_done
+        assert not all_done
+        assert g['state'] == 'DISCARD'
+
+    def test_all_have_discarded(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'name': 'cheers',
+            'state': 'DEAL',
+            'players': {
+                'sam': {'nickname': 'sam', 'points': 0},
+                'diane': {'nickname': 'diane', 'points': 0},
+            }
+        }
+        fake_redis.set('cheers', json.dumps(game_dict))
+        bev.cache = fake_redis
+        bev.start_game('cheers')
+        bev.deal_hands('cheers')
+
+        g = json.loads(fake_redis.get('cheers'))
+        _, _ = bev.discard('cheers', 'sam', g['hands']['sam'][0])
+        player_done, all_done = bev.discard('cheers', 'sam', g['hands']['sam'][1])
+        assert player_done
+        assert not all_done
+        _, _ = bev.discard('cheers', 'diane', g['hands']['diane'][0])
+        player_done, all_done = bev.discard('cheers', 'diane', g['hands']['diane'][1])
+        assert player_done
+        assert all_done
+        g = json.loads(fake_redis.get('cheers'))
+        assert g['state'] == 'CUT'
+
+
 class TestNextPlayer:
 
     def test_next_must_pass(self):

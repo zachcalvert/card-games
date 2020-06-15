@@ -12,7 +12,7 @@ import more_itertools as mit
 
 from cribbage.cards import CARDS
 from cribbage.hand import Hand
-from cribbage.utils import rotate_turn, play_or_pass
+from cribbage.utils import rotate_turn,rotate_reverse, play_or_pass
 
 cache = redis.Redis(host='redis', port=6379)
 logger = logging.getLogger(__name__)
@@ -60,10 +60,11 @@ def start_game(game):
     players = list(g['players'].keys())
     dealer = random.choice(players)
     first_to_score = rotate_turn(dealer, players)
+    cutter = rotate_reverse(dealer, players)
     g.update({
         'state': 'DEAL',
         'dealer': dealer,
-        'cutter': first_to_score,
+        'cutter': cutter,
         'first_to_score': first_to_score,
         'deck': [],
         'hand_size': 6 if len(players) <= 2 else 5,
@@ -146,7 +147,7 @@ def cut_deck(game):
         just_won = award_points(game, g['dealer'], 2, g['players'][g['dealer']]['points'], 'cutting a jack')
 
     cache.set(game, json.dumps(g))
-    return g['cut_card'], g['turn'], just_won
+    return g['cut_card'], g['first_to_score'], just_won
 
 
 def get_pegging_total(game):

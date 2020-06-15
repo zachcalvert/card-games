@@ -14,6 +14,19 @@ def rotate_turn(current, players):
     return next_player
 
 
+def rotate_reverse(current, players):
+    """
+    :param current:
+    :param players:
+    :return:
+    """
+    try:
+        next_player = players[players.index(current) - 1]
+    except IndexError:
+        next_player = players[-1]
+    return next_player
+
+
 def play_or_pass(card_values, pegging_total):
     """
     :param cards:
