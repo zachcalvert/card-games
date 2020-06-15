@@ -25,6 +25,21 @@ def get_game(name):
         return None
 
 
+def get_cutter(game):
+    g = json.loads(cache.get(game))
+    return g['cutter']
+
+
+def get_dealer(game):
+    g = json.loads(cache.get(game))
+    return g['dealer']
+
+
+def get_current_turn(game):
+    g = json.loads(cache.get(game))
+    return g['turn']
+
+
 def setup_game(name, player):
     g = {
         "name": name,
@@ -117,21 +132,6 @@ def discard(game, player, card):
 
     cache.set(game, json.dumps(g))
     return player_done, all_done
-
-
-def get_cutter(game):
-    g = json.loads(cache.get(game))
-    return g['cutter']
-
-
-def get_dealer(game):
-    g = json.loads(cache.get(game))
-    return g['dealer']
-
-
-def get_current_turn(game):
-    g = json.loads(cache.get(game))
-    return g['turn']
 
 
 def cut_deck(game):
