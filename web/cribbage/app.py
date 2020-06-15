@@ -36,6 +36,9 @@ def game_detail():
         game_name = request.form['join_game_name']
         player = request.form.get('join_nickname')
 
+        if not (game_name and player):
+            return redirect(url_for('index'))
+
         game = bev.get_game(game_name)
         if not game:
             game = bev.setup_game(name=game_name, player=player)
