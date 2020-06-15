@@ -146,8 +146,10 @@ def cut_deck(game):
         g['players'][g['dealer']]['points'] += 2
         just_won = award_points(game, g['dealer'], 2, g['players'][g['dealer']]['points'], 'cutting a jack')
 
+    g['turn'] = g['first_to_score']
     cache.set(game, json.dumps(g))
-    return g['cut_card'], g['first_to_score'], just_won
+
+    return g['cut_card'], g['turn'], just_won
 
 
 def get_pegging_total(game):

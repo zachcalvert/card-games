@@ -45,11 +45,7 @@
 
                       <div id="{{ player.nickname }}-cards" class="panel-body d-flex justify-content-center">
                       </div>
-                      <div class="player-play-area">
-                        <div class="prevous-peg-rounds"></div>
-                        <div class="play-pile">
-                        </div>
-                      </div>
+                      <div class="play-pile"></div>
                     </div>
                   {% endfor %}
                   <button id="leave-game" type="submit" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>
@@ -82,17 +78,7 @@
                     <b><span class="player-points">{{ player.points }}</span></b>
                   </div>
                   <div class="player-play-area panel-body d-flex justify-content-center">
-                    <div class="player-cards">
-                      <ul id="{{ player.nickname }}-cards" class="list-group-flush list-group-horizontal">
-                          {% for p in game.hands %}
-                          {% if p == player %}
-                          {% for card in p %}
-                            <img id="{{ card }}" class="playerCard" src="/static/img/cards/{{ card }}" />
-                          {% endfor %}
-                          {% endif %}
-                          {% endfor %}
-                      </ul>
-                    </div>
+                    <div id="{{ player.nickname }}-cards" class="player-cards"></div>
                     <button id="action-button" type="button" class="btn btn-outline-dark pull-left">START</button>
                   </div>
                 </div>

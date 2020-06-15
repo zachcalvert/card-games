@@ -77,6 +77,7 @@ socket.on('show_cut_card', function (msg, cb) {
 
 // PEG
 socket.on('show_card_played', function (msg, cb) {
+  console.log('received show_card_played back from the server')
   peg(msg);
 });
 
@@ -122,7 +123,7 @@ $('#action-button').click(function (event) {
   }
 
   if (action === 'DISCARD') {
-    let card = $('li.list-group-item.selected').children()[0].id;
+    let card = $('img.playerCard.selected').prop('id');
     socket.emit('discard', {game: gameName, player: nickname, card: card});
   }
 
@@ -131,7 +132,8 @@ $('#action-button').click(function (event) {
   }
 
   if (action === 'PLAY') {
-    let card_played = $('li.list-group-item.selected').children()[0].id;
+    let card_played = $('img.playerCard.selected').prop('id');
+    console.log('playing ' + card_played);
     socket.emit('peg_round_action', {game: gameName, player: nickname, card_played: card_played});
   }
 
@@ -159,7 +161,7 @@ $('#action-button').click(function (event) {
   return false;
 });
 
-$(document).on('click', 'li.list-group-item', function(e) {
+$(document).on('click', '.playerCard', function(e) {
   $(this).toggleClass('selected');
   if ($(this).hasClass('selected')) {
     $('#action-button').prop('disabled', false);

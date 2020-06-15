@@ -161,11 +161,11 @@ html, body {
     background: transparent!important;
 }
 
-.list-group-item.selected {
+.playerCard.selected {
   opacity: 75%;
 }
 
-.list-group-item.played {
+.playerCard.played {
   opacity: 75%;
 }
 
@@ -180,8 +180,7 @@ html, body {
 }
 
 .playerCard {
-    width: 90px;
-    margin-top: 5%;
+  width: 90px;
 }
 
 .playedCard {
@@ -295,10 +294,22 @@ li a {
     margin-left: -10px;
     width: 40px
   }
+  .playedOpponentCard {
+    width: 60px;
+  }
   .cribCard {
-      width: 60px;
+    width: 60px;
   }
   .playerCard {
-      width: 70px;
+    width: 70px;
+    margin-left: -10px;
+  }
+  .player-play-area {
+    margin-right: 10px;
+  }
+  .playerCard.selected {
+    opacity: 100%;
+    width: 80px;
+    z-index: 10px;
   }
 }

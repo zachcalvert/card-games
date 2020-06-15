@@ -13,14 +13,17 @@ export function announcePlayerJoin(msg) {
     let panelHeading = $('<div/>', {
       class: 'panel-heading',
     });
+    panelHeading.append(playerName);
+    panelHeading.append(playerPoints);
 
     let panelBody = $('<div/>', {
       id: msg.nickname + '-cards',
       class: 'panel-body d-flex justify-content-center',
     });
-
-    panelHeading.append(playerName);
-    panelHeading.append(playerPoints);
+    let playPile = $('<div/>', {
+      class: 'play-pile',
+    });
+    panelBody.append(playPile);
 
     let opponentPanel = $('<div/>', {
       id: msg.nickname,

@@ -7,11 +7,7 @@ export function deal(msg) {
           class: 'playerCard',
           src: '/static/img/cards/' + card
         });
-        let cardListItem = $('<li/>', {
-          class: 'list-group-item',
-        });
-        cardListItem.append(cardImage);
-        $('#' + player + '-cards').append(cardListItem);
+        $('#' + player + '-cards').append(cardImage);
       });
     } else {
       $.each(cards, function(index, card) {

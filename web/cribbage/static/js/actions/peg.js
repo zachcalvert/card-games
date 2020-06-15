@@ -23,10 +23,10 @@ export function renderCurrentTurnDisplay(player, action) {
 
 function moveCardFromHandToPlayArea(card, nickname) {
   let handCard = $('#' + card);
-
+  console.log('requested to move from hand to play area');
   if (nickname === sessionStorage.getItem('nickname')) {
-    handCard.parent().removeClass('selected');
-    handCard.parent().addClass('played');
+    handCard.removeClass('selected');
+    handCard.addClass('played');
     handCard.animate({"margin-top": "0px"}, 200,"linear");
   } else {
     handCard.addClass('playedOpponentCard');
