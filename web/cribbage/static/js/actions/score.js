@@ -1,16 +1,17 @@
 import {renderDealerIcon} from "./start.js";
 
 export function awardPoints(player, amount, reason) {
-  console.log('awarding ' + amount + 'points to ' + player + ' for ' + reason);
+  let playerHeader = $("#" + player).find(".player-points");
+  $(playerHeader).animate({color: '#7FFF00'}, 500);
+  $(playerHeader).animate({color: 'white)'}, 1000);
+
   let playerPoints = $("#" + player).find(".player-points");
   let current = parseInt(playerPoints.text());
-  playerPoints.css('color', 'green');
   $({someValue: current}).animate({someValue: current + amount}, {
       duration: 200,
       easing:'swing',
       step: function() {
           $(playerPoints).text(Math.round(this.someValue));
-          $(playerPoints).css('color', 'white');
       }
   });
 }
@@ -23,10 +24,10 @@ export function revealCrib() {
 }
 
 export function clearTable(next_dealer) {
+  $('.playerCard').remove();
   $('.playedOpponentCard').remove();
   $('.cribCard').remove();
   $('.cutCard').remove();
-  $('.playerCard').remove();
-  $('#play-total').text();
+  $('#play-total').text('');
   renderDealerIcon(next_dealer);
 }

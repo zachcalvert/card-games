@@ -8,6 +8,7 @@
         <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
         <script type="module" src="/static/js/app.js"></script>
+        <script src="/static/js/jquery-ui.min.js"></script>
     </head>
     <body>
       <div class="game container-fluid h-100 bg-gradient-dark text-white">
@@ -41,11 +42,8 @@
                         <span class="player-nickname">{{ player.nickname }}</span>
                         <b><span class="player-points">{{ player.points }}</span></b>
                       </div>
+
                       <div id="{{ player.nickname }}-cards" class="panel-body d-flex justify-content-center">
-                          {% for card in game.hands %}
-                            {{card}}
-                            <img id="{{ card }}" class="opponentCard" src="/static/img/cards/{{ card }}" />
-                          {% endfor %}
                       </div>
                       <div class="player-play-area">
                         <div class="prevous-peg-rounds"></div>

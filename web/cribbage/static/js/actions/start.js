@@ -12,8 +12,7 @@ export function resetTable() {
   $('.playerCard').remove();
   $('#deck-area').remove();
   $('.player-points').text(0);
-  $('#play-total').text(0);
-
+  $('#play-total').text('');
 }
 
 export function start(dealer) {

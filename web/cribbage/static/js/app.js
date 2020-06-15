@@ -42,7 +42,20 @@ $('form#send_message').submit(function(event) {
   return false;
 });
 socket.on('new_chat_message', function(msg, cb) {
-  $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ': ' + msg.data).html());
+  let chatMessage = $('<div/>', {
+    class: 'chat-message',
+    html: msg.nickname + ': ' + msg.data
+  });
+  $('#game-log').append(chatMessage).html();
+  $("#game-log").scrollTop($('#game-log').height());
+});
+
+socket.on('new_points_message', function(msg, cb) {
+  let pointsMessage = $('<div/>', {
+    class: 'points-message',
+    html: msg.data
+  });
+  $('#game-log').append(pointsMessage).html();
   $("#game-log").scrollTop($('#game-log').height());
 });
 

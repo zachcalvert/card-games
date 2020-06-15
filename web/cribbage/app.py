@@ -50,9 +50,10 @@ def game_detail():
     return redirect(url_for('index'))
 
 
-def award_points(game, player, amount, total_points):
-    emit('new_chat_message', {'data': '{} for {}'.format(amount, player), 'nickname': 'cribbot'}, room=game)
-    emit('award_points', {'player': player, 'amount': amount, 'reason': 'pegging'}, room=game)
+def award_points(game, player, amount, total_points, reason):
+    if amount > 0:
+        emit('new_points_message', {'data': '+{} for {} ({})'.format(amount, player, reason)}, room=game)
+        emit('award_points', {'player': player, 'amount': amount, 'reason': 'pegging'}, room=game)
 
     if total_points > POINTS_TO_WIN:
         emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribbot'}, room=game)

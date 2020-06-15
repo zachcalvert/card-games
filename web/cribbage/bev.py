@@ -49,7 +49,10 @@ def add_player(game, player):
 def remove_player(game, player):
     g = json.loads(cache.get(game))
     g['players'].pop(player)
-    cache.set(game, json.dumps(g))
+    if len(g['players']) == 0:
+        cache.delete(game)
+    else:
+        cache.set(game, json.dumps(g))
 
 
 def start_game(game):
@@ -140,7 +143,7 @@ def cut_deck(game):
 
     if g['cut_card'] in ['56594b3880', '95f92b2f0c', '1d5eb77128', '110e6e5b19']:
         g['players'][g['dealer']]['points'] += 2
-        just_won = award_points(game, g['dealer'], 2, g['players'][g['dealer']]['points'])
+        just_won = award_points(game, g['dealer'], 2, g['players'][g['dealer']]['points'], 'cutting a jack')
 
     cache.set(game, json.dumps(g))
     return g['cut_card'], g['turn'], just_won
@@ -189,7 +192,7 @@ def score_play(game, player, card):
 
     if points > 0:
         g['players'][player]['points'] += points
-        just_won = award_points(game, player, points, g['players'][player]['points'])
+        just_won = award_points(game, player, points, g['players'][player]['points'], 'pegging')
 
     cache.set(game, json.dumps(g))
     return just_won
@@ -198,8 +201,11 @@ def score_play(game, player, card):
 def record_play(game, player, card):
     g = json.loads(cache.get(game))
     value = CARDS[card]['value']
-    g['hands'][player].remove(card)
-    g['played_cards'][player].append(card)
+    try:
+        g['hands'][player].remove(card)
+    except ValueError:
+        pass
+    g['played_cards'][player].append(card) if card not in g['played_cards'][player] else None
     g['pegging']['cards'].insert(0, card)
     g['pegging']['last_played'] = player
     g['pegging']['total'] += value
@@ -264,7 +270,7 @@ def next_player(game):
         if not next:
             last_played = g['pegging']['last_played']
             g['players'][last_played]['points'] += 1
-            just_won = award_points(game, last_played, 1, g['players'][last_played]['points'])
+            just_won = award_points(game, last_played, 1, g['players'][last_played]['points'], 'for go')
             if g['hands'][last_played]:
                 next = last_played
             else:
@@ -310,7 +316,7 @@ def score_hand(game, player):
     hand_points = hand.calculate_points()
 
     g['players'][player]['points'] += hand_points
-    just_won = award_points(game, player, hand_points, g['players'][player]['points'])
+    just_won = award_points(game, player, hand_points, g['players'][player]['points'], 'from hand')
 
     g['scored_hands'].append(player)
     cache.set(game, json.dumps(g))
@@ -327,7 +333,7 @@ def score_crib(game, player):
     crib = Hand(g['crib'], g['cut_card'], is_crib=True)
     crib_points = crib.calculate_points()
     g['players'][player]['points'] += crib_points
-    just_won = award_points(game, player, crib_points, g['players'][player]['points'])
+    just_won = award_points(game, player, crib_points, g['players'][player]['points'], 'from crib')
     cache.set(game, json.dumps(g))
     return just_won
 

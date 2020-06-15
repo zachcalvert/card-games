@@ -59,7 +59,7 @@ html, body {
 }
 
 #game-log {
-  padding: 0 15px;
+  padding: 10px 15px;
   height: 80%;
   width: 100%;
   overflow-y: scroll;
@@ -274,10 +274,12 @@ li a {
 }
 
 
-#pointsAlert {
-    color: #34ce57;
-    text-align: center;
-    position: absolute;
-    top: 38%;
-    font-size: 16px;
+.points-message {
+    color: #37434D;
+    font-size: 15px;
+    padding: 2px 0;
+}
+
+.chat-message {
+    padding: 2px 0;
 }
