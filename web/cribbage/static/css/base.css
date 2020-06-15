@@ -252,35 +252,24 @@ li a {
 }
 
 
-
-.action-button {
-    background: rgb(28, 184, 65);
-    display:block;
-    margin: 10%;
-    height: 150px;
-    width: 150px;
-    border-radius: 50%;
-    border: 1px solid white;
-}
-
 #action-button {
-    height: 100px;
-    width: 100px;
+  height: 120px;
+  width: 120px;
 }
 
 #action-button:enabled {
-    background: #1CA1F2;
+  background: #1CA1F2;
 }
 
 
 .points-message {
-    color: #37434D;
-    font-size: 15px;
-    padding: 2px 0;
+  color: #37434D;
+  font-size: 15px;
+  padding: 2px 0;
 }
 
 .chat-message {
-    padding: 2px 0;
+  padding: 2px 0;
 }
 
 
@@ -288,7 +277,7 @@ li a {
 
 @media (max-width: 768px) {
   .opponent {
-    width: 40%;
+    width: 70%;
    }
   .opponentCard {
     margin-left: -10px;
@@ -305,11 +294,27 @@ li a {
     margin-left: -10px;
   }
   .player-play-area {
-    margin-right: 10px;
+    height: 60%;
   }
+  .action-button-container {
+      height: 40%;
+  }
+  #action-button {
+      width: 100%;
+      height: 100%;
+  }
+
+
   .playerCard.selected {
     opacity: 100%;
     width: 80px;
     z-index: 10px;
   }
+
+}
+
+@media (max-width: 500px) {
+    .playerCard {
+        margin-right: -20px;
+    }
 }

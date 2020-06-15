@@ -10,7 +10,6 @@ export function resetTable() {
   $('.cribCard').remove();
   $('.cutCard').remove();
   $('.playerCard').remove();
-  $('#deck-area').remove();
   $('.player-points').text(0);
   $('#play-total').text('');
 }

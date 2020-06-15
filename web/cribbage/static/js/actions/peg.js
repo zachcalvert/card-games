@@ -27,7 +27,7 @@ function moveCardFromHandToPlayArea(card, nickname) {
   if (nickname === sessionStorage.getItem('nickname')) {
     handCard.removeClass('selected');
     handCard.addClass('played');
-    handCard.animate({"margin-top": "0px"}, 200,"linear");
+    handCard.animate({"margin-top": "-30px"}, 200,"linear");
   } else {
     handCard.addClass('playedOpponentCard');
     handCard.attr("src",'/static/img/cards/' + card);
