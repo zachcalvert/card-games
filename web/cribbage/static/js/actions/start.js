@@ -9,7 +9,7 @@ export function resetTable() {
   $('.playedOpponentCard').remove();
   $('.cribCard').remove();
   $('.cutCard').remove();
-  $('.playerCard').remove();
+  $('.player-card').remove();
   $('.player-points').text(0);
   $('#play-total').text('');
 }

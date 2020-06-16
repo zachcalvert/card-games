@@ -1,6 +1,6 @@
 html, body {
-    height: 100%;
-    background: rgb(21, 32, 43);
+  height: 100%;
+  background: rgb(21, 32, 43);
 }
 
 .lobby, .game {
@@ -10,13 +10,13 @@ html, body {
 }
 
 .join-game-input {
-    margin-bottom: 0!important;
+  margin-bottom: 0!important;
 }
 
 #leave-game {
-    position: absolute;
-    top: 0;
-    right: 10px;
+  position: absolute;
+  top: 0;
+  right: 10px;
 }
 
 .row {
@@ -76,7 +76,7 @@ html, body {
   background: rgb(21, 32, 43);
 }
 
-#message_content {
+#message-content {
   display: block;
   background: #263341;
   border: 1px solid #263341;
@@ -188,5 +188,9 @@ html, body {
 }
 
 
-
+.webmaster-warning {
+    position: fixed;
+    bottom: 10px;
+    font-size: 9px;
+}
 

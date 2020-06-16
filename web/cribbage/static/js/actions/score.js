@@ -24,7 +24,7 @@ export function revealCrib() {
 }
 
 export function clearTable(next_dealer) {
-  $('.playerCard').remove();
+  $('.player-card').remove();
   $('.playedOpponentCard').remove();
   $('.cribCard').remove();
   $('.cutCard').remove();

@@ -6,19 +6,19 @@
     align-items: center;
 }
 
-.playerCard {
+.player-card {
   width: 90px;
   z-index: 1;
   margin: 0 -10px;
 }
 
-.playerCard.selected {
+.player-card.selected {
   z-index: 2;
   width: 100px;
 }
 
-.playerCard.played {
-  opacity: 85%;
+.player-card.played {
+  opacity: 95%;
   z-index: 0;
 }
 
@@ -37,7 +37,7 @@
     transition: transform 0.25s linear;
 }
 
-.opponentCard {
+.opponent-card {
     width: 50px;
     margin: 0 -10px;
 }

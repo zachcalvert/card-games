@@ -5,7 +5,7 @@
   .opponent {
     width: 70%;
    }
-  .opponentCard {
+  .opponent-card {
     margin-left: -20px;
     width: 75px
   }
@@ -15,9 +15,14 @@
   .cribCard {
     width: 75px;
   }
-  .playerCard {
+  .player-card {
     width: 75px;
     margin-left: -10px;
+  }
+  .player-card.selected {
+    opacity: 95%;
+    width: 85px;
+    z-index: 10px;
   }
   .player-play-area {
     height: 60%;
@@ -29,17 +34,10 @@
       width: 100%;
       height: 100%;
   }
-
-  .playerCard.selected {
-    opacity: 100%;
-    width: 85px;
-    z-index: 10px;
-  }
-
 }
 
 @media (max-width: 500px) {
-    .playerCard {
+    .player-card {
         margin-right: -20px;
     }
 }

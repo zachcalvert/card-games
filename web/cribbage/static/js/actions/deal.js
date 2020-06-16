@@ -4,7 +4,7 @@ export function deal(msg) {
       $.each(cards, function(index, card) {
         let cardImage = $('<img/>', {
           id: card,
-          class: 'playerCard',
+          class: 'player-card',
           src: '/static/img/cards/' + card
         });
         $('#' + player + '-cards').append(cardImage);
@@ -13,7 +13,7 @@ export function deal(msg) {
       $.each(cards, function(index, card) {
         let cardImage = $('<img/>', {
           id: card,
-          class: 'opponentCard',
+          class: 'opponent-card',
           src: '/static/img/cards/facedown.png'
         });
         $('#' + player + '-cards').append(cardImage);

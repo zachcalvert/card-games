@@ -37,8 +37,8 @@ socket.on('player_leave', function (msg, cb) {
 
 // send message
 $('form#send_message').submit(function(event) {
-  socket.emit('send_message', {game: gameName, nickname: nickname, data: $('#message_content').val()});
-  $("#message_content").val("");
+  socket.emit('send_message', {game: gameName, nickname: nickname, data: $('#message-content').val()});
+  $("#message-content").val("");
   return false;
 });
 socket.on('new_chat_message', function(msg, cb) {
@@ -127,7 +127,7 @@ $('#action-button').click(function (event) {
   }
 
   if (action === 'DISCARD') {
-    let card = $('img.playerCard.selected').prop('id');
+    let card = $('img.player-card.selected').prop('id');
     socket.emit('discard', {game: gameName, player: nickname, card: card});
   }
 
@@ -136,7 +136,7 @@ $('#action-button').click(function (event) {
   }
 
   if (action === 'PLAY') {
-    let card_played = $('img.playerCard.selected').prop('id');
+    let card_played = $('img.player-card.selected').prop('id');
     console.log('playing ' + card_played);
     socket.emit('peg_round_action', {game: gameName, player: nickname, card_played: card_played});
   }
@@ -165,7 +165,7 @@ $('#action-button').click(function (event) {
   return false;
 });
 
-$(document).on('click', '.playerCard', function(e) {
+$(document).on('click', '.player-card', function(e) {
   if (!$(this).hasClass("played")) {
     $(this).toggleClass('selected');
     if ($(this).hasClass('selected')) {

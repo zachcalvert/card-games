@@ -120,7 +120,7 @@ def deal_hands(game):
 
 
 def discard(game, player, card):
-    from cribbage.app import deal_extra_crib_card
+    from cribbage import deal_extra_crib_card
 
     g = json.loads(cache.get(game))
 
@@ -142,7 +142,7 @@ def discard(game, player, card):
 
 
 def cut_deck(game):
-    from cribbage.app import award_points
+    from cribbage import award_points
     just_won = False
 
     g = json.loads(cache.get(game))
@@ -165,7 +165,7 @@ def get_pegging_total(game):
 
 
 def score_play(game, player, card):
-    from cribbage.app import award_points, clear_pegging_area
+    from cribbage import award_points, clear_pegging_area
 
     just_won = False
     g = json.loads(cache.get(game))
@@ -254,7 +254,7 @@ def next_player_who_has_cards(players_to_check_in_order, hands):
 
 
 def next_player(game):
-    from cribbage.app import award_points, clear_pegging_area
+    from cribbage import award_points, clear_pegging_area
 
     just_won = False
     g = json.loads(cache.get(game))
@@ -317,7 +317,7 @@ def get_player_action(game, player):
 
 
 def score_hand(game, player):
-    from cribbage.app import award_points
+    from cribbage import award_points
     next_to_score = None
 
     g = json.loads(cache.get(game))
@@ -337,7 +337,7 @@ def score_hand(game, player):
 
 
 def score_crib(game, player):
-    from cribbage.app import award_points
+    from cribbage import award_points
 
     g = json.loads(cache.get(game))
     crib = Hand(g['crib'], g['cut_card'], is_crib=True)
