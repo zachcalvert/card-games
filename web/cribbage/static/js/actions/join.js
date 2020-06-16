@@ -34,6 +34,6 @@ export function announcePlayerJoin(msg) {
     opponentPanel.append(panelBody);
     $('.opponents').append(opponentPanel);
 
-    $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ' joined.').html());
+    $('.game-log').append('<br>' + $('<div/>').text(msg.nickname + ' joined.').html());
   }
 }

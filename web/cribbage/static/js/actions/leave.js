@@ -1,6 +1,6 @@
 export function announcePlayerLeave(msg) {
   $("#" + msg.nickname).remove();
-  $('#game-log').append('<br>' + $('<div/>').text(msg.nickname + ' left.').html());
+  $('.game-log').append('<br>' + $('<div/>').text(msg.nickname + ' left.').html());
 }
 
 export function clearSessionData() {

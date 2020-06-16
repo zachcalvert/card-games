@@ -58,7 +58,7 @@ html, body {
     padding: 10px;
 }
 
-#game-log {
+.game-log {
   padding: 10px 15px;
   height: 80%;
   width: 100%;
@@ -109,16 +109,6 @@ html, body {
     margin: 0 10px;
 }
 
-.opponentCard {
-    width: 50px;
-    margin: 0 -10px;
-}
-
-.playedOpponentCard {
-    width: 65px;
-    margin: 0 -10px;
-}
-
 .cribbage-table {
     height: 30%;
     text-align: center;
@@ -148,63 +138,17 @@ html, body {
     display: inline-block;
 }
 
-.player-cards {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    height: 100%;
-    align-items: center;
-}
-
-.list-group-item {
-    padding: 2!important;
-    background: transparent!important;
-}
-
-.playerCard.selected {
-  z-index: 2;
-  width: 100px;
-}
-
-.playerCard.played {
-  /*opacity: 75%;*/
-  z-index: 0;
-}
-
-.deck {
-    width: 75px;
-}
-
 .player-play-area {
   align-items: center;
   height: 80%;
   margin-right: 20px;
 }
 
-.playerCard {
-  width: 90px;
-  z-index: 1;
-  margin: 0 5px;
-}
-
-.cribCard {
-    width: 75px;
-    height: auto;
-    margin: 0 -25px;
-    transition: transform 0.25s linear;
-}
 
 #deck-area {
     width: 25%;
     text-align: left;
     padding: 1%;
-}
-#deck {
-    width: 75px;
-}
-.cutCard {
-    margin: 0 -60px;
-    width: 80px;
 }
 
 #play-area {
@@ -217,37 +161,9 @@ html, body {
     padding: 10%;
 }
 
-#prevous-peg-rounds {
-  float: left;
-}
-
-#prevous-peg-rounds img {
-  margin-left: -45px;
-}
-
 #crib-area {
     width: 25%;
     padding: 1%;
-}
-
-
-ul {
-  width:auto;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-li {
-  float: left;
-}
-
-li a {
-  display: block;
-  text-align: center;
-  padding: 16px;
-  text-decoration: none;
 }
 
 
@@ -274,48 +190,3 @@ li a {
 
 
 
-@media (max-width: 768px) {
-  #leave-game {
-    right: 0;
-  }
-  .opponent {
-    width: 70%;
-   }
-  .opponentCard {
-    margin-left: -10px;
-    width: 40px
-  }
-  .playedOpponentCard {
-    width: 60px;
-  }
-  .cribCard {
-    width: 60px;
-  }
-  .playerCard {
-    width: 70px;
-    margin-left: -10px;
-  }
-  .player-play-area {
-    height: 60%;
-  }
-  .action-button-container {
-      height: 45%;
-  }
-  #action-button {
-      width: 100%;
-      height: 100%;
-  }
-
-  .playerCard.selected {
-    opacity: 100%;
-    width: 80px;
-    z-index: 10px;
-  }
-
-}
-
-@media (max-width: 500px) {
-    .playerCard {
-        margin-right: -20px;
-    }
-}

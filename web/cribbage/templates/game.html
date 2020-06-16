@@ -1,7 +1,9 @@
 <html>
     <head>
         <link rel="stylesheet" href="/static/css/base.css">
+        <link rel="stylesheet" href="/static/css/cards.css">
         <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/css/responsive.css">
         {{ fontawesome_css() }}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ game.name }}</title>
@@ -19,7 +21,7 @@
                 <div class="game-log-header">
                   <span>Messages</span>
                 </div>
-                <div id="game-log"></div>
+                <div class="game-log"></div>
                 <form id="send_message" class="input-group" method="POST" action='#'>
                   <div class="input-group">
                     <input type="text" class="form-control" name="message_content" id="message_content" placeholder="Message">

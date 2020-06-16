@@ -1,0 +1,48 @@
+.player-cards {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+}
+
+.playerCard {
+  width: 90px;
+  z-index: 1;
+  margin: 0 -10px;
+}
+
+.playerCard.selected {
+  z-index: 2;
+  width: 100px;
+}
+
+.playerCard.played {
+  opacity: 85%;
+  z-index: 0;
+}
+
+#deck {
+    width: 75px;
+}
+.cutCard {
+    margin: 0 -65px;
+    width: 80px;
+}
+
+.cribCard {
+    width: 75px;
+    height: auto;
+    margin: 0 -35px;
+    transition: transform 0.25s linear;
+}
+
+.opponentCard {
+    width: 50px;
+    margin: 0 -10px;
+}
+
+.playedOpponentCard {
+    width: 65px;
+    margin: 0 -10px;
+}

@@ -46,8 +46,8 @@ socket.on('new_chat_message', function(msg, cb) {
     class: 'chat-message',
     html: msg.nickname + ': ' + msg.data
   });
-  $('#game-log').append(chatMessage).html();
-  $("#game-log").scrollTop($('#game-log').height());
+  $('.game-log').append(chatMessage).html();
+  $(".game-log").scrollTop($('.game-log').height());
 });
 
 socket.on('new_points_message', function(msg, cb) {
@@ -55,8 +55,8 @@ socket.on('new_points_message', function(msg, cb) {
     class: 'points-message',
     html: msg.data
   });
-  $('#game-log').append(pointsMessage).html();
-  $("#game-log").scrollTop($('#game-log').height());
+  $('.game-log').append(pointsMessage).html();
+  $(".game-log").scrollTop($('.game-log').height());
 });
 
 
