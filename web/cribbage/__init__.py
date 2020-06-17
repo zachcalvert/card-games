@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 import json
+import os
 import random
 import redis
+
 
 from threading import Lock
 from flask import Flask, render_template, session, request, Markup, redirect, url_for, jsonify
@@ -15,7 +17,7 @@ from cribbage.utils import rotate_turn, play_or_pass
 async_mode = None
 
 app = Flask(__name__)
-cache = redis.Redis(host='redis', port=6379)
+
 fa = FontAwesome(app)
 socketio = SocketIO(app, async_mode=async_mode)
 

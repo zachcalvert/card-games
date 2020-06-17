@@ -10,6 +10,6 @@ services:
     env_file:
       - ./.env.dev
     depends_on:
-      - redis
-  redis:
+      - redis-master
+  redis-master:
     image: redis
