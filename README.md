@@ -7,6 +7,3 @@
 
 ### To run the tests
 * docker-compose exec -T web pytest
-
-### To launch a shell
-* docker-compose exec -T web python manage.py shell
