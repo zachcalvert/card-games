@@ -31,6 +31,8 @@ metadata:
   name: cribbage
   labels:
     app: cribbage
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"5000":"cribbage-backendconfig"}}'
 spec:
   type: NodePort
   selector:
@@ -48,3 +50,12 @@ spec:
   backend:
     serviceName: cribbage
     servicePort: cribbage-port
+---
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: cribbage-backendconfig
+spec:
+  timeoutSec: 3600
+  connectionDraining:
+    drainingTimeoutSec: 3600
