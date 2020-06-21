@@ -24,7 +24,7 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
 
-POINTS_TO_WIN = 10
+POINTS_TO_WIN = 121
 
 
 @app.route('/', methods=['GET', 'POST'])

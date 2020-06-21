@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: cribbage
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: cribbage
@@ -23,17 +23,28 @@ spec:
                   key: REDISHOST
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 5000
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: cribbage
+  labels:
+    app: cribbage
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: cribbage
   ports:
-  - port: 80
-    targetPort: 5000
+  - port: 5000
     protocol: TCP
+    name: cribbage-port
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cribbage-ingress
+spec:
+  backend:
+    serviceName: cribbage
+    servicePort: cribbage-port
