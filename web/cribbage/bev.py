@@ -115,7 +115,10 @@ def deal_hands(game):
 
     for player in g["players"].keys():
         dealt_cards = [deck.pop() for card in range(g['hand_size'])]
-        g['hands'][player] = dealt_cards
+        card_keys_and_values = [{card: CARDS.get(card)} for card in dealt_cards]
+        ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
+        ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
+        g['hands'][player] = ascending_card_ids
 
     g['state'] = 'DISCARD'
     g['deck'] = deck
