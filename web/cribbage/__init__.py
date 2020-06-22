@@ -95,9 +95,11 @@ def send_message(message):
 
 
 @socketio.on('start_game', namespace='/game')
-def start_game(message):
-    dealer = bev.start_game(message['game'])
-    emit('start_game', {'dealer': dealer}, room=message['game'])
+def start_game(msg):
+    dealer = bev.start_game(msg['game'])
+    chat_message = "Start your engines! It's {}'s crib.".format(dealer)
+    emit('new_chat_message', {'data': chat_message, 'nickname': 'cribbot'}, room=msg['game'])
+    emit('start_game', {'dealer': dealer}, room=msg['game'])
 
 
 @socketio.on('deal_hands', namespace='/game')

@@ -12,9 +12,6 @@
   .playedOpponentCard {
     width: 75px;
   }
-  .cribCard {
-    width: 75px;
-  }
   .player-card {
     width: 75px;
     margin-left: -10px;
@@ -37,7 +34,7 @@
 }
 
 @media (max-width: 500px) {
-    .player-card {
+    .player-card, .opponent-card {
         margin-right: -20px;
     }
 }

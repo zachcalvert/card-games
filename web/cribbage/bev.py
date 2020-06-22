@@ -364,11 +364,13 @@ def end_round(game, player):
     if set(g['ok_with_next_round']) == set(g['players'].keys()):
         all_have_ended = True
         next_to_deal = rotate_turn(g['dealer'], list(g['players'].keys()))
+        next_cutter = rotate_reverse(next_to_deal, list(g['players'].keys()))
         next_to_score_first = rotate_turn(next_to_deal, list(g['players'].keys()))
 
         g.update({
             'state': 'DEAL',
             'crib': [],
+            'cutter': next_cutter,
             'dealer': next_to_deal,
             'first_to_score': next_to_score_first,
             'hands': {},
