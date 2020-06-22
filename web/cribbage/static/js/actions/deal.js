@@ -21,7 +21,3 @@ export function deal(msg) {
     }
   });
 };
-
-export function dealExtraCribCard(card) {
-
-}

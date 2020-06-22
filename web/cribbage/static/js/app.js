@@ -23,6 +23,7 @@ socket.on('player_join', function (msg, cb) {
 
 socket.on('start_game', function (msg, cb) {
   start(msg.dealer);
+  socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: "Start your engines! It's " + msg.dealer + "'s crib."});
 });
 
 
@@ -118,12 +119,10 @@ $('#action-button').click(function (event) {
 
   if (action === 'START') {
     socket.emit('start_game', {game: gameName});
-    socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Start your engines!'});
   }
 
   if (action === 'DEAL') {
     socket.emit('deal_hands', {game: gameName});
-    socket.emit('send_message', {game: gameName, nickname: 'cribbot', data: 'Time to discard!'});
   }
 
   if (action === 'DISCARD') {
