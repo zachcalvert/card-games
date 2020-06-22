@@ -271,7 +271,7 @@ def next_player(game):
 
     if g['pegging']['total'] == 31:
         if g['hands'][g['pegging']['last_played']]:  # if the person who hit 31 still has cards, it's their turn
-            next = g['pegging']['last_played']
+            next = rotate_turn(g['pegging']['last_played'], player_order)
         else:
             next = next_player_who_has_cards(players_to_check_in_order, g['hands'])
         g['pegging'].update({
@@ -288,8 +288,9 @@ def next_player(game):
             last_played = g['pegging']['last_played']
             g['players'][last_played] += 1
             just_won = award_points(game, last_played, 1, g['players'][last_played], 'for go')
-            if g['hands'][last_played]:
-                next = last_played
+            player_after_last_played = rotate_turn(last_played, player_order)
+            if g['hands'][player_after_last_played]:
+                next = player_after_last_played
             else:
                 next = next_player_who_has_cards(players_to_check_in_order, g['hands'])
             g['pegging'].update({

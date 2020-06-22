@@ -298,7 +298,7 @@ class TestNextPlayer:
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
         assert g['players']['tom'] == 1
-        assert g['turn'] == 'tom'
+        assert g['turn'] == 'kathy'
         assert g['pegging']['total'] == 0
         assert bev.get_player_action('test', g['turn']) == 'PLAY'
 
@@ -357,7 +357,7 @@ class TestNextPlayer:
         bev.next_player('test')
         g = json.loads(fake_redis.get('test'))
         assert g['players']['kathy'] == 2
-        assert g['turn'] == 'kathy'
+        assert g['turn'] == 'tom'
         assert g['pegging']['total'] == 0
 
     def test_kathy_hit_thirtyone_has_no_cards_left_and_others_do(self):
