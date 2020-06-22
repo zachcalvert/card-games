@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: cribbage
-          image: "gcr.io/optimum-pier-280005/cribbage-app:v6"
+          image: "gcr.io/optimum-pier-280005/cribbage-app:v7"
           env:
             - name: REDISHOST
               valueFrom:

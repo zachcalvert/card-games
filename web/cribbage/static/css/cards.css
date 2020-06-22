@@ -33,7 +33,7 @@
 .cribCard {
     width: 75px;
     height: auto;
-    margin: 0 -35px;
+    margin: 0 -20px;
     transition: transform 0.25s linear;
 }
 
