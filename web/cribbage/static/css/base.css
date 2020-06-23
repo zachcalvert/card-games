@@ -1,6 +1,6 @@
 html, body {
   height: 100%;
-  background: rgb(21, 32, 43);
+  background-color: rgb(21, 32, 43)!important;
 }
 
 .lobby, .game {
