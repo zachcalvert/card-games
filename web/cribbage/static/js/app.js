@@ -5,7 +5,7 @@ import { discard, animateDiscard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
 import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
 import { start, resetTable } from "./actions/start.js";
-import { awardPoints, clearTable, revealCrib } from "./actions/score.js";
+import { awardPoints, clearTable, displayScoredHand, revealCrib } from "./actions/score.js";
 
 const namespace = '/game';
 const socket = io(namespace);
@@ -91,6 +91,10 @@ socket.on('invalid_card', function (msg, cb) {
 
 socket.on('send_turn', function(msg, cb) {
   renderCurrentTurnDisplay(msg.player, msg.action);
+});
+
+socket.on('display_scored_hand', function(msg, cb) {
+  displayScoredHand(msg.player);
 });
 
 socket.on('clear_pegging_area', function (msg, cb) {

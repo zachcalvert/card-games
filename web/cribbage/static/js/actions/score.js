@@ -1,5 +1,14 @@
 import {renderDealerIcon} from "./start.js";
 
+export function displayScoredHand(player) {
+  let playerCards = $('.player-card');
+  let playerCardsArea = $('#' + player + '-cards');
+  $.each(playerCards, function(index, playerCard) {
+      playerCardsArea.append(playerCard);
+  });
+  playerCards.removeClass('played');
+}
+
 export function awardPoints(player, amount, reason) {
   let playerHeader = $("#" + player).find(".player-points");
   $(playerHeader).animate({color: '#7FFF00'}, 500);
@@ -25,7 +34,7 @@ export function revealCrib() {
 
 export function clearTable(next_dealer) {
   $('.player-card').remove();
-  $('.playedOpponentCard').remove();
+  $('.opponent-card').remove();
   $('.crib-card').remove();
   $('.cut-card').remove();
   $('#play-total').text('');

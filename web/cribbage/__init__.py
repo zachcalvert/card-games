@@ -159,15 +159,14 @@ def peg_round_action(msg):
     if go_point_wins:
         emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
         return
-    print('next player: {}'.format(next_player))
     next_action = bev.get_player_action(msg['game'], next_player)
-    print('next action: {}'.format(next_action))
     emit('send_turn', {'player': next_player, 'action': next_action}, room=msg['game'])
 
 
 @socketio.on('score_hand', namespace='/game')
 def score_hand(msg):
     next_to_score, just_won = bev.score_hand(msg['game'], msg['nickname'])
+    emit('display_scored_hand', {'player': msg['nickname']})
     if just_won:
         emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=msg['game'])
     elif next_to_score:
