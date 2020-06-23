@@ -1,48 +1,59 @@
+/* PLAYER CARDS */
 .player-cards {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    height: 100%;
-    align-items: center;
+  margin: auto;
 }
 
 .player-card {
-  width: 90px;
+  width: 100px;
   z-index: 1;
   margin: 0 -10px;
 }
 
 .player-card.selected {
   z-index: 2;
-  width: 100px;
+  width: 110px;
 }
 
 .player-card.played {
-  opacity: 95%;
-  z-index: 0;
+  margin-right: -75px;
 }
 
-#deck {
-    width: 75px;
-}
-.cutCard {
-    margin: 0 -65px;
-    width: 80px;
+.player-card.scored {
 }
 
-.cribCard {
-    width: 75px;
-    height: auto;
-    margin: 0 -30px;
-    transition: transform 0.25s linear;
+
+/* OPPONENT CARDS */
+.opponent-cards {
+  margin: auto;
 }
 
 .opponent-card {
-    width: 50px;
-    margin: 0 -10px;
+  width: 75px;
+  z-index: 1;
+  margin: 0 -25px;
 }
 
-.playedOpponentCard {
-    width: 65px;
-    margin: 0 -10px;
+.opponent-card.played {
+  z-index: 0;
+}
+.opponent-card.scored {
+  margin: 0 0 50px;
+}
+
+
+
+
+#deck {
+    width: 95px;
+}
+.cut-card {
+    margin: 0 -65px;
+    width: 100px;
+}
+
+.crib-card {
+    width: 100px;
+    height: auto;
+    margin: 0 -30px;
+    transition: transform 0.25s linear;
 }

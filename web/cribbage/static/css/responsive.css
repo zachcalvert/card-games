@@ -13,12 +13,12 @@
     width: 75px;
   }
   .player-card {
-    width: 75px;
+    width: 90px;
     margin-left: -10px;
   }
   .player-card.selected {
     opacity: 95%;
-    width: 85px;
+    width: 100px;
     z-index: 10px;
   }
   .player-play-area {
@@ -34,7 +34,13 @@
 }
 
 @media (max-width: 500px) {
-    .player-card, .opponent-card {
-        margin-right: -20px;
-    }
+  .player-card {
+    width: 75px;
+  }
+  .player-card.selected {
+    width: 85px;
+  }
+  .player-card, .opponent-card {
+    margin-right: -20px;
+  }
 }

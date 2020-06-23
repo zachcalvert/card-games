@@ -39,12 +39,13 @@ html, body {
 }
 
 .panel-heading {
-    border-bottom: 1px solid #37434D;
-    padding: 10px;
+  border-bottom: 1px solid #37434D;
+  padding: 10px;
+  display: flex;
 }
 
 .panel-body {
-    padding: 10px;
+  padding: 10px;
 }
 
 .game-log-container {
@@ -120,18 +121,21 @@ html, body {
     height: 40%;
 }
 
+.player-nickname {
+  margin-right: auto;
+}
 .player-points {
-    float: right;
+  margin-left: auto;
 }
 
 .dealer-icon {
-    padding-right: 5px;
-    color: gold;
+  padding-right: 5px;
+  color: gold;
 }
 
 .current-turn-icon {
-    padding-right: 5px;
-    color: #1CA1F2;
+  padding-right: 5px;
+  color: #1CA1F2;
 }
 
 .player-action, .player-cards {
@@ -152,13 +156,16 @@ html, body {
 }
 
 #play-area {
-    width: 50%;
-    text-align: center;
+  height: 100%;
+  width: 50%;
+  display: flex;
 }
 
 #play-total {
-    font-size: 42px;
-    padding: 10%;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: auto;
+  font-size: 30px;
 }
 
 #crib-area {

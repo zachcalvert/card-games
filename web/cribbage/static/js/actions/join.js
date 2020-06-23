@@ -23,7 +23,7 @@ export function announcePlayerJoin(msg) {
     let playPile = $('<div/>', {
       class: 'play-pile',
     });
-    panelBody.append(playPile);
+
 
     let opponentPanel = $('<div/>', {
       id: msg.nickname,
@@ -32,6 +32,7 @@ export function announcePlayerJoin(msg) {
 
     opponentPanel.append(panelHeading);
     opponentPanel.append(panelBody);
+    opponentPanel.append(playPile);
     $('.opponents').append(opponentPanel);
 
     $('.game-log').append('<br>' + $('<div/>').text(msg.nickname + ' joined.').html());

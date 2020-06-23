@@ -24,14 +24,13 @@ export function renderCurrentTurnDisplay(player, action) {
 function moveCardFromHandToPlayArea(card, nickname) {
   let handCard = $('#' + card);
   console.log('requested to move from hand to play area');
+  handCard.addClass('played');
+  $('#' + nickname).find('.play-pile').append(handCard);
   if (nickname === sessionStorage.getItem('nickname')) {
     handCard.removeClass('selected');
-    handCard.addClass('played');
-    handCard.animate({"margin-top": "-30px"}, 200,"linear");
+    // handCard.animate({"margin-bottom": "50px"}, 200, "linear");
   } else {
-    handCard.addClass('playedOpponentCard');
     handCard.attr("src",'/static/img/cards/' + card);
-    $('#' + nickname).find('.play-pile').append(handCard);
   }
 }
 

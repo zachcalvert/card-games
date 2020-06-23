@@ -6,10 +6,10 @@ export function renderDealerIcon(dealer) {
 }
 
 export function resetTable() {
-  $('.playedOpponentCard').remove();
-  $('.cribCard').remove();
-  $('.cutCard').remove();
   $('.player-card').remove();
+  $('.opponent-card').remove();
+  $('.crib-card').remove();
+  $('.cut-card').remove();
   $('.player-points').text(0);
   $('#play-total').text('');
 }

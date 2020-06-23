@@ -1,7 +1,7 @@
 export function animateDiscard(discarded) {
   let cardImage = $('<img/>', {
     id: discarded,
-    class: 'cribCard',
+    class: 'crib-card',
     src: '/static/img/cards/facedown.png'
   });
   var rNum = (Math.random()*10)-5;

@@ -57,7 +57,7 @@
                   <div id="deck-area">
                       <img id="deck" src="/static/img/cards/facedown.png">
                       {% if game.cut_card %}
-                        <img id="{{ g.cut_card }}" class="cutCard" src="/static/img/cards/{{ game.cut_card }}" />
+                        <img id="{{ g.cut_card }}" class="cut-card" src="/static/img/cards/{{ game.cut_card }}" />
                       {% endif %}
                   </div>
                   <div id="play-area">
@@ -70,7 +70,7 @@
                   </div>
                   <div id="crib-area">
                     {% for card in game.crib %}
-                      <img id="{{ card }}" class="cribCard" src="/static/img/cards/facedown.png" />
+                      <img id="{{ card }}" class="crib-card" src="/static/img/cards/facedown.png" />
                     {% endfor %}
                   </div>
               </div>
@@ -80,6 +80,7 @@
                     <b><span class="player-points">{{ player_points }}</span></b>
                   </div>
                   <div class="row player-play-area panel-body d-flex justify-content-center">
+                    <div class="play-pile"></div>
                     <div id="{{ player_name }}-cards" class="player-cards col-md-9 col-md-push-3"></div>
                     <div class="action-button-container col-md-3 col-md-pull-9">
                       <button id="action-button" type="button" class="btn btn-outline-dark pull-left">START</button>

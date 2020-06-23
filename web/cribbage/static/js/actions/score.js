@@ -17,7 +17,7 @@ export function awardPoints(player, amount, reason) {
 }
 
 export function revealCrib() {
-  let cribCards = $('.cribCard');
+  let cribCards = $('.crib-card');
   $.each(cribCards, function(index, cribCard) {
     $(cribCard).attr("src",'/static/img/cards/' + cribCard.id);
   });
@@ -26,8 +26,8 @@ export function revealCrib() {
 export function clearTable(next_dealer) {
   $('.player-card').remove();
   $('.playedOpponentCard').remove();
-  $('.cribCard').remove();
-  $('.cutCard').remove();
+  $('.crib-card').remove();
+  $('.cut-card').remove();
   $('#play-total').text('');
   renderDealerIcon(next_dealer);
 }
