@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cribbage
+  name: crib-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cribbage
+      app: crib
   template:
     metadata:
       labels:
-        app: cribbage
+        app: crib
     spec:
       containers:
-        - name: cribbage
+        - name: crib-container
           image: "gcr.io/optimum-pier-280005/cribbage-app:v10"
           env:
             - name: REDISHOST
@@ -28,34 +28,45 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cribbage
+  name: crib-service
   labels:
-    app: cribbage
+    app: crib
   annotations:
-    beta.cloud.google.com/backend-config: '{"ports": {"5000":"cribbage-backendconfig"}}'
+    beta.cloud.google.com/backend-config: '{"ports": {"5000":"crib-backendconfig"}}'
 spec:
   type: NodePort
   selector:
-    app: cribbage
+    app: crib
   ports:
   - port: 5000
     protocol: TCP
-    name: cribbage-port
+    name: crib-port
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: cribbage-ingress
+  name: crib-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: crib-address
+    networking.gke.io/managed-certificates: crib-certificate
 spec:
   backend:
-    serviceName: cribbage
-    servicePort: cribbage-port
+    serviceName: crib-service
+    servicePort: crib-port
 ---
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
 metadata:
-  name: cribbage-backendconfig
+  name: crib-backendconfig
 spec:
   timeoutSec: 3600
   connectionDraining:
     drainingTimeoutSec: 3600
+---
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: crib-certificate
+spec:
+  domains:
+    - cribbage.live
