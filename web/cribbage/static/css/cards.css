@@ -1,12 +1,13 @@
 /* PLAYER CARDS */
 .player-cards {
   margin: auto;
+  text-align: center;
 }
 
 .player-card {
   width: 100px;
   z-index: 1;
-  margin: 0 -20px;
+  margin: 0 -15px;
 }
 
 .player-card.selected {
@@ -15,10 +16,7 @@
 }
 
 .player-card.played {
-  margin-right: -65px;
-}
-
-.player-card.scored {
+  margin-right: -50px;
 }
 
 
@@ -34,26 +32,22 @@
 }
 
 .opponent-card.played {
-  z-index: 0;
-}
-.opponent-card.scored {
-  margin: 0 0 50px;
+  margin-top: -10px;
 }
 
 
-
-
+/* OTHER CARD TYPES */
 #deck {
-    width: 95px;
+  width: 95px;
 }
+
 .cut-card {
-    margin: 0 -65px;
-    width: 100px;
+  margin: 0 -65px;
+  width: 100px;
 }
 
 .crib-card {
-    width: 100px;
-    height: auto;
-    margin: 0 -30px;
-    transition: transform 0.25s linear;
+  width: 85px;
+  height: auto;
+  margin: 10px -30px;
 }

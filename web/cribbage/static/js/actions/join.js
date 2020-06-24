@@ -5,6 +5,9 @@ export function announcePlayerJoin(msg) {
       html: msg.nickname
     });
 
+    let playerStatus = $('<span/>', {
+      class: 'player-status',
+    });
     let playerPoints = $('<span/>', {
       class: 'player-points',
       html: msg.points
@@ -13,6 +16,7 @@ export function announcePlayerJoin(msg) {
     let panelHeading = $('<div/>', {
       class: 'panel-heading',
     });
+    panelHeading.append(playerStatus);
     panelHeading.append(playerName);
     panelHeading.append(playerPoints);
 

@@ -1,8 +1,7 @@
-import {renderCurrentTurnDisplay} from "./peg.js";
+import { renderCurrentTurnDisplay } from "./peg.js";
 
-export function renderDealerIcon(dealer) {
-  $('.dealer-icon').remove();
-  $("#" + dealer).find(".player-nickname").prepend('<span class="dealer-icon fas fa-star"></span>');
+export function renderCurrentCrib(dealer) {
+  $('.crib').find('.panel-heading').text(dealer + "'s crib");
 }
 
 export function resetTable() {
@@ -15,6 +14,6 @@ export function resetTable() {
 }
 
 export function start(dealer) {
+  renderCurrentCrib(dealer);
   renderCurrentTurnDisplay(dealer, 'DEAL');
-  renderDealerIcon(dealer);
 }

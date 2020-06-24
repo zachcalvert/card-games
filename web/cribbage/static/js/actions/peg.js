@@ -4,20 +4,34 @@ export function renderCurrentTurnDisplay(player, action) {
   console.log('Time for ' + player + ' to ' + action);
   $('#action-button').html(action);
   if (player === 'all') {
-    $('.panel-heading').css('background', '#1CA1F2');
+    $(".player-status").find('button.btn-outline-warning').remove();
+    $(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
     $('#action-button').prop('disabled', false);
   }
   else {
     // disable current turn display for all
-    $('.panel-heading').css('background', 'rgb(21, 32, 43)');
+    $(".player-status").find('button.btn-outline-warning').remove();
     $('#action-button').prop('disabled', true);
 
     // enable current turn display for player
-    $('#' + player).find(".panel-heading").css('background', '#1CA1F2');
-
+    $('#' + player).find(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
     if (player === sessionStorage.getItem('nickname')) {
       $('#action-button').prop('disabled', false);
     }
+  }
+
+  if (action === 'SCORE') {
+    let nickname = sessionStorage.getItem('nickname');
+    let playerCards = $('.player-card');
+    let playerCardsArea = $('#' + nickname + '-cards');
+    $.each(playerCards, function(index, playerCard) {
+      playerCardsArea.append(playerCard);
+      $(playerCard).removeClass('played');
+    });
+    $(playerCardsArea).removeClass('col-9');
+    $(playerCardsArea).addClass('col-12');
+    $('#' + nickname).find('.play-pile').remove();
+    $('#play-total').text('');
   }
 }
 
@@ -38,12 +52,12 @@ function updateRunningTotal(new_total) {
   let current = $("#play-total").text();
 
   $({someValue: current}).animate({someValue: new_total}, {
-      duration: 200,
-      easing:'swing', // can be anything
-      step: function() { // called on every step
-          // Update the element's text with rounded-up value:
-          $('#play-total').text(Math.round(this.someValue));
-      }
+    duration: 200,
+    easing:'swing', // can be anything
+    step: function() { // called on every step
+      // Update the element's text with rounded-up value:
+      $('#play-total').text(Math.round(this.someValue));
+    }
   });
 }
 
