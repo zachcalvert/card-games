@@ -122,18 +122,13 @@ html, body {
   height: 40%;
 }
 
-.player-status {
-  width: 25%;
+.player-nickname {
+  width: 50%;
   text-align: left;
 }
 
-.player-nickname {
+.player-status {
   width: 50%;
-  text-align: center;
-}
-
-.player-points {
-  width: 25%;
   text-align: right;
 }
 
@@ -161,15 +156,20 @@ html, body {
 }
 
 #deck-area {
-  width: 25%;
+  width: 20%;
   text-align: left;
-  padding: 1%;
 }
 
 #play-area {
   height: 100%;
   width: 50%;
   display: flex;
+}
+
+.scoreboard {
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: auto;
 }
 
 #play-total {
@@ -185,8 +185,6 @@ html, body {
 }
 
 .crib-area {
-  width: 25%;
-  padding: 1%;
   display: inline;
 }
 

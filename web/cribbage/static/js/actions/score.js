@@ -10,18 +10,17 @@ export function displayScoredHand(player) {
 }
 
 export function awardPoints(player, amount, reason) {
-  let playerHeader = $("#" + player).find(".player-points");
-  $(playerHeader).animate({color: '#7FFF00'}, 500);
-  $(playerHeader).animate({color: 'white)'}, 1000);
+  let playerPoints = $("#scoreboard-" + player + "-points");
+  $(playerPoints).animate({color: '#7FFF00'}, 500);
+  $(playerPoints).animate({color: 'white)'}, 1000);
 
-  let playerPoints = $("#" + player).find(".player-points");
   let current = parseInt(playerPoints.text());
   $({someValue: current}).animate({someValue: current + amount}, {
-      duration: 200,
-      easing:'swing',
-      step: function() {
-          $(playerPoints).text(Math.round(this.someValue));
-      }
+    duration: 200,
+    easing:'swing',
+    step: function() {
+      $(playerPoints).text(Math.round(this.someValue));
+    }
   });
 }
 

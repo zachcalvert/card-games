@@ -42,7 +42,6 @@ function moveCardFromHandToPlayArea(card, nickname) {
   $('#' + nickname).find('.play-pile').append(handCard);
   if (nickname === sessionStorage.getItem('nickname')) {
     handCard.removeClass('selected');
-    // handCard.animate({"margin-bottom": "50px"}, 200, "linear");
   } else {
     handCard.attr("src",'/static/img/cards/' + card);
   }
