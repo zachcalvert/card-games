@@ -1,6 +1,7 @@
 html, body {
   height: 100%;
   background-color: rgb(21, 32, 43)!important;
+  text-align: center;
 }
 
 .lobby, .game {
@@ -32,16 +33,16 @@ html, body {
 }
 
 .panel {
-    border: 1px solid #37434D;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  border: 1px solid #37434D;
+  align-items: center;
+  justify-content: center;
 }
 
 .panel-heading {
   border-bottom: 1px solid #37434D;
-  padding: 10px;
+  padding: 20px;
   display: flex;
+  align-items: center;
 }
 
 .panel-body {
@@ -55,8 +56,8 @@ html, body {
 }
 
 .game-log-header {
-    border-bottom: 1px solid #37434D;
-    padding: 10px;
+  border-bottom: 1px solid #37434D;
+  padding: 10px;
 }
 
 .game-log {
@@ -97,33 +98,38 @@ html, body {
 }
 
 .opponents {
-    height: 30%;
-    align-items: center;
-    justify-content: center;
+  height: 30%;
+  align-items: center;
+  justify-content: center;
 }
 
 .opponent {
-    display: inline-block;
-    border: 1px solid #37434D;
-    height: 100%;
-    width: 30%;
-    margin: 0 10px;
+  display: inline-block;
+  border: 1px solid #37434D;
+  height: 100%;
+  width: 30%;
+  margin: 0 10px;
 }
 
 .cribbage-table {
-    height: 30%;
-    text-align: center;
-    align-items: center;
-    padding: 15px;
+  height: 30%;
+  text-align: center;
+  align-items: center;
+  padding: 15px;
 }
 
 .player {
-    height: 40%;
+  height: 40%;
 }
 
 .player-nickname {
-  margin-right: auto;
+  width: 30%;
 }
+
+.opponent-nickname {
+  width: 97%;
+}
+
 .player-points {
   margin-left: auto;
 }
@@ -139,20 +145,22 @@ html, body {
 }
 
 .player-action, .player-cards {
-    display: inline-block;
+  display: inline-block;
 }
 
 .player-play-area {
-  align-items: center;
   height: 80%;
-  margin-right: 20px;
 }
 
+.play-pile {
+  text-align: center;
+  align-items: center;
+}
 
 #deck-area {
-    width: 25%;
-    text-align: left;
-    padding: 1%;
+  width: 25%;
+  text-align: left;
+  padding: 1%;
 }
 
 #play-area {
@@ -169,20 +177,18 @@ html, body {
 }
 
 #crib-area {
-    width: 25%;
-    padding: 1%;
+  width: 25%;
+  padding: 1%;
 }
 
 
 #action-button {
-  height: 120px;
-  width: 120px;
+  width: 40%;
 }
 
 #action-button:enabled {
   background: #1CA1F2;
 }
-
 
 .points-message {
   color: #37434D;
@@ -194,10 +200,9 @@ html, body {
   padding: 2px 0;
 }
 
-
 .webmaster-warning {
-    position: fixed;
-    bottom: 10px;
-    font-size: 9px;
+  position: fixed;
+  bottom: 10px;
+  font-size: 10px;
 }
 

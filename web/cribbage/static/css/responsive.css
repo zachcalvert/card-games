@@ -2,34 +2,24 @@
   #leave-game {
     right: 0;
   }
+  #deck {
+    width: 65px;
+  }
+  .crib-card, .cut-card, .opponent-card {
+    width: 70px;
+  }
   .opponent {
     width: 70%;
    }
   .opponent-card {
     margin-left: -20px;
-    width: 75px
-  }
-  .playedOpponentCard {
-    width: 75px;
   }
   .player-card {
-    width: 90px;
-    margin-left: -10px;
+    width: 80px;
   }
   .player-card.selected {
-    opacity: 95%;
-    width: 100px;
-    z-index: 10px;
-  }
-  .player-play-area {
-    height: 60%;
-  }
-  .action-button-container {
-      height: 45%;
-  }
-  #action-button {
-      width: 100%;
-      height: 100%;
+    width: 90px;
+    z-index: 10;
   }
 }
 
@@ -40,7 +30,13 @@
   .player-card.selected {
     width: 85px;
   }
-  .player-card, .opponent-card {
-    margin-right: -20px;
+  .opponent-card, .crib-card {
+    margin-right: -30px;
+  }
+  #deck {
+    width: 60px;
+  }
+  .crib-card, .cut-card, .opponent-card {
+    width: 65px;
   }
 }

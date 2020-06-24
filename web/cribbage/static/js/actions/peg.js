@@ -14,10 +14,20 @@ export function renderCurrentTurnDisplay(player, action) {
 
     // enable current turn display for player
     $('#' + player).find(".panel-heading").css('background', '#1CA1F2');
-
     if (player === sessionStorage.getItem('nickname')) {
       $('#action-button').prop('disabled', false);
     }
+  }
+
+  if (action === 'SCORE') {
+    let nickname = sessionStorage.getItem('nickname');
+    let playerCards = $('.player-card');
+    let playerCardsArea = $('#' + nickname + '-cards');
+    $.each(playerCards, function(index, playerCard) {
+      playerCardsArea.append(playerCard);
+      $(playerCard).removeClass('played');
+    });
+    $('#' + nickname).find('.play-pile').remove();
   }
 }
 
@@ -38,12 +48,12 @@ function updateRunningTotal(new_total) {
   let current = $("#play-total").text();
 
   $({someValue: current}).animate({someValue: new_total}, {
-      duration: 200,
-      easing:'swing', // can be anything
-      step: function() { // called on every step
-          // Update the element's text with rounded-up value:
-          $('#play-total').text(Math.round(this.someValue));
-      }
+    duration: 200,
+    easing:'swing', // can be anything
+    step: function() { // called on every step
+      // Update the element's text with rounded-up value:
+      $('#play-total').text(Math.round(this.someValue));
+    }
   });
 }
 
