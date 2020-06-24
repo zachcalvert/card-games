@@ -4,19 +4,17 @@ export function renderCurrentTurnDisplay(player, action) {
   console.log('Time for ' + player + ' to ' + action);
   $('#action-button').html(action);
   if (player === 'all') {
-    if (!$('.player-nickname').has('btn-outline-warning')) {
-      $(".player-nickname").find('button.btn-outline-warning').remove();
-      $(".player-nickname").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
-    }
+    $(".player-status").find('button.btn-outline-warning').remove();
+    $(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
     $('#action-button').prop('disabled', false);
   }
   else {
     // disable current turn display for all
-    $(".player-nickname").find('button.btn-outline-warning').remove();
+    $(".player-status").find('button.btn-outline-warning').remove();
     $('#action-button').prop('disabled', true);
 
     // enable current turn display for player
-    $('#' + player).find(".player-nickname").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
+    $('#' + player).find(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
     if (player === sessionStorage.getItem('nickname')) {
       $('#action-button').prop('disabled', false);
     }
@@ -30,6 +28,8 @@ export function renderCurrentTurnDisplay(player, action) {
       playerCardsArea.append(playerCard);
       $(playerCard).removeClass('played');
     });
+    $(playerCardsArea).removeClass('col-9');
+    $(playerCardsArea).addClass('col-12');
     $('#' + nickname).find('.play-pile').remove();
     $('#play-total').text('');
   }

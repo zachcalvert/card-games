@@ -4,12 +4,7 @@ export function animateDiscard(discarded) {
     class: 'crib-card',
     src: '/static/img/cards/facedown.png'
   });
-  // var rNum = (Math.random()*10)-5;
-  // cardImage.css( {
-  //   '-webkit-transform': 'rotate('+rNum+'2deg)',
-  //   '-moz-transform': 'rotate('+rNum+'2deg)'
-  // } );
-  $('#crib-area').append(cardImage);
+  $('.crib-area').append(cardImage);
 }
 
 export function discard(msg) {

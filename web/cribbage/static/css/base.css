@@ -40,7 +40,7 @@ html, body {
 
 .panel-heading {
   border-bottom: 1px solid #37434D;
-  padding: 20px;
+  padding: 10px;
   display: flex;
   align-items: center;
 }
@@ -107,7 +107,7 @@ html, body {
   display: inline-block;
   border: 1px solid #37434D;
   height: 100%;
-  width: 30%;
+  width: 40%;
   margin: 0 10px;
 }
 
@@ -122,16 +122,19 @@ html, body {
   height: 40%;
 }
 
-.player-nickname {
-  width: 30%;
+.player-status {
+  width: 25%;
+  text-align: left;
 }
 
-.opponent-nickname {
-  width: 97%;
+.player-nickname {
+  width: 50%;
+  text-align: center;
 }
 
 .player-points {
-  margin-left: auto;
+  width: 25%;
+  text-align: right;
 }
 
 .dealer-icon {
@@ -149,7 +152,7 @@ html, body {
 }
 
 .player-play-area {
-  height: 80%;
+  height: 60%;
 }
 
 .play-pile {
@@ -175,15 +178,27 @@ html, body {
   margin-top: auto;
   font-size: 30px;
 }
-
-#crib-area {
+.crib {
+  height: 100%;
   width: 25%;
-  padding: 1%;
+  text-align: center;
 }
 
+.crib-area {
+  width: 25%;
+  padding: 1%;
+  display: inline;
+}
+
+.action-button-container {
+  width: 100%;
+  height: 20%;
+  text-align: center;
+}
 
 #action-button {
-  width: 40%;
+  width: 50%;
+  height: 75%;
 }
 
 #action-button:enabled {

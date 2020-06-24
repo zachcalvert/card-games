@@ -1,4 +1,4 @@
-import {renderDealerIcon} from "./start.js";
+import { renderCurrentCrib } from "./start.js";
 
 export function displayScoredHand(player) {
   let playerCards = $('.player-card');
@@ -38,5 +38,5 @@ export function clearTable(next_dealer) {
   $('.crib-card').remove();
   $('.cut-card').remove();
   $('#play-total').text('');
-  renderDealerIcon(next_dealer);
+  renderCurrentCrib(next_dealer);
 }

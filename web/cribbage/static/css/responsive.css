@@ -30,13 +30,13 @@
   .player-card.selected {
     width: 85px;
   }
-  .opponent-card, .crib-card {
-    margin-right: -30px;
+  .opponent-card {
+    margin-right: -20px;
   }
   #deck {
     width: 60px;
   }
   .crib-card, .cut-card, .opponent-card {
-    width: 65px;
+    width: 75px;
   }
 }

@@ -19,7 +19,7 @@
             <div class="col-3 d-none d-lg-block">
               <div class="game-log-container rounded panel">
                 <div class="game-log-header">
-                  <span>Messages</span>
+                  <span>messages</span>
                 </div>
                 <div class="game-log"></div>
                 <form id="send_message" class="input-group" method="POST" action='#'>
@@ -41,8 +41,9 @@
                   {% for name, points in opponents.items() %}
                     <div id="{{ name }}" class="opponent rounded panel panel-default">
                       <div class="panel-heading">
-                        <span class="player-nickname opponent-nickname">{{ name }}</span>
-                        <span class="player-points opponent-points">{{ points }}</span>
+                        <span class="player-status"></span>
+                        <span class="player-nickname">{{ name }}</span>
+                        <span class="player-points">{{ points }}</span>
                       </div>
 
                       <div id="{{ name }}-cards" class="panel-body d-flex justify-content-center">
@@ -66,22 +67,27 @@
                             {{ game.pegging.total }}
                         {% endif %}
                     </div>
-
                   </div>
-                  <div id="crib-area">
-                    {% for card in game.crib %}
-                      <img id="{{ card }}" class="crib-card" src="/static/img/cards/facedown.png" />
-                    {% endfor %}
+                  <div class="crib panel panel-default">
+                      <div class="panel-heading">crib</div>
+                      <div class="panel-body crib-area">
+                        {% for card in game.crib %}
+                          <img id="{{ card }}" class="crib-card" src="/static/img/cards/facedown.png" />
+                        {% endfor %}
+                      </div>
                   </div>
               </div>
               <div id="{{ player_name }}" class="player panel panel-default">
                   <div class="panel-heading">
+                    <span class="player-status"></span>
                     <span class="player-nickname">{{ player_name }}</span>
-                    <button id="action-button" type="button" class="btn btn-outline-dark">START</button>
                     <span class="player-points">{{ player_points }}</span>
                   </div>
                   <div class="row player-play-area panel-body">
-                    <div id="{{ player_name }}-cards" class="player-cards col-9"></div>
+                    <div id="{{ player_name }}-cards" class="player-cards col-12"></div>
+                  </div>
+                  <div class="action-button-container">
+                    <button id="action-button" type="button" class="btn btn-outline-dark">START</button>
                   </div>
               </div>
             </div>

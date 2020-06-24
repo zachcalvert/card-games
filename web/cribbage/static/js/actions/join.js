@@ -1,18 +1,22 @@
 export function announcePlayerJoin(msg) {
   if ($("#" + msg.nickname).length === 0) {
     let playerName = $('<span/>', {
-      class: 'player-nickname opponent-nickname',
+      class: 'player-nickname',
       html: msg.nickname
     });
 
+    let playerStatus = $('<span/>', {
+      class: 'player-status',
+    });
     let playerPoints = $('<span/>', {
-      class: 'player-points opponent-points',
+      class: 'player-points',
       html: msg.points
     });
 
     let panelHeading = $('<div/>', {
       class: 'panel-heading',
     });
+    panelHeading.append(playerStatus);
     panelHeading.append(playerName);
     panelHeading.append(playerPoints);
 
