@@ -1,4 +1,4 @@
-## A multiplayer cribbage app, built with flask-socketio and redis
+## A multiplayer cribbage app built with flask-socketio and redis
 
 ### To run the cribbage app locally:
 * docker-compose build
