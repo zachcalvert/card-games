@@ -4,16 +4,19 @@ export function renderCurrentTurnDisplay(player, action) {
   console.log('Time for ' + player + ' to ' + action);
   $('#action-button').html(action);
   if (player === 'all') {
-    $('.panel-heading').css('background', '#1CA1F2');
+    if (!$('.player-nickname').has('btn-outline-warning')) {
+      $(".player-nickname").find('button.btn-outline-warning').remove();
+      $(".player-nickname").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
+    }
     $('#action-button').prop('disabled', false);
   }
   else {
     // disable current turn display for all
-    $('.panel-heading').css('background', 'rgb(21, 32, 43)');
+    $(".player-nickname").find('button.btn-outline-warning').remove();
     $('#action-button').prop('disabled', true);
 
     // enable current turn display for player
-    $('#' + player).find(".panel-heading").css('background', '#1CA1F2');
+    $('#' + player).find(".player-nickname").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
     if (player === sessionStorage.getItem('nickname')) {
       $('#action-button').prop('disabled', false);
     }
@@ -28,6 +31,7 @@ export function renderCurrentTurnDisplay(player, action) {
       $(playerCard).removeClass('played');
     });
     $('#' + nickname).find('.play-pile').remove();
+    $('#play-total').text('');
   }
 }
 
