@@ -17,5 +17,4 @@ export function discard(msg) {
     $('#' + msg.nickname).find(".panel-heading").css('background', 'rgb(21, 32, 43)');
     $('#action-button').prop('disabled', true);
   }
-
 }
