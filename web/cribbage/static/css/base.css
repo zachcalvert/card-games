@@ -155,9 +155,12 @@ table {
   height: 60%;
 }
 
+.opponent-play-area {
+  height: 100%;
+}
+
 .play-pile {
   text-align: center;
-  align-items: center;
 }
 
 #deck-area {

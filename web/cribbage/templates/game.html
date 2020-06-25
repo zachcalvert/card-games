@@ -44,8 +44,9 @@
                         <span class="player-nickname">{{ name }}</span>
                         <span class="player-status"></span>
                       </div>
-                      <div id="{{ name }}-cards" class="panel-body d-flex justify-content-center opponent-cards"></div>
-                      <div class="play-pile"></div>
+                      <div class="row opponent-play-area panel-body">
+                        <div id="{{ name }}-cards" class="opponent-cards col-12"></div>
+                      </div>
                     </div>
                   {% endfor %}
               </div>

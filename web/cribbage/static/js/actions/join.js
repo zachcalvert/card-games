@@ -15,23 +15,21 @@ export function announcePlayerJoin(msg) {
     panelHeading.append(playerName);
     panelHeading.append(playerStatus);
 
-    let panelBody = $('<div/>', {
+    let opponentCards = $('<div/>', {
       id: msg.nickname + '-cards',
-      class: 'panel-body d-flex justify-content-center opponent-cards',
+      class: 'opponent-cards col-12',
     });
-    let playPile = $('<div/>', {
-      class: 'play-pile',
+    let panelBody = $('<div/>', {
+      class: 'row opponent-play-area panel-body'
     });
-
+    panelBody.append(opponentCards);
 
     let opponentPanel = $('<div/>', {
       id: msg.nickname,
       class: 'opponent rounded panel panel-default',
     });
-
     opponentPanel.append(panelHeading);
     opponentPanel.append(panelBody);
-    opponentPanel.append(playPile);
     $('.opponents').append(opponentPanel);
 
     $('.game-log').append('<br>' + $('<div/>').text(msg.nickname + ' joined.').html());

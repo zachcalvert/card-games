@@ -10,13 +10,18 @@ export function revealCutCard(card) {
 }
 
 function addPlayPile() {
-  let playerPlayArea = $('.player-play-area');
   let playPile = $('<div/>', {
     class: 'play-pile col-3 d-flex justify-content-center',
   });
-  playerPlayArea.prepend(playPile);
+  $('.player-play-area').prepend(playPile);
 
-  let dealtCardsArea = $(playerPlayArea).find('.player-cards');
-  $(dealtCardsArea).removeClass('col-12');
-  $(dealtCardsArea).addClass('col-9');
+  let opponents = $('.opponent');
+  $.each(opponents, function(index, opponent) {
+      let opponentPlayPile = $('<div/>', {
+        class: 'play-pile col-3 d-flex justify-content-center',
+      });
+      $(opponent).find('.opponent-play-area').prepend(opponentPlayPile);
+    });
+  $('.player-cards').removeClass('col-12').addClass('col-9');
+  $('.opponent-cards').removeClass('col-12').addClass('col-9');
 }
