@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: crib-container
-          image: "gcr.io/optimum-pier-280005/cribbage-app:v15"
+          image: "gcr.io/optimum-pier-280005/cribbage-app:v16"
           env:
             - name: "REDISHOST"
               value: "localhost"
@@ -24,10 +24,10 @@ spec:
           resources:
             requests:
               memory: "32Mi"
-              cpu: "100m"
+              cpu: "50m"
             limits:
               memory: "64Mi"
-              cpu: "200m"
+              cpu: "100m"
         - name: redis-master
           image: redis
           resources:
