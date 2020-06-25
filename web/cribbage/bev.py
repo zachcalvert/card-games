@@ -15,8 +15,8 @@ from cribbage.cards import CARDS
 from cribbage.hand import Hand
 from cribbage.utils import rotate_turn,rotate_reverse, play_or_pass
 
-redis_host = os.environ.get('REDISHOST', 'redis-master')
-redis_port = int(os.environ.get('REDISPORT', 6379))
+redis_host = os.environ.get('REDIS_HOST', 'redis-master')
+redis_port = int(os.environ.get('REDIS_PORT', 6379))
 cache = redis.StrictRedis(host=redis_host, port=redis_port)
 
 logger = logging.getLogger(__name__)
