@@ -24,6 +24,13 @@ spec:
           ports:
             - name: http
               containerPort: 5000
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "100m"
+            limits:
+              memory: "64Mi"
+              cpu: "200m"
 ---
 apiVersion: v1
 kind: Service
