@@ -6,7 +6,7 @@ export function renderCurrentCrib(dealer) {
 
 function buildScoreBoard(players) {
   console.log('building scoreboard for players: ' + players);
-  let table = $('<table>').addClass('table table-striped table-dark');
+  let table = $('<table>').addClass('table table-striped table-dark table-responsive');
 
   let thead = $('<thead>');
   thead.append('<tr>');
