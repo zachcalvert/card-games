@@ -6,7 +6,7 @@ export function renderCurrentCrib(dealer) {
 
 function buildScoreBoard(players) {
   console.log('building scoreboard for players: ' + players);
-  let table = $('<table>').addClass('table table-striped table-dark table-responsive');
+  let table = $('<table>').addClass('scoreboard table table-dark table-sm');
 
   let thead = $('<thead>');
   thead.append('<tr>');
@@ -30,7 +30,7 @@ function buildScoreBoard(players) {
 
   table.append(thead);
   table.append(tbody);
-  $('.scoreboard').append(table);
+  $('.scoreboard-container').append(table);
 }
 
 export function resetTable() {
@@ -38,7 +38,7 @@ export function resetTable() {
   $('.opponent-card').remove();
   $('.crib-card').remove();
   $('.cut-card').remove();
-  $('.player-points').text(0);
+  $('.scorebard').remove();
   $('#play-total').text('');
 }
 

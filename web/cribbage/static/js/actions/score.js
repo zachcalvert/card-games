@@ -1,12 +1,12 @@
 import { renderCurrentCrib } from "./start.js";
 
 export function displayScoredHand(player) {
-  let playerCards = $('.player-card');
   let playerCardsArea = $('#' + player + '-cards');
+  let playerCards = $(playerCardsArea).children();
   $.each(playerCards, function(index, playerCard) {
-      playerCardsArea.append(playerCard);
+    $(playerCard).removeClass('played').addClass('scored');
+    playerCardsArea.append(playerCard);
   });
-  playerCards.removeClass('played');
 }
 
 export function awardPoints(player, amount, reason) {

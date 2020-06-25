@@ -61,13 +61,13 @@
 
                   </div>
                   <div id="play-area">
-                    <div class="scoreboard">
+                    <div class="scoreboard-container">
                     </div>
-                      <div id="play-total">
-                        {% if game.pegging %}
-                          {{ game.pegging.total }}
-                        {% endif %}
-                      </div>
+                    <div id="play-total">
+                      {% if game.pegging and game.pegging.total != 0 %}
+                        {{ game.pegging.total }}
+                      {% endif %}
+                    </div>
                   </div>
                   <div class="crib panel panel-default">
                       <div class="panel-heading">crib</div>

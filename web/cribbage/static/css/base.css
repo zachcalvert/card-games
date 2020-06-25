@@ -173,18 +173,15 @@ table {
   height: 100%;
   width: 40%;
   display: flex;
+  flex-direction: column;
 }
 
-.scoreboard {
-  margin-right: auto;
-  margin-left: auto;
-  margin-top: auto;
+.scoreboard-container {
+  margin: auto;
 }
 
 #play-total {
-  margin-right: auto;
-  margin-left: auto;
-  margin-top: auto;
+  margin: auto;
   font-size: 30px;
 }
 
@@ -227,4 +224,16 @@ table {
   position: fixed;
   bottom: 10px;
   font-size: 10px;
+}
+
+table, th, tr, td {
+  background: transparent!important;
+}
+table {
+  border-style: hidden;
+}
+
+.scoreboard td {
+    text-align: center;
+    vertical-align: middle;
 }

@@ -23,4 +23,10 @@
   .crib-card {
     height: 50%;
   }
+  .player-card {
+    margin: 0 -25px;
+  }
+  .cut-card {
+    margin: 0 -50px;;
+  }
 }

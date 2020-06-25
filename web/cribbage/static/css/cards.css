@@ -15,9 +15,11 @@
   z-index: 2;
   height: 100%;
 }
-
 .player-card.played {
   margin-right: -50px;
+}
+.player-card.scored {
+  margin: 0 -20px;
 }
 
 
@@ -36,7 +38,10 @@
 
 .opponent-card.played {
   z-index: 2;
-  margin: 0 -25px;
+  margin: 0 -35px;
+}
+.opponent-card.scored {
+  margin: 0 -20px;
 }
 
 
@@ -49,8 +54,10 @@
   margin: 0 -65px;
   width: 100px;
 }
-
 .crib-card {
   height: 60%;
   margin: 10px -25px;
+}
+.crib-card.scored {
+  margin: 10px -15px;
 }
