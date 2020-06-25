@@ -43,6 +43,11 @@ def get_current_turn(game):
     return g['turn']
 
 
+def get_pegging_total(game):
+    g = json.loads(cache.get(game))
+    return g['pegging']['total']
+
+
 def setup_game(name, player):
     g = {
         "name": name,
@@ -136,6 +141,13 @@ def discard(game, player, card):
     player_done = len(g['hands'][player]) == 4
     all_done = all(len(g['hands'][nickname]) == 4 for nickname in g['players'].keys())
     if all_done:
+        if len(g['players'].keys()) == 1:
+            # deal an extra two from the deck for this lonely soul
+            first = g['deck'].pop()
+            second = g['deck'].pop()
+            deal_extra_crib_card(game, first)
+            deal_extra_crib_card(game, second)
+
         if len(g['players'].keys()) == 3:
             # deal and extra one from the deck
             extra_crib_card = g['deck'].pop()
@@ -163,11 +175,6 @@ def cut_deck(game):
     cache.set(game, json.dumps(g))
 
     return g['cut_card'], g['turn'], just_won
-
-
-def get_pegging_total(game):
-    g = json.loads(cache.get(game))
-    return g['pegging']['total']
 
 
 def score_play(game, player, card):
