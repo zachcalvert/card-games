@@ -31,27 +31,6 @@ function buildScoreBoard(players) {
   table.append(thead);
   table.append(tbody);
   $('.scoreboard').append(table);
-
-
-  // $('.scoreboard').find('table').find('thead tr').append( $('<th />', {text : 'zeke'}) )
- // <table class="table table-striped table-dark">
- //    <thead>
- //      <tr>
- //        <td id="scoreboard-{{ player_name }}-name">{{ player_name}}</td>
- //        {% for name, points in opponents.items() %}
- //          <td id="scoreboard-{{ name }}-name">{{ name }}</td>
- //        {% endfor %}
- //        </tr>
- //    </thead>
- //    <tbody>
- //      <tr>
- //        <td id="scoreboard-{{ player_name }}-points">{{ player_points }}</td>
- //        {% for name, points in opponents.items() %}
- //          <td id="scoreboard-{{ name }}-points">{{ points }}</td>
- //        {% endfor %}
- //      </tr>
- //    </tbody>
- //  </table>
 }
 
 export function resetTable() {
