@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: crib-container
-          image: "gcr.io/optimum-pier-280005/cribbage-app:v12"
+          image: "gcr.io/optimum-pier-280005/cribbage-app:v13"
           env:
             - name: REDISHOST
               valueFrom:
@@ -49,6 +49,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: crib-address
     networking.gke.io/managed-certificates: crib-certificate
+    kubernetes.io/ingress.allow-http: "true"
 spec:
   backend:
     serviceName: crib-service
