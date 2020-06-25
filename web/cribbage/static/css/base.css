@@ -32,6 +32,10 @@ html, body {
   padding-right: 0!important;
 }
 
+table {
+  background: transparent;
+}
+
 .panel {
   border: 1px solid #37434D;
   align-items: center;
@@ -109,31 +113,27 @@ html, body {
   height: 100%;
   width: 40%;
   margin: 0 10px;
+  position: relative;
 }
 
 .cribbage-table {
   height: 30%;
   text-align: center;
   align-items: center;
-  padding: 15px;
+  padding: 10px 0;
 }
 
 .player {
   height: 40%;
 }
 
-.player-status {
-  width: 25%;
+.player-nickname {
+  width: 50%;
   text-align: left;
 }
 
-.player-nickname {
+.player-status {
   width: 50%;
-  text-align: center;
-}
-
-.player-points {
-  width: 25%;
   text-align: right;
 }
 
@@ -155,21 +155,30 @@ html, body {
   height: 60%;
 }
 
+.opponent-play-area {
+  height: 100%;
+}
+
 .play-pile {
   text-align: center;
-  align-items: center;
 }
 
 #deck-area {
-  width: 25%;
+  width: 30%;
   text-align: left;
-  padding: 1%;
+  display: inline-flex;
 }
 
 #play-area {
   height: 100%;
-  width: 50%;
+  width: 40%;
   display: flex;
+}
+
+.scoreboard {
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: auto;
 }
 
 #play-total {
@@ -178,15 +187,14 @@ html, body {
   margin-top: auto;
   font-size: 30px;
 }
+
 .crib {
   height: 100%;
-  width: 25%;
+  width: 30%;
   text-align: center;
 }
 
 .crib-area {
-  width: 25%;
-  padding: 1%;
   display: inline;
 }
 

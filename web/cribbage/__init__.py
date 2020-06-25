@@ -96,10 +96,10 @@ def send_message(message):
 
 @socketio.on('start_game', namespace='/game')
 def start_game(msg):
-    dealer = bev.start_game(msg['game'])
+    dealer, players = bev.start_game(msg['game'])
     chat_message = "Start your engines! It's {}'s crib.".format(dealer)
     emit('new_chat_message', {'data': chat_message, 'nickname': 'cribbot'}, room=msg['game'])
-    emit('start_game', {'dealer': dealer}, room=msg['game'])
+    emit('start_game', {'dealer': dealer, 'players': players}, room=msg['game'])
 
 
 @socketio.on('deal_hands', namespace='/game')
@@ -203,8 +203,8 @@ def play_again(msg):
     if all_want_to_play_again:
         bev.reset_game_dict(msg['game'])
         emit('reset_table', room=msg['game'])
-        dealer = bev.start_game(msg['game'])
-        emit('start_game', {'dealer': dealer}, room=msg['game'])
+        dealer, players = bev.start_game(msg['game'])
+        emit('start_game', {'dealer': dealer, 'players': players}, room=msg['game'])
 
 
 if __name__ == '__main__':

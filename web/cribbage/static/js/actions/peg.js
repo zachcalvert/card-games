@@ -1,5 +1,3 @@
-import { awardPoints } from "./score.js";
-
 export function renderCurrentTurnDisplay(player, action) {
   console.log('Time for ' + player + ' to ' + action);
   $('#action-button').html(action);
@@ -21,16 +19,14 @@ export function renderCurrentTurnDisplay(player, action) {
   }
 
   if (action === 'SCORE') {
-    let nickname = sessionStorage.getItem('nickname');
-    let playerCards = $('.player-card');
-    let playerCardsArea = $('#' + nickname + '-cards');
-    $.each(playerCards, function(index, playerCard) {
-      playerCardsArea.append(playerCard);
-      $(playerCard).removeClass('played');
+    let playedCards = $('.played')
+    $.each(playedCards, function(index, card) {
+      let dealtArea = $(card).parent().parent().find('.col-9')
+      dealtArea.append(card);
     });
-    $(playerCardsArea).removeClass('col-9');
-    $(playerCardsArea).addClass('col-12');
-    $('#' + nickname).find('.play-pile').remove();
+    $('.player-cards').removeClass('col-9').addClass('col-12');
+    $('.opponent-cards').removeClass('col-9').addClass('col-12');
+    $('.play-pile').remove();
     $('#play-total').text('');
   }
 }
@@ -42,7 +38,6 @@ function moveCardFromHandToPlayArea(card, nickname) {
   $('#' + nickname).find('.play-pile').append(handCard);
   if (nickname === sessionStorage.getItem('nickname')) {
     handCard.removeClass('selected');
-    // handCard.animate({"margin-bottom": "50px"}, 200, "linear");
   } else {
     handCard.attr("src",'/static/img/cards/' + card);
   }
