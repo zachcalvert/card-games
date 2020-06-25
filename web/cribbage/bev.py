@@ -105,7 +105,7 @@ def start_game(game):
         g['played_cards'][player] = []
 
     cache.set(game, json.dumps(g))
-    return g['dealer']
+    return g['dealer'], list(g['players'].keys())
 
 
 def deal_hands(game):

@@ -44,7 +44,7 @@
                         <span class="player-nickname">{{ name }}</span>
                         <span class="player-status"></span>
                       </div>
-                      <div id="{{ name }}-cards" class="panel-body d-flex justify-content-center"></div>
+                      <div id="{{ name }}-cards" class="panel-body d-flex justify-content-center opponent-cards"></div>
                       <div class="play-pile"></div>
                     </div>
                   {% endfor %}
@@ -57,28 +57,16 @@
                       {% if game.cut_card %}
                         <img id="{{ g.cut_card }}" class="cut-card" src="/static/img/cards/{{ game.cut_card }}" />
                       {% endif %}
+
                   </div>
                   <div id="play-area">
                     <div class="scoreboard">
-                        <table class="table table-striped table-dark">
-                          <thead>
-                            <tr>
-                              <td id="scoreboard-{{ player_name }}-name">{{ player_name}}</td>
-                              {% for name, points in opponents.items() %}
-                                <td id="scoreboard-{{ name }}-name">{{ name }}</td>
-                              {% endfor %}
-                              </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td id="scoreboard-{{ player_name }}-points">{{ player_points }}</td>
-                              {% for name, points in opponents.items() %}
-                                <td id="scoreboard-{{ name }}-points">{{ points }}</td>
-                              {% endfor %}
-                            </tr>
-                          </tbody>
-                        </table>
                     </div>
+                      <div id="play-total">
+                        {% if game.pegging %}
+                          {{ game.pegging.total }}
+                        {% endif %}
+                      </div>
                   </div>
                   <div class="crib panel panel-default">
                       <div class="panel-heading">crib</div>

@@ -22,7 +22,7 @@ socket.on('player_join', function (msg, cb) {
 });
 
 socket.on('start_game', function (msg, cb) {
-  start(msg.dealer);
+  start(msg.dealer, msg.players);
 });
 
 

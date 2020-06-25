@@ -5,38 +5,22 @@
   #deck {
     width: 65px;
   }
-  .crib-card, .cut-card, .opponent-card {
+  .cut-card {
     width: 70px;
   }
   .opponent {
     width: 70%;
    }
-  .opponent-card {
-    margin-left: -20px;
-  }
-  .player-card {
-    width: 80px;
-  }
-  .player-card.selected {
-    width: 90px;
-    z-index: 10;
-  }
 }
 
 @media (max-width: 500px) {
-  .player-card {
-    width: 75px;
-  }
-  .player-card.selected {
-    width: 85px;
-  }
-  .opponent-card {
-    margin-right: -20px;
-  }
   #deck {
     width: 60px;
   }
-  .crib-card, .cut-card, .opponent-card {
+  .cut-card {
     width: 75px;
+  }
+  .crib-card {
+    height: 50%;
   }
 }

@@ -8,21 +8,16 @@ export function announcePlayerJoin(msg) {
     let playerStatus = $('<span/>', {
       class: 'player-status',
     });
-    let playerPoints = $('<span/>', {
-      class: 'player-points',
-      html: msg.points
-    });
 
     let panelHeading = $('<div/>', {
       class: 'panel-heading',
     });
-    panelHeading.append(playerStatus);
     panelHeading.append(playerName);
-    panelHeading.append(playerPoints);
+    panelHeading.append(playerStatus);
 
     let panelBody = $('<div/>', {
       id: msg.nickname + '-cards',
-      class: 'panel-body d-flex justify-content-center',
+      class: 'panel-body d-flex justify-content-center opponent-cards',
     });
     let playPile = $('<div/>', {
       class: 'play-pile',
