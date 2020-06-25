@@ -27,6 +27,7 @@ export function awardPoints(player, amount, reason) {
 export function revealCrib() {
   let cribCards = $('.crib-card');
   $.each(cribCards, function(index, cribCard) {
+    $(cribCard).addClass('scored');
     $(cribCard).attr("src",'/static/img/cards/' + cribCard.id);
   });
 }

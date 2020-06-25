@@ -10,6 +10,15 @@ html, body {
   height: 100%;
 }
 
+#join {
+  display: flex;
+  flex-direction: column;
+}
+
+#play_game {
+  margin: auto;
+}
+
 .join-game-input {
   margin-bottom: 0!important;
 }
@@ -203,7 +212,7 @@ table {
 
 #action-button {
   width: 50%;
-  height: 75%;
+  height: 85%;
 }
 
 #action-button:enabled {
