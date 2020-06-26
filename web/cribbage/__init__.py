@@ -27,9 +27,14 @@ thread_lock = Lock()
 POINTS_TO_WIN = 121
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template('index.html', async_mode=socketio.async_mode)
+@app.route('/', defaults={'reason': None}, methods=['GET', 'POST'])
+@app.route('/<reason>', methods=['GET', 'POST'])
+def index(reason):
+    message = None
+    if reason and reason == 'already-exists':
+        message = 'Oops! A game with that name is already underway. Please try starting a game with a different name.'
+
+    return render_template('index.html', message=message, async_mode=socketio.async_mode)
 
 
 @app.route('/game', methods=['GET', 'POST'])
@@ -44,6 +49,9 @@ def game_detail():
         game = bev.get_game(game_name)
         if not game:
             game = bev.setup_game(name=game_name, player=player)
+
+        if game['state'] != 'INIT' and player not in game['players'].keys():
+            return redirect(url_for('index', reason='already-exists'))
 
         if player not in game["players"]:
             game = bev.add_player(game_name, player)
@@ -166,7 +174,7 @@ def peg_round_action(msg):
 @socketio.on('score_hand', namespace='/game')
 def score_hand(msg):
     next_to_score, just_won = bev.score_hand(msg['game'], msg['nickname'])
-    emit('display_scored_hand', {'player': msg['nickname']})
+    emit('display_scored_hand', {'player': msg['nickname']}, room=msg['game'])
     if just_won:
         emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=msg['game'])
     elif next_to_score:
@@ -183,7 +191,7 @@ def score_crib(msg):
     if just_won:
         emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
     else:
-        emit('send_turn', {'player': 'all', 'action': 'END ROUND'}, room=msg['game'])
+        emit('send_turn', {'player': 'all', 'action': 'NEXT ROUND'}, room=msg['game'])
 
 
 @socketio.on('end_round', namespace='/game')

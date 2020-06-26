@@ -8,6 +8,9 @@
     </head>
     <body>
         <div class="lobby d-flex align-content-center justify-content-center flex-wrap">
+            {% if message %}
+              <span class="joinErrorMessage">{{ message }}</span>
+            {% endif %}
             <form id="join" method="POST" action='/game'>
               <div class="join-game-input form-group row">
                 <div class="col-sm-10">

@@ -23,6 +23,14 @@ html, body {
   margin-bottom: 0!important;
 }
 
+.joinErrorMessage {
+    width: 100%;
+    margin: 0 30%;
+    color: pink;
+    font-size: 12px;
+    text-align: center;
+}
+
 #leave-game {
   position: absolute;
   top: 0;
@@ -191,7 +199,7 @@ table {
 
 #play-total {
   margin: auto;
-  font-size: 30px;
+  font-size: 18px;
 }
 
 .crib {

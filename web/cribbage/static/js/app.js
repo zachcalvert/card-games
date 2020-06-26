@@ -155,7 +155,7 @@ $('#action-button').click(function (event) {
     socket.emit('score_crib', {game: gameName, nickname: nickname});
   }
 
-  if (action === 'END ROUND') {
+  if (action === 'NEXT ROUND') {
     socket.emit('end_round', {game: gameName, nickname: nickname});
   }
 
