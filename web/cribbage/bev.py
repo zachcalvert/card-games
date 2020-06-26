@@ -148,11 +148,14 @@ def discard(game, player, card):
             second = g['deck'].pop()
             deal_extra_crib_card(game, first)
             deal_extra_crib_card(game, second)
+            g['crib'].append(first)
+            g['crib'].append(second)
 
         if len(g['players'].keys()) == 3:
             # deal and extra one from the deck
             extra_crib_card = g['deck'].pop()
             deal_extra_crib_card(game, extra_crib_card)
+            g['crib'].append(extra_crib_card)
 
         g['state'] = 'CUT'
 
