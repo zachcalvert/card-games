@@ -70,6 +70,7 @@ def award_points(game, player, amount, total_points, reason):
         emit('award_points', {'player': player, 'amount': amount, 'reason': 'pegging'}, room=game)
 
     if total_points > POINTS_TO_WIN:
+        emit('decorate_winner', {'player': player}, room=game)
         emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribbot'}, room=game)
         emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
         return True
@@ -132,8 +133,6 @@ def discard(msg):
 def cut_deck(msg):
     cut_card, turn, winning_cut = bev.cut_deck(msg['game'])
     emit('show_cut_card', {"cut_card": cut_card, 'turn': turn}, room=msg['game'])
-    if winning_cut:
-        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
 
 
 @socketio.on('peg_round_action', namespace='/game')
@@ -155,17 +154,16 @@ def peg_round_action(msg):
 
         just_won = bev.score_play(msg['game'], msg['player'], msg['card_played'])
         new_total = bev.record_play(msg['game'], msg['player'], msg['card_played'])
-        if just_won:
-            emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
-        else:
-            emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total},
+        emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total},
                  room=msg['game'])
+        if just_won:
+            return
+
     else:
         bev.record_pass(msg['game'], msg['nickname'])
 
     next_player, go_point_wins = bev.next_player(msg['game'])
     if go_point_wins:
-        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
         return
     next_action = bev.get_player_action(msg['game'], next_player)
     emit('send_turn', {'player': next_player, 'action': next_action}, room=msg['game'])
@@ -176,7 +174,7 @@ def score_hand(msg):
     next_to_score, just_won = bev.score_hand(msg['game'], msg['nickname'])
     emit('display_scored_hand', {'player': msg['nickname']}, room=msg['game'])
     if just_won:
-        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=msg['game'])
+        return
     elif next_to_score:
         emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
@@ -189,7 +187,7 @@ def score_crib(msg):
     emit('reveal_crib', room=msg['game'])
     just_won = bev.score_crib(msg['game'], msg['nickname'])
     if just_won:
-        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
+        return
     else:
         emit('send_turn', {'player': 'all', 'action': 'NEXT ROUND'}, room=msg['game'])
 

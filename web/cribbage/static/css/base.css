@@ -254,3 +254,8 @@ table {
     text-align: center;
     vertical-align: middle;
 }
+
+.winner {
+  color: #FFD700;
+  padding: 5px;
+}

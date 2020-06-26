@@ -38,7 +38,8 @@ export function resetTable() {
   $('.opponent-card').remove();
   $('.crib-card').remove();
   $('.cut-card').remove();
-  $('.scorebard').remove();
+  $('.scoreboard').remove();
+  $('.winner').remove();
   $('#play-total').text('');
 }
 

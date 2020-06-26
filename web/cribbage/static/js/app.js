@@ -5,7 +5,7 @@ import { discard, animateDiscard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
 import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
 import { start, resetTable } from "./actions/start.js";
-import { awardPoints, clearTable, displayScoredHand, revealCrib } from "./actions/score.js";
+import { awardPoints, clearTable, displayScoredHand, revealCrib, decorateWinner } from "./actions/score.js";
 
 const namespace = '/game';
 const socket = io(namespace);
@@ -115,6 +115,10 @@ socket.on('reset_table', function (msg, cb) {
 
 socket.on('award_points', function (msg, cb) {
   awardPoints(msg.player, msg.amount, msg.reason);
+});
+
+socket.on('decorate_winner', function (msg, cb) {
+  decorateWinner(msg.player);
 });
 
 $('#action-button').click(function (event) {

@@ -7,6 +7,7 @@ import logging
 import os
 import random
 import redis
+import time
 
 from itertools import chain, combinations
 import more_itertools as mit
@@ -192,23 +193,22 @@ def score_play(game, player, card):
             return True
         return False
 
-    if cards_on_table:
-        if g['pegging']['run']:   # Is there already a run going? If so, try to add to it
-            ranks = sorted([rank for rank in g['pegging']['run']] + [card_played['rank']])
-            run_is_continued = _is_run(ranks)
-            g['pegging']['run'] = ranks if run_is_continued else []
-            points += len(g['pegging']['run'])
-        elif len(cards_on_table) >= 2:  # or maybe this card has started a new run
-            ranks = sorted([card['rank'] for card in cards_on_table[:2]] + [card_played['rank']])
-            g['pegging']['run'] = ranks if _is_run(ranks) else []
-            points += len(g['pegging']['run'])
+    if g['pegging']['run']:   # Is there already a run going? If so, try to add to it
+        ranks = sorted([rank for rank in g['pegging']['run']] + [card_played['rank']])
+        run_is_continued = _is_run(ranks)
+        g['pegging']['run'] = ranks if run_is_continued else []
+        points += len(g['pegging']['run'])
+    elif len(cards_on_table) >= 2:  # or maybe this card has started a new run
+        ranks = sorted([card['rank'] for card in cards_on_table[:2]] + [card_played['rank']])
+        g['pegging']['run'] = ranks if _is_run(ranks) else []
+        points += len(g['pegging']['run'])
 
-        ranks = [card['rank'] for card in cards_on_table]  # evaluate for pairs, threes, and fours
-        for count, rank in enumerate(ranks, 1):
-            if card_played['rank'] == rank:
-                points += count*2
-            else:
-                break
+    ranks = [card['rank'] for card in cards_on_table]  # evaluate for pairs, threes, and fours
+    for count, rank in enumerate(ranks, 1):
+        if card_played['rank'] == rank:
+            points += count*2
+        else:
+            break
 
     if (g['pegging']['total'] + card_played['value']) in [15, 31]:
         points += 2
@@ -293,6 +293,7 @@ def next_player(game):
         if not next:
             last_played = g['pegging']['last_played']
             g['players'][last_played] += 1
+            time.sleep(.21)
             just_won = award_points(game, last_played, 1, g['players'][last_played], 'for go')
             player_after_last_played = rotate_turn(last_played, player_order)
             if g['hands'][player_after_last_played]:
