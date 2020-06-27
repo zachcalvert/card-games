@@ -19,8 +19,18 @@
   }
   .player-card {
     margin: 0 -25px;
+    height: 75%;
   }
   .cut-card {
     margin: 0 -50px;;
+  }
+  .opponent-card.scored {
+    height: 50%;
+  }
+}
+
+@media (max-width: 500px) {
+  .crib-card.scored {
+    margin: 10px -30px;
   }
 }
