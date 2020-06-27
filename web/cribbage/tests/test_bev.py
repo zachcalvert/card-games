@@ -450,4 +450,226 @@ class TestNextPlayer:
         assert g['turn'] == 'tom'
 
 
+class TestPlayScoring:
 
+    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    def test_fifteen_two(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'hands': {'kathy': ['6d95c18472', 'c6f4900f82'], 'tom': ['ace1293f8a']},
+            'pegging': {
+                'cards': ['4de6b73ab8'],  # eight of hearts
+                'last_played': 'tom',
+                'passed': [],
+                'run': [],
+                'total': 8},
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
+            'played_cards': {
+                'kathy': [],
+                'tom': []
+            },
+            'state': 'PLAY',
+            'turn': 'kathy'}
+
+        fake_redis.set('test', json.dumps(game_dict))
+        bev.cache = fake_redis
+        seven_of_clubs = 'c6f4900f82'
+        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        assert not just_won
+        bev.record_play('test', 'kathy', seven_of_clubs)
+        g = json.loads(fake_redis.get('test'))
+        assert g['players']['kathy'] == 2
+        assert g['pegging']['total'] == 15
+        assert set(g['pegging']['cards']) == set(['4de6b73ab8', 'c6f4900f82'])
+        assert g['hands']['kathy'] == ['6d95c18472']
+
+    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    def test_thirtyone(self):
+        """
+        Verify two points for 31
+        """
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'hands': {'kathy': ['6d95c18472', 'c6f4900f82'], 'tom': ['ace1293f8a']},
+            'pegging': {
+                'cards': ['4de6b73ab8', 'f6571e162f', 'c88523b677'],  # eight, ten, six
+                'last_played': 'tom',
+                'passed': [],
+                'run': [],
+                'total': 24},
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
+            'played_cards': {
+                'kathy': ['f6571e162f'],
+                'tom': ['4de6b73ab8', 'c88523b677']
+            },
+            'state': 'PLAY',
+            'turn': 'kathy'}
+
+        fake_redis.set('test', json.dumps(game_dict))
+        bev.cache = fake_redis
+        seven_of_clubs = 'c6f4900f82'
+        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        assert not just_won
+        bev.record_play('test', 'kathy', seven_of_clubs)
+        g = json.loads(fake_redis.get('test'))
+        assert set(g['pegging']['cards']) == set(['4de6b73ab8', 'f6571e162f', 'c88523b677', 'c6f4900f82'])
+        assert g['hands']['kathy'] == ['6d95c18472']
+        assert g['players']['kathy'] == 2
+        assert g['pegging']['total'] == 31
+
+    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    def test_pair(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'hands': {'kathy': ['6d95c18472', 'c6f4900f82'], 'tom': ['ace1293f8a']},
+            'pegging': {
+                'cards': ['32f7615119'],  # seven of spades
+                'last_played': 'tom',
+                'passed': [],
+                'run': [],
+                'total': 7},
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
+            'played_cards': {
+                'kathy': [],
+                'tom': []
+            },
+            'state': 'PLAY',
+            'turn': 'kathy'}
+
+        fake_redis.set('test', json.dumps(game_dict))
+        bev.cache = fake_redis
+        seven_of_clubs = 'c6f4900f82'
+        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        assert not just_won
+        bev.record_play('test', 'kathy', seven_of_clubs)
+        g = json.loads(fake_redis.get('test'))
+        assert g['players']['kathy'] == 2
+        assert g['pegging']['total'] == 14
+        assert set(g['pegging']['cards']) == set(['32f7615119', 'c6f4900f82'])
+        assert g['hands']['kathy'] == ['6d95c18472']
+
+    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    def test_three_of_a_kind(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'hands': {'kathy': ['6d95c18472', 'c6f4900f82'], 'tom': ['ace1293f8a']},
+            'pegging': {
+                'cards': ['32f7615119', '4f99bf15e5'],  # seven of spades, seven of diamonds
+                'last_played': 'tom',
+                'passed': [],
+                'run': [],
+                'total': 14},
+            'players': {
+                'tom': 2,
+                'kathy': 0
+            },
+            'played_cards': {
+                'kathy': ['32f7615119'],
+                'tom': ['4f99bf15e5']
+            },
+            'state': 'PLAY',
+            'turn': 'kathy'}
+
+        fake_redis.set('test', json.dumps(game_dict))
+        bev.cache = fake_redis
+        seven_of_clubs = 'c6f4900f82'
+        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        assert not just_won
+        bev.record_play('test', 'kathy', seven_of_clubs)
+        g = json.loads(fake_redis.get('test'))
+        assert set(g['pegging']['cards']) == set(['32f7615119', '4f99bf15e5', 'c6f4900f82'])
+        assert g['hands']['kathy'] == ['6d95c18472']
+        assert g['pegging']['total'] == 21
+        assert g['players']['kathy'] == 6
+
+    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    def test_four_of_a_kind(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'hands': {'kathy': ['6d95c18472', 'c6f4900f82'], 'tom': ['ace1293f8a']},
+            'pegging': {
+                'cards': ['32f7615119', '4f99bf15e5', 'def8effef6'],  # seven of spades, diamonds, hearts
+                'last_played': 'tom',
+                'passed': [],
+                'run': [],
+                'total': 21},
+            'players': {
+                'tom': 6,
+                'kathy': 2
+            },
+            'played_cards': {
+                'kathy': ['32f7615119'],
+                'tom': ['4f99bf15e5', 'def8effef6']
+            },
+            'state': 'PLAY',
+            'turn': 'kathy'}
+
+        fake_redis.set('test', json.dumps(game_dict))
+        bev.cache = fake_redis
+        seven_of_clubs = 'c6f4900f82'
+        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        assert not just_won
+        bev.record_play('test', 'kathy', seven_of_clubs)
+        g = json.loads(fake_redis.get('test'))
+        assert set(g['pegging']['cards']) == set(['32f7615119', '4f99bf15e5', 'def8effef6', 'c6f4900f82'])  # all the sevens
+        assert g['hands']['kathy'] == ['6d95c18472']
+        assert g['pegging']['total'] == 28
+        assert g['players']['kathy'] == 14
+
+    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    def test_run_of_three(self):
+        """
+        test run of three scores three points
+        """
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'hands': {'kathy': ['6d95c18472', 'c6f4900f82'], 'tom': ['ace1293f8a']},
+            'pegging': {
+                'cards': ['4de6b73ab8', 'c88523b677'],  # eight, six
+                'last_played': 'tom',
+                'passed': [],
+                'run': [],
+                'total': 14},
+            'players': {
+                'tom': 0,
+                'kathy': 0
+            },
+            'played_cards': {
+                'kathy': ['32f7615119'],
+                'tom': ['4f99bf15e5', 'def8effef6']
+            },
+            'state': 'PLAY',
+            'turn': 'kathy'}
+
+        fake_redis.set('test', json.dumps(game_dict))
+        bev.cache = fake_redis
+        seven_of_clubs = 'c6f4900f82'
+        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        assert not just_won
+        bev.record_play('test', 'kathy', seven_of_clubs)
+        g = json.loads(fake_redis.get('test'))
+        assert set(g['pegging']['cards']) == set(['4de6b73ab8', 'c88523b677', 'c6f4900f82'])  # all the sevens
+        assert g['hands']['kathy'] == ['6d95c18472']
+        assert g['pegging']['total'] == 21
+        assert g['players']['kathy'] == 3
+
+    def test_run_of_four(self):
+        pass
+
+    def test_run_of_five_and_fifteen_two(self):
+        pass
+
+    def test_fifteen_two_and_a_pair(self):
+        pass
+
+    def test_fifteen_two_and_three_of_a_kind(self):
+        pass
