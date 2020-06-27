@@ -69,7 +69,7 @@ def award_points(game, player, amount, total_points, reason):
         emit('new_points_message', {'data': '+{} for {} ({})'.format(amount, player, reason)}, room=game)
         emit('award_points', {'player': player, 'amount': amount, 'reason': 'pegging'}, room=game)
 
-    if total_points > POINTS_TO_WIN:
+    if total_points >= POINTS_TO_WIN:
         emit('decorate_winner', {'player': player}, room=game)
         emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribbot'}, room=game)
         emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
