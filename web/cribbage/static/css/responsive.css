@@ -11,17 +11,4 @@
   .crib-card {
     height: 50%;
   }
-  .player-card {
-    margin: 0 -1.5em;
-    height: 75%;
-  }
-  .opponent-card.scored {
-    height: 50%;
-  }
-}
-
-@media (max-width: 500px) {
-  .crib-card.scored {
-    margin: 10px -30px;
-  }
 }
