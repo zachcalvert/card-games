@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: flask-container
-          image: "gcr.io/optimum-pier-280005/cribbage-app:v19"
+          image: "gcr.io/optimum-pier-280005/cribbage-app:v20"
           env:
             - name: "REDISHOST"
               value: "localhost"
