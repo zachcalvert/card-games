@@ -7,7 +7,7 @@ export function revealCutCard(card) {
   $('.deck-container').append(cutCardImage);
   addPlayPile();
   $('.count-text').show();
-  $('#play-total').text(0);
+  $('#play-total').show().text(0);
 }
 
 function addPlayPile() {

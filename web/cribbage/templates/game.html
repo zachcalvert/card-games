@@ -56,11 +56,7 @@
                   <div id="deck-area">
                     <div class="count-container">
                       <div class="count-text">count: </div>
-                      <div id="play-total">
-                        {% if game.pegging and game.pegging.total != 0 %}
-                          {{ game.pegging.total }}
-                        {% endif %}
-                      </div>
+                      <div id="play-total"></div>
                     </div>
                     <div class="deck-container">
                       <img id="deck" src="/static/img/cards/facedown.png">
