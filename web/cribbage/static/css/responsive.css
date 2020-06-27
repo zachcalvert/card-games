@@ -12,7 +12,7 @@
     height: 50%;
   }
   .player-card {
-    margin: 0 -25px;
+    margin: 0 -1.5em;
     height: 75%;
   }
   .opponent-card.scored {

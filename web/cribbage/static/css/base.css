@@ -183,8 +183,24 @@ table {
 #deck-area {
   height: 100%;
   width: 30%;
-  text-align: left;
+  display: flex;
+  flex-direction: column;;
+}
+
+.count-container {
+  height: 25%;
   display: inline-flex;
+}
+
+.count-text {
+  display: none;
+  margin-top: auto;
+}
+
+.deck-container {
+  display: inline-flex;
+  text-align: left;
+  height: 75%;
 }
 
 #play-area {
@@ -199,7 +215,8 @@ table {
 }
 
 #play-total {
-  margin: auto;
+  margin-left: 0.25em;
+  margin-top: auto;
   font-size: 16px;
 }
 

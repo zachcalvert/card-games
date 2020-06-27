@@ -8,7 +8,7 @@
 .player-card {
   height: 90%;
   z-index: 1;
-  margin: 0 -15px;
+  margin: 0 -1em;
 }
 
 .player-card.selected {
@@ -16,10 +16,10 @@
   height: 100%;
 }
 .player-card.played {
-  margin-right: -50px;
+  margin: 0 -3em 0 -1em;
 }
 .player-card.scored {
-  margin: 0 -20px;
+  margin: 0 -1em;
 }
 
 
@@ -33,33 +33,35 @@
 .opponent-card {
   height: 70%;
   z-index: 1;
-  margin: 0 -35px;
+  margin: 0 -2.5em 0 -2.5em;
 }
 
 .opponent-card.played {
   z-index: 2;
-  margin: 0 -35px;
+  margin: 0 -5em 0 0;
+
 }
 .opponent-card.scored {
-  margin: 0 -15px;
+  margin: 0 -1.5em 0 -1.5em;
 }
 
 
 /* OTHER CARD TYPES */
 #deck {
-  height: 60%;
+  height: 75%;
   margin-top: auto;
+  margin-bottom: auto;
 }
 
 .cut-card {
-  height: 60%;
+  height: 75%;
   width: auto;
-  margin: auto -75% 0;
+  margin: auto -4em auto;
 }
 .crib-card {
   height: 60%;
-  margin: 10px -30px;
+  margin: 10px -2em;
 }
 .crib-card.scored {
-  margin: 10px -25px;
+  margin: 1em -2em;
 }

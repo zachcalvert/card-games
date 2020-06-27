@@ -4,8 +4,9 @@ export function revealCutCard(card) {
     class: 'cut-card',
     src: '/static/img/cards/' + card
   });
-  $('#deck-area').append(cutCardImage);
+  $('.deck-container').append(cutCardImage);
   addPlayPile();
+  $('.count-text').show();
   $('#play-total').text(0);
 }
 

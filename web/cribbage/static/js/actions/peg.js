@@ -30,7 +30,8 @@ export function renderCurrentTurnDisplay(player, action) {
     $('.player-cards').removeClass('col-9').addClass('col-12');
     $('.opponent-cards').removeClass('col-9').addClass('col-12');
     $('.play-pile').remove();
-    $('#play-total').text('');
+    $('#play-total').fadeOut(500, 'swing');
+    $('.count-text').fadeOut(500, 'swing');
   }
 }
 

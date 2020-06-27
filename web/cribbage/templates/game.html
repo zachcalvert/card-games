@@ -54,15 +54,20 @@
 
               <div class="cribbage-table d-flex justify-content-center">
                   <div id="deck-area">
+                    <div class="count-container">
+                      <div class="count-text">count: </div>
+                      <div id="play-total">
+                        {% if game.pegging and game.pegging.total != 0 %}
+                          {{ game.pegging.total }}
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="deck-container">
                       <img id="deck" src="/static/img/cards/facedown.png">
+                    </div>
                   </div>
                   <div id="play-area">
                     <div class="scoreboard-container">
-                    </div>
-                    <div id="play-total">
-                      {% if game.pegging and game.pegging.total != 0 %}
-                        {{ game.pegging.total }}
-                      {% endif %}
                     </div>
                   </div>
                   <div class="crib rounded panel panel-default">
