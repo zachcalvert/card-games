@@ -47,16 +47,18 @@
 
 /* OTHER CARD TYPES */
 #deck {
-  width: 95px;
+  height: 60%;
+  margin-top: auto;
 }
 
 .cut-card {
-  margin: 0 -65px;
-  width: 100px;
+  height: 60%;
+  width: auto;
+  margin: auto -75% 0;
 }
 .crib-card {
   height: 60%;
-  margin: 10px -25px;
+  margin: 10px -30px;
 }
 .crib-card.scored {
   margin: 10px -25px;

@@ -8,21 +8,12 @@
 }
 
 @media (max-width: 500px) {
-  #deck {
-    width: 60px;
-  }
-  .cut-card {
-    width: 75px;
-  }
   .crib-card {
     height: 50%;
   }
   .player-card {
     margin: 0 -25px;
     height: 75%;
-  }
-  .cut-card {
-    margin: 0 -50px;;
   }
   .opponent-card.scored {
     height: 50%;
