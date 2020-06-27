@@ -55,10 +55,6 @@
               <div class="cribbage-table d-flex justify-content-center">
                   <div id="deck-area">
                       <img id="deck" src="/static/img/cards/facedown.png">
-                      {% if game.cut_card %}
-                        <img id="{{ g.cut_card }}" class="cut-card" src="/static/img/cards/{{ game.cut_card }}" />
-                      {% endif %}
-
                   </div>
                   <div id="play-area">
                     <div class="scoreboard-container">
@@ -72,9 +68,6 @@
                   <div class="crib rounded panel panel-default">
                       <div class="panel-heading">crib</div>
                       <div class="panel-body crib-area">
-                        {% for card in game.crib %}
-                          <img id="{{ card }}" class="crib-card" src="/static/img/cards/facedown.png" />
-                        {% endfor %}
                       </div>
                   </div>
               </div>

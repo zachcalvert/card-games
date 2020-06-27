@@ -9,7 +9,6 @@ export function animateDiscard(discarded) {
 
 export function discard(msg) {
   let discarded = msg.card;
-  console.log(msg.nickname + ' just discarded ' + discarded);
   $('#' + discarded).remove();
   animateDiscard(discarded);
 

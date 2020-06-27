@@ -161,6 +161,7 @@ def peg_round_action(msg):
 
     else:
         bev.record_pass(msg['game'], msg['nickname'])
+        emit('show_player_passed', {'player': msg['nickname']}, room=msg['game'])
 
     next_player, go_point_wins = bev.next_player(msg['game'])
     if go_point_wins:

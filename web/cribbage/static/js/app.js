@@ -3,7 +3,7 @@ import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
 import { deal } from "./actions/deal.js";
 import { discard, animateDiscard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
-import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
+import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard, showPlayerPassed } from "./actions/peg.js";
 import { start, resetTable } from "./actions/start.js";
 import { awardPoints, clearTable, displayScoredHand, revealCrib, decorateWinner } from "./actions/score.js";
 
@@ -81,8 +81,11 @@ socket.on('show_cut_card', function (msg, cb) {
 
 // PEG
 socket.on('show_card_played', function (msg, cb) {
-  console.log('received show_card_played back from the server')
   peg(msg);
+});
+
+socket.on('show_player_passed', function (msg, cb) {
+  showPlayerPassed(msg.player);
 });
 
 socket.on('invalid_card', function (msg, cb) {
@@ -143,7 +146,6 @@ $('#action-button').click(function (event) {
 
   if (action === 'PLAY') {
     let card_played = $('img.player-card.selected').prop('id');
-    console.log('playing ' + card_played);
     socket.emit('peg_round_action', {game: gameName, player: nickname, card_played: card_played});
   }
 

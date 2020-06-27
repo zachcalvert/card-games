@@ -1,5 +1,4 @@
 export function renderCurrentTurnDisplay(player, action) {
-  console.log('Time for ' + player + ' to ' + action);
   $('#action-button').html(action);
   if (player === 'all') {
     $(".player-status").find('button.btn-outline-warning').remove();
@@ -12,7 +11,11 @@ export function renderCurrentTurnDisplay(player, action) {
     $('#action-button').prop('disabled', true);
 
     // enable current turn display for player
-    $('#' + player).find(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
+    if ((action === 'PASS' || action === 'PLAY')) {
+      $('#' + player).find(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">TURN</button>');
+    } else {
+      $('#' + player).find(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
+    }
     if (player === sessionStorage.getItem('nickname')) {
       $('#action-button').prop('disabled', false);
     }
@@ -33,7 +36,6 @@ export function renderCurrentTurnDisplay(player, action) {
 
 function moveCardFromHandToPlayArea(card, nickname) {
   let handCard = $('#' + card);
-  console.log('requested to move from hand to play area');
   handCard.addClass('played');
   $('#' + nickname).find('.play-pile').append(handCard);
   if (nickname === sessionStorage.getItem('nickname')) {
@@ -62,11 +64,24 @@ export function peg(msg) {
 }
 
 export function clearPeggingArea() {
-  console.log('Im clearing the pegging area');
   $('#play-total').html(0);
-  console.log('pegging area cleared');
 }
 
 export function invalidCard(card) {
   $('#' + card).parent().toggleClass('selected');
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function showPlayerPassed(player) {
+  let playerHeading = $('#' + player).find('.opponent-play-area');
+  let passAlert = $('<div/>', {
+    class: 'player-status-update',
+    html: 'GO'
+  });
+  playerHeading.prepend(passAlert);
+  await sleep(500);
+  passAlert.fadeOut(1000, 'swing');
 }
