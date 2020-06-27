@@ -30,9 +30,13 @@ POINTS_TO_WIN = 121
 @app.route('/', defaults={'reason': None}, methods=['GET', 'POST'])
 @app.route('/<reason>', methods=['GET', 'POST'])
 def index(reason):
+    reason_mapping = {
+        'already-exists': 'Oops! A game with that name is already underway. ',
+        'full-game': "Uh oh! That game has 4 players and I can't support any more than that. "
+    }
     message = None
-    if reason and reason == 'already-exists':
-        message = 'Oops! A game with that name is already underway. Please try starting a game with a different name.'
+    if reason:
+        message = reason_mapping.get(reason, '') + 'Please try starting a game with a different name.'
 
     return render_template('index.html', message=message, async_mode=socketio.async_mode)
 
@@ -52,6 +56,9 @@ def game_detail():
 
         if game['state'] != 'INIT' and player not in game['players'].keys():
             return redirect(url_for('index', reason='already-exists'))
+
+        if len(game['players']) >= 4:
+            return redirect(url_for('index', reason='full-game'))
 
         if player not in game["players"]:
             game = bev.add_player(game_name, player)
