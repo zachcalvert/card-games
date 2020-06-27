@@ -12,6 +12,7 @@ Flask-FontAwesome
 more_itertools
 redis==3.5.3
 pytest
+coverage
 fakeredis
 mock
 gunicorn

@@ -6,4 +6,5 @@
 * App runs at http://localhost:5000
 
 ### To run the tests
-* docker-compose exec -T web pytest
+* docker-compose exec -T web coverage run -m  pytest
+* docker-compose exec -T web coverage report
