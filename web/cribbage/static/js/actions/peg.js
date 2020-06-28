@@ -82,7 +82,7 @@ export async function updatePlayerStatus(player, status) {
     return;
   }
 
-  let playerHeading = $('#' + player).find('.panel-body');
+  let playerHeading = $('#' + player);
   let statusUpdate = $('<div/>', {
     class: 'player-status-update',
     html: status
@@ -93,14 +93,18 @@ export async function updatePlayerStatus(player, status) {
 }
 
 export async function updateCribStatus(status) {
-  let cribArea = $('.crib-area');
+  // hide the crib heading text, display the score, and re-display the crib heading text
+  let cribArea = $('.crib');
   let statusUpdate = $('<div/>', {
     class: 'crib-status-update',
     html: status
   });
+  $('.crib').find('.panel-heading').css('color', 'rgb(21, 32, 43)');
   cribArea.prepend(statusUpdate);
   await sleep(1000);
-  statusUpdate.fadeOut(1000, 'swing');
+  statusUpdate.fadeOut(1000, function() {
+     $('.crib').find('.panel-heading').css('color', 'white');
+  });
 }
 
 
