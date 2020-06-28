@@ -150,7 +150,7 @@ $('#action-button').click(function (event) {
   }
 
   if (action === 'PASS') {
-    socket.emit('peg_round_action', {game: gameName, nickname: nickname});
+    socket.emit('peg_round_action', {game: gameName, player: nickname});
   }
 
   if (action === 'SCORE') {
