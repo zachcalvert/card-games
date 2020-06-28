@@ -24,11 +24,11 @@ export function renderCurrentTurnDisplay(player, action) {
   if (action === 'SCORE') {
     let playedCards = $('.played')
     $.each(playedCards, function(index, card) {
-      let dealtArea = $(card).parent().parent().find('.col-9')
+      let dealtArea = $(card).parent().parent().find('.col-7')
       dealtArea.append(card);
     });
-    $('.player-cards').removeClass('col-9').addClass('col-12');
-    $('.opponent-cards').removeClass('col-9').addClass('col-12');
+    $('.player-cards').removeClass('col-7').addClass('col-12');
+    $('.opponent-cards').removeClass('col-7').addClass('col-12');
     $('.play-pile').remove();
     $('#play-total').fadeOut(500, 'swing');
     $('.count-text').fadeOut(500, 'swing');

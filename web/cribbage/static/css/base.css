@@ -177,6 +177,7 @@ table {
 }
 
 .play-pile {
+  height: 100%;
   text-align: center;
 }
 
