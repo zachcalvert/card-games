@@ -351,7 +351,7 @@ def score_hand(game, player):
 
     if set(g['scored_hands']) != set(g['players'].keys()):
         next_to_score = rotate_turn(player, list(g['players'].keys()))
-    return next_to_score, just_won
+    return hand_points, next_to_score, just_won
 
 
 def score_crib(game, player):
@@ -363,7 +363,7 @@ def score_crib(game, player):
     g['players'][player] += crib_points
     just_won = award_points(game, player, crib_points, g['players'][player], 'from crib')
     cache.set(game, json.dumps(g))
-    return just_won
+    return crib_points, just_won
 
 
 def end_round(game, player):

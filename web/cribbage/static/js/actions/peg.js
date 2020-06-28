@@ -76,13 +76,31 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export async function showPlayerPassed(player) {
-  let playerHeading = $('#' + player).find('.opponent-play-area');
-  let passAlert = $('<div/>', {
+export async function updatePlayerStatus(player, status) {
+  // don't display the go message to the player who passed
+  if (status === 'GO' && player === sessionStorage.getItem('nickname')) {
+    return;
+  }
+
+  let playerHeading = $('#' + player).find('.panel-body');
+  let statusUpdate = $('<div/>', {
     class: 'player-status-update',
-    html: 'GO'
+    html: status
   });
-  playerHeading.prepend(passAlert);
-  await sleep(500);
-  passAlert.fadeOut(1000, 'swing');
+  playerHeading.prepend(statusUpdate);
+  await sleep(1000);
+  statusUpdate.fadeOut(1000, 'swing');
 }
+
+export async function updateCribStatus(status) {
+  let cribArea = $('.crib-area');
+  let statusUpdate = $('<div/>', {
+    class: 'crib-status-update',
+    html: status
+  });
+  cribArea.prepend(statusUpdate);
+  await sleep(1000);
+  statusUpdate.fadeOut(1000, 'swing');
+}
+
+
