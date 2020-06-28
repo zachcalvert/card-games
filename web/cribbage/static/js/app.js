@@ -3,7 +3,7 @@ import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
 import { deal } from "./actions/deal.js";
 import { discard, animateDiscard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
-import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard, showPlayerPassed } from "./actions/peg.js";
+import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard, updatePlayerStatus, updateCribStatus } from "./actions/peg.js";
 import { start, resetTable } from "./actions/start.js";
 import { awardPoints, clearTable, displayScoredHand, revealCrib, decorateWinner } from "./actions/score.js";
 
@@ -84,8 +84,12 @@ socket.on('show_card_played', function (msg, cb) {
   peg(msg);
 });
 
-socket.on('show_player_passed', function (msg, cb) {
-  showPlayerPassed(msg.player);
+socket.on('update_player_status', function (msg, cb) {
+  updatePlayerStatus(msg.player, msg.status);
+});
+
+socket.on('update_crib_status', function (msg, cb) {
+  updateCribStatus(msg.status);
 });
 
 socket.on('invalid_card', function (msg, cb) {

@@ -8,7 +8,7 @@
 .player-card {
   height: 90%;
   z-index: 1;
-  margin: 0 -1em;
+  margin: 0 -1.5em;
 }
 
 .player-card.selected {

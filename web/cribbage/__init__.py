@@ -168,7 +168,7 @@ def peg_round_action(msg):
 
     else:
         bev.record_pass(msg['game'], msg['player'])
-        emit('show_player_passed', {'player': msg['player']}, room=msg['game'])
+        emit('update_player_status', {'player': msg['player'], 'status': 'GO'}, room=msg['game'])
 
     next_player, go_point_wins = bev.next_player(msg['game'])
     if go_point_wins:
@@ -179,8 +179,11 @@ def peg_round_action(msg):
 
 @socketio.on('score_hand', namespace='/game')
 def score_hand(msg):
-    next_to_score, just_won = bev.score_hand(msg['game'], msg['nickname'])
+    points, next_to_score, just_won = bev.score_hand(msg['game'], msg['nickname'])
     emit('display_scored_hand', {'player': msg['nickname']}, room=msg['game'])
+    status = '{} point hand'.format(points)
+    emit('update_player_status', {'player': msg['nickname'], 'status': status}, room=msg['game'])
+
     if just_won:
         return
     elif next_to_score:
@@ -193,7 +196,9 @@ def score_hand(msg):
 @socketio.on('score_crib', namespace='/game')
 def score_crib(msg):
     emit('reveal_crib', room=msg['game'])
-    just_won = bev.score_crib(msg['game'], msg['nickname'])
+    points, just_won = bev.score_crib(msg['game'], msg['nickname'])
+    emit('update_crib_status', {'status': '{} point crib'.format(points)}, room=msg['game'])
+
     if just_won:
         return
     else:
