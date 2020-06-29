@@ -14,7 +14,6 @@
 
 .player-card.selected {
   z-index: 2;
-  margin-top: 2em;
 }
 
 .player-card.to-be-played {

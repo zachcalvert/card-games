@@ -178,12 +178,19 @@ $('#action-button').click(function (event) {
 });
 
 $(document).on('click', '.player-card', function(e) {
-  if (!$(this).hasClass("played")) {
-    $(this).toggleClass('selected');
-    if ($(this).hasClass('selected')) {
-      $('#action-button').prop('disabled', false);
-    } else if($(this).siblings(".selected").length == 0) {
-      $('#action-button').prop('disabled', true);
+  $(this).siblings().each(function(index, card) {
+    if ($(card).hasClass('selected')) {
+      $(this).animate({'margin-top': '0px'}, 200);
     }
+    $(card).removeClass('selected');
+  });
+
+  $(this).toggleClass('selected');
+  if ($(this).hasClass('selected')) {
+    $(this).animate({'margin-top': '20px'}, 200);
+    $('#action-button').prop('disabled', false);
+  } else {
+    $(this).animate({'margin-top': '0px'}, 200);
+    $('#action-button').prop('disabled', true);
   }
 });
