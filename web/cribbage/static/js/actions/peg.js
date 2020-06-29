@@ -22,14 +22,14 @@ export function renderCurrentTurnDisplay(player, action) {
   }
 
   if (action === 'SCORE') {
-    let playedCards = $('.played')
+    let playedCards = $('.played');
     $.each(playedCards, function(index, card) {
-      let dealtArea = $(card).parent().parent().find('.col-7')
-      dealtArea.append(card);
+      $(card).removeClass('played');
+      let dealtArea = $(card).parent().parent().find('.player-cards');
+      $(dealtArea).append(card);
     });
-    $('.player-cards').removeClass('col-7').addClass('col-12');
-    $('.opponent-cards').removeClass('col-7').addClass('col-12');
     $('.play-pile').remove();
+    $('.player-cards').removeClass('col-6').addClass('col-12').css('text-align', 'center');
     $('#play-total').fadeOut(500, 'swing');
     $('.count-text').fadeOut(500, 'swing');
   }
@@ -37,10 +37,10 @@ export function renderCurrentTurnDisplay(player, action) {
 
 function moveCardFromHandToPlayArea(card, nickname) {
   let handCard = $('#' + card);
-  handCard.addClass('played');
+  handCard.removeClass('to-be-played').addClass('played');
   $('#' + nickname).find('.play-pile').append(handCard);
   if (nickname === sessionStorage.getItem('nickname')) {
-    handCard.removeClass('selected');
+    handCard.removeClass('selected')
   } else {
     handCard.attr("src",'/static/img/cards/' + card);
   }

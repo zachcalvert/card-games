@@ -11,18 +11,27 @@ export function revealCutCard(card) {
 }
 
 function addPlayPile() {
+  // append play pile to main players play area and set cards to be played
   let playPile = $('<div/>', {
     class: 'play-pile col-5 d-flex justify-content-center',
   });
   $('.player-play-area').prepend(playPile);
+  let playerCards = $('.player-card');
+  $.each(playerCards, function(index, playerCard) {
+    $(playerCard).addClass('to-be-played');
+  });
+  $('.player-cards').removeClass('col-12').addClass('col-6').css('text-align', 'right');
 
+  // append play pile to opponents play area and set cards to be played
   let opponents = $('.opponent');
   $.each(opponents, function(index, opponent) {
-      let opponentPlayPile = $('<div/>', {
-        class: 'play-pile col-5 d-flex justify-content-center',
-      });
-      $(opponent).find('.opponent-play-area').prepend(opponentPlayPile);
+    let opponentPlayPile = $('<div/>', {
+      class: 'play-pile col-5 d-flex justify-content-center',
     });
-  $('.player-cards').removeClass('col-12').addClass('col-7');
-  $('.opponent-cards').removeClass('col-12').addClass('col-7');
+    $(opponent).find('.opponent-play-area').prepend(opponentPlayPile);
+  });
+  let opponentCards = $('.opponent-card');
+  $.each(opponentCards, function(index, opponentCard) {
+    $(opponentCard).addClass('to-be-played');
+  });
 }

@@ -17,7 +17,7 @@ export function announcePlayerJoin(msg) {
 
     let opponentCards = $('<div/>', {
       id: msg.nickname + '-cards',
-      class: 'opponent-cards col-12',
+      class: 'player-cards col-12',
     });
     let panelBody = $('<div/>', {
       class: 'row opponent-play-area panel-body'
