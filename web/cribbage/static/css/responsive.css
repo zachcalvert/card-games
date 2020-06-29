@@ -2,13 +2,16 @@
   #leave-game {
     right: 0;
   }
-  .opponent {
-    width: 70%;
-   }
 }
 
 @media (max-width: 500px) {
+  .crib {
+    height: 75%;
+  }
   .crib-card {
     height: 45%;
+  }
+  .crib-card.scored {
+    margin: 1em -1em
   }
 }
