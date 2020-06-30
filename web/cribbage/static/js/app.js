@@ -60,6 +60,16 @@ socket.on('new_points_message', function(msg, cb) {
 });
 
 
+socket.on('gif', function(msg, cb) {
+  let gifMessage = $('<iframe/>', {
+    class: 'gif-message',
+    src: msg.data
+  });
+  $('.game-log').append(gifMessage).html();
+  $(".game-log").scrollTop($('.game-log').height());
+});
+
+
 // DEAL
 socket.on('deal_hands', function (msg, cb) {
   deal(msg);

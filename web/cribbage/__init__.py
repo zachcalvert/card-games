@@ -12,6 +12,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, ro
 
 from cribbage import bev
 from cribbage.cards import CARDS
+from cribbage.cribby import Cribby
 from cribbage.utils import rotate_turn, play_or_pass
 
 async_mode = None
@@ -78,7 +79,7 @@ def award_points(game, player, amount, total_points, reason):
 
     if total_points >= POINTS_TO_WIN:
         emit('decorate_winner', {'player': player}, room=game)
-        emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribbot'}, room=game)
+        emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribby'}, room=game)
         emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
         return True
     return False
@@ -107,14 +108,21 @@ def leave(message):
 
 @socketio.on('send_message', namespace='/game')
 def send_message(message):
-    emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
+    if message['data'].startswith('/giphy '):
+        cribby = Cribby()
+        command, search_term = message['data'].split('/giphy ')
+        result = cribby.gif(search_term)
+        emit('new_chat_message', {'data': '', 'nickname': message['nickname']}, room=message['game'])
+        emit('gif', {'nickname': 'cribby', 'data': result}, room=message['game'])
+    else:
+        emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
 
 
 @socketio.on('start_game', namespace='/game')
 def start_game(msg):
     dealer, players = bev.start_game(msg['game'])
     chat_message = "Start your engines! It's {}'s crib.".format(dealer)
-    emit('new_chat_message', {'data': chat_message, 'nickname': 'cribbot'}, room=msg['game'])
+    emit('new_chat_message', {'data': chat_message, 'nickname': 'cribby'}, room=msg['game'])
     emit('start_game', {'dealer': dealer, 'players': players}, room=msg['game'])
 
 
@@ -212,7 +220,7 @@ def end_round(msg):
         dealer = bev.get_dealer(msg['game'])
         emit('clear_table', {'next_dealer': dealer}, room=msg['game'])
         message = "New round! It is now {}'s crib.".format(dealer)
-        emit('new_chat_message', {'data': message, 'nickname': 'cribbot'}, room=msg['game'])
+        emit('new_chat_message', {'data': message, 'nickname': 'cribby'}, room=msg['game'])
         emit('send_turn', {'player': dealer, 'action': 'DEAL'}, room=msg['game'])
 
 
