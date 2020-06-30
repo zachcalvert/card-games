@@ -47,7 +47,7 @@ socket.on('new_chat_message', function(msg, cb) {
     html: msg.nickname + ': ' + msg.data
   });
   $('.game-log').append(chatMessage).html();
-  $(".game-log").scrollTop($('.game-log').height());
+  updateScroll();
 });
 
 socket.on('new_points_message', function(msg, cb) {
@@ -56,7 +56,7 @@ socket.on('new_points_message', function(msg, cb) {
     html: msg.data
   });
   $('.game-log').append(pointsMessage).html();
-  $(".game-log").scrollTop($('.game-log').height());
+  updateScroll();
 });
 
 
@@ -66,7 +66,7 @@ socket.on('gif', function(msg, cb) {
     src: msg.data
   });
   $('.game-log').append(gifMessage).html();
-  $(".game-log").scrollTop($('.game-log').height());
+  updateScroll();
 });
 
 
@@ -186,6 +186,10 @@ $('#action-button').click(function (event) {
   $('#action-button').prop('disabled', true);
   return false;
 });
+
+function updateScroll() {
+  $(".game-log").scrollTop($(".game-log")[0].scrollHeight);
+}
 
 $(document).on('click', '.player-card', function(e) {
   $(this).siblings().each(function(index, card) {
