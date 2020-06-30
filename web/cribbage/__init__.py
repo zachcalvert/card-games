@@ -33,7 +33,7 @@ POINTS_TO_WIN = 121
 def index(reason):
     reason_mapping = {
         'already-exists': 'Oops! A game with that name is already underway. ',
-        'full-game': "Uh oh! That game has 4 players and I can't support any more than that. "
+        'full-game': "Uh oh! That game has 3 players and I can't support any more than that. "
     }
     message = None
     if reason:
@@ -58,7 +58,7 @@ def game_detail():
         if game['state'] != 'INIT' and player not in game['players'].keys():
             return redirect(url_for('index', reason='already-exists'))
 
-        if len(game['players']) >= 4:
+        if len(game['players']) >= 3:
             return redirect(url_for('index', reason='full-game'))
 
         if player not in game["players"]:
