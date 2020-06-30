@@ -264,6 +264,11 @@ table {
   padding: 2px 0;
 }
 
+.gif-message {
+  width: 100%;
+  border: none;
+}
+
 .webmaster-warning {
   position: fixed;
   bottom: 10px;

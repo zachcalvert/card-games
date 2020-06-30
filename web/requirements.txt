@@ -17,3 +17,4 @@ fakeredis
 mock
 gunicorn
 eventlet
+giphy_client
