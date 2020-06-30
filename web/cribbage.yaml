@@ -17,9 +17,11 @@ spec:
           image: "gcr.io/optimum-pier-280005/cribbage-app:v31"
           resources:
             requests:
-              cpu: "25m"
+              cpu: 25m
+              memory: 32Mi
             limits:
-              cpu: "50m"
+              cpu: 50m
+              memory: 64Mi
           env:
             - name: "REDISHOST"
               value: "localhost"
