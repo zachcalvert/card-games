@@ -108,9 +108,9 @@ def leave(message):
 
 @socketio.on('send_message', namespace='/game')
 def send_message(message):
-    if message['data'].startswith('/giphy '):
+    if message['data'].startswith('/gif '):
         cribby = Cribby()
-        command, search_term = message['data'].split('/giphy ')
+        _, search_term = message['data'].split('/gif ')
         result = cribby.gif(search_term)
         emit('new_chat_message', {'data': '', 'nickname': message['nickname']}, room=message['game'])
         emit('gif', {'nickname': 'cribby', 'data': result}, room=message['game'])
