@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: flask-container
-          image: "gcr.io/optimum-pier-280005/cribbage-app:v32"
+          image: "gcr.io/optimum-pier-280005/cribbage-app:chat-on-mobile3"
           resources:
             requests:
               cpu: 20m
