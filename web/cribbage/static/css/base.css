@@ -113,12 +113,12 @@ table {
   background: #263341;
   border: 1px solid #263341;
   color: #fafafa;
+  height: 100%;
 }
 
 #send_message {
-  height: 25%;
-  width: 100%;
-  padding: 10px 20px 0;
+  width: 85%;
+  margin: auto;
 }
 
 #send_message_button {
@@ -252,7 +252,8 @@ table {
 }
 
 .gif-message {
-  width: 100%;
+  max-width: 210px;
+  width: 90%;
   border: none;
 }
 
