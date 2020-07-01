@@ -1,9 +1,3 @@
-@media (max-width: 768px) {
-  #leave-game {
-    right: 0;
-  }
-}
-
 @media (max-width: 500px) {
   .crib {
     height: 75%;
@@ -13,5 +7,8 @@
   }
   .crib-card.scored {
     margin: 1em -1em
+  }
+  .cut-card, .count-container {
+    display: none;
   }
 }

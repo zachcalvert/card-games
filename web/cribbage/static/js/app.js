@@ -44,7 +44,7 @@ $('form#send_message').submit(function(event) {
 socket.on('new_chat_message', function(msg, cb) {
   let chatMessage = $('<div/>', {
     class: 'chat-message',
-    html: msg.nickname + ': ' + msg.data
+    html: '<b>' + msg.nickname + '</b>' + ': ' + msg.data
   });
   $('.game-log').append(chatMessage).html();
   updateScroll();
@@ -194,17 +194,17 @@ function updateScroll() {
 $(document).on('click', '.player-card', function(e) {
   $(this).siblings().each(function(index, card) {
     if ($(card).hasClass('selected')) {
-      $(this).animate({'margin-top': '0px'}, 200);
+      $(this).animate({'margin-top': '20px'}, 200);
     }
     $(card).removeClass('selected');
   });
 
   $(this).toggleClass('selected');
   if ($(this).hasClass('selected')) {
-    $(this).animate({'margin-top': '20px'}, 200);
+    $(this).animate({'margin-top': '0px'}, 200);
     $('#action-button').prop('disabled', false);
   } else {
-    $(this).animate({'margin-top': '0px'}, 200);
+    $(this).animate({'margin-top': '20px'}, 200);
     $('#action-button').prop('disabled', true);
   }
 });

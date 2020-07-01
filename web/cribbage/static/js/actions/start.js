@@ -5,31 +5,17 @@ export function renderCurrentCrib(dealer) {
 }
 
 function buildScoreBoard(players) {
-  let table = $('<table>').addClass('scoreboard table table-dark table-sm');
 
-  let thead = $('<thead>');
-  thead.append('<tr>');
-
-  let tbody = $('<tbody>');
-  tbody.append('<tr>');
 
   $.each(players, function(index, player) {
-    let nameCell = $('<td/>', {
-      id: 'scoreboard-' + player + '-name',
-      html: player
-    });
-    thead.find('tr').append(nameCell);
-
-    let pointsCell = $('<td/>', {
+    let points = $('<span/>', {
       id: 'scoreboard-' + player + '-points',
       html: 0
     });
-    tbody.find('tr').append(pointsCell);
+    let playerName = $('#' + player).find('.player-nickname');
+    playerName.append(': ');
+    playerName.append(points);
   });
-
-  table.append(thead);
-  table.append(tbody);
-  $('.scoreboard-container').append(table);
 }
 
 export function resetTable() {

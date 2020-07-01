@@ -14,77 +14,71 @@
     </head>
     <body>
       <div class="game container-lg h-100 bg-gradient-dark text-white">
-          <div class="row justify-content-center h-100">
-            <!--CHAT LOG-->
-            <div class="col-3 d-none d-lg-block">
-              <div class="game-log-container rounded panel">
-                <div class="game-log-header">
-                  <span>messages</span>
-                </div>
-                <div class="game-log"></div>
-                <form id="send_message" class="input-group" method="POST" action='#'>
-                  <div class="input-group">
-                    <input type="text" class="form-control" name="message-content" id="message-content" placeholder="Message">
-                    <div class="input-group-append">
-                      <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
-                        <span class="fas fa-paper-plane"></span>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            <!--GAME AREA-->
-            <div class="col-11 col-sm-11 col-md-11 col-lg-9 col-xl-9">
-              <div class="opponents row-fluid d-flex justify-content-center">
-                  {% for name, points in opponents.items() %}
-                    <div id="{{ name }}" class="opponent rounded panel panel-default">
-                      <div class="panel-heading">
-                        <span class="player-nickname">{{ name }}</span>
-                        <span class="player-status"></span>
-                      </div>
-                      <div class="row opponent-play-area panel-body">
-                        <div id="{{ name }}-cards" class="player-cards col-12"></div>
-                      </div>
-                    </div>
-                  {% endfor %}
-              </div>
-              <button id="leave-game" type="submit" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>
-
-              <div class="cribbage-table d-flex justify-content-center">
-                  <div id="deck-area">
-                    <div class="count-container">
-                      <div class="count-text">count: </div>
-                      <div id="play-total"></div>
-                    </div>
-                    <div class="deck-container">
-                      <img id="deck" src="/static/img/cards/facedown.png">
-                    </div>
-                  </div>
-                  <div id="play-area">
-                    <div class="scoreboard-container">
-                    </div>
-                  </div>
-                  <div class="crib rounded panel panel-default">
-                      <div class="panel-heading">crib</div>
-                      <div class="panel-body crib-area">
-                      </div>
-                  </div>
-              </div>
-              <div id="{{ player_name }}" class="player rounded panel panel-default">
+         <button id="leave-game" type="submit" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>
+          <div class="opponents row-fluid d-flex justify-content-center">
+              {% for name, points in opponents.items() %}
+                <div id="{{ name }}" class="opponent rounded panel panel-default">
                   <div class="panel-heading">
-                    <span class="player-nickname">{{ player_name }}</span>
+                    <span class="player-nickname">{{ name }}</span>
                     <span class="player-status"></span>
                   </div>
-                  <div class="row player-play-area panel-body">
-                    <div id="{{ player_name }}-cards" class="player-cards col-12"></div>
+                  <div class="row opponent-play-area panel-body">
+                    <div id="{{ name }}-cards" class="player-cards col-12"></div>
                   </div>
-                  <div class="action-button-container">
-                    <button id="action-button" type="button" class="btn btn-outline-dark">START</button>
+                </div>
+              {% endfor %}
+          </div>
+
+
+            <div class="cribbage-table row">
+              <!--CHAT LOG-->
+              <div class="col-9">
+                <div class="game-log-container rounded panel">
+                  <div class="game-log-header">
+                    <span>messages</span>
                   </div>
+                  <div class="game-log"></div>
+                </div>
+              </div>
+
+              <!--PLAY COUNTER, DECK, CUT CARD-->
+              <div id="deck-area col-3">
+                <div class="count-container">
+                  <div class="count-text">count: </div>
+                  <div id="play-total"></div>
+                </div>
+                <div class="deck-container">
+                  <img id="deck" src="/static/img/cards/facedown.png">
+                </div>
               </div>
             </div>
+
+            <!--player area-->
+            <div id="{{ player_name }}" class="player rounded panel panel-default">
+              <div class="panel-heading">
+                <span class="player-nickname">{{ player_name }}</span>
+                <div class="action-button-container">
+                  <button id="action-button" type="button" class="btn btn-outline-dark">START</button>
+                </div>
+              </div>
+              <div class="row player-play-area panel-body">
+                <div id="{{ player_name }}-cards" class="player-cards col-12"></div>
+                <form id="send_message" class="input-group" method="POST" action='#'>
+                <div class="input-group">
+                  <input type="text" class="form-control" name="message-content" id="message-content" placeholder="message">
+                  <div class="input-group-append">
+                    <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
+                      <span class="fas fa-paper-plane"></span>
+                    </button>
+                  </div>
+                </div>
+              </form>
+              </div>
+            </div>
+
+
+
+              </div>
           </div>
         </div>
     </body>
