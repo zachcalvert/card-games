@@ -119,7 +119,7 @@ socket.on('clear_pegging_area', function (msg, cb) {
 });
 
 socket.on('reveal_crib', function (msg, cb) {
-  revealCrib();
+  revealCrib(msg.crib, msg.dealer);
 });
 
 socket.on('clear_table', function (msg, cb) {

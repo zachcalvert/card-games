@@ -203,7 +203,9 @@ def score_hand(msg):
 
 @socketio.on('score_crib', namespace='/game')
 def score_crib(msg):
-    emit('reveal_crib', room=msg['game'])
+    dealer = bev.get_dealer(msg['game'])
+    crib = bev.get_crib(msg['game'])
+    emit('reveal_crib', {'dealer': dealer, 'crib': crib}, room=msg['game'])
     points, just_won = bev.score_crib(msg['game'], msg['nickname'])
     emit('update_crib_status', {'status': '{} point crib'.format(points)}, room=msg['game'])
 

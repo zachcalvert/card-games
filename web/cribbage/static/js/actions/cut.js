@@ -4,6 +4,7 @@ export function revealCutCard(card) {
     class: 'cut-card',
     src: '/static/img/cards/' + card
   });
+  $('#deck').hide();
   $('.deck-container').append(cutCardImage);
   addPlayPile();
   $('.count-text').show();

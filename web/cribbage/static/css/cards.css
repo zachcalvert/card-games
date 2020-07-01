@@ -35,7 +35,8 @@
 
 .opponent-card.played {
   z-index: 2;
-  margin: 0 -2.5em 0 -0.5em;
+  margin: 0 -3em 0 -0.5em;
+  height: 90%;
 }
 .opponent-card.to-be-played {
   margin: 0 -1.5em;
@@ -49,20 +50,19 @@
 
 /* OTHER CARD TYPES */
 #deck {
-  height: 70%;
-  margin-top: auto;
-  margin-bottom: auto;
+  width: 90%;
+  max-width: 100px;
+  margin: auto;
 }
 
 .cut-card {
-  height: 65%;
-  width: auto;
-  margin: auto -4em auto;
+  width: 95%;
+  max-width: 100px;
+  margin: auto;
+  z-index: 2;
 }
+
 .crib-card {
-  height: 60%;
-  margin: 10px -2em;
-}
-.crib-card.scored {
-  margin: 1em -1.5em;
+  height: 90%;
+  margin: 0 -1em;
 }
