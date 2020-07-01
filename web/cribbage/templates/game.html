@@ -35,9 +35,19 @@
               <!--CHAT LOG-->
               <div class="col-9 game-log-container rounded panel">
                 <div class="game-log-header">
-                  <span>messages</span>
+                  <span>chat</span>
                 </div>
                 <div class="game-log"></div>
+                <form id="send_message" class="input-group" method="POST" action='#'>
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="message-content" id="message-content" placeholder="message">
+                    <div class="input-group-append">
+                      <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
+                        <span class="fas fa-paper-plane"></span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
 
               <!--PLAY COUNTER, DECK, CUT CARD-->
@@ -61,17 +71,7 @@
                 </div>
               </div>
               <div class="row player-play-area panel-body">
-                <div id="{{ player_name }}-cards" class="player-cards h-75 col-12"></div>
-                <form id="send_message" class="h-25 input-group" method="POST" action='#'>
-                <div class="input-group">
-                  <input type="text" class="form-control" name="message-content" id="message-content" placeholder="message">
-                  <div class="input-group-append">
-                    <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
-                      <span class="fas fa-paper-plane"></span>
-                    </button>
-                  </div>
-                </div>
-              </form>
+                <div id="{{ player_name }}-cards" class="player-cards h-100 col-12"></div>
               </div>
             </div>
           </div>
@@ -85,6 +85,8 @@
         game.prepend(gameLogContainer);
         gameLogContainer.removeClass('col-9').addClass('col-3');
         gamePlayContainer.removeClass('col-12').addClass('col-9');
+        $('.game-log-header').show();
+        $('.game-log').css('height', '85%');
       }
 
       function displayMobile() {
@@ -94,6 +96,8 @@
         cribbageTable.prepend(gameLogContainer);
         gameLogContainer.removeClass('col-3').addClass('col-9');
         gamePlayContainer.removeClass('col-9').addClass('col-12');
+        $('.game-log-header').hide();
+        $('.game-log').css('height', '80%');
       }
 
       $(document).ready(function() {

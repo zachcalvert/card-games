@@ -198,7 +198,7 @@ def score_hand(msg):
         emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
         dealer = bev.get_dealer(msg['game'])
-        emit('send_turn', {'player': dealer, 'action': 'SCORE CRIB'}, room=msg['game'])
+        emit('send_turn', {'player': dealer, 'action': 'CRIB'}, room=msg['game'])
 
 
 @socketio.on('score_crib', namespace='/game')
@@ -212,7 +212,7 @@ def score_crib(msg):
     if just_won:
         return
     else:
-        emit('send_turn', {'player': 'all', 'action': 'NEXT ROUND'}, room=msg['game'])
+        emit('send_turn', {'player': 'all', 'action': 'NEXT'}, room=msg['game'])
 
 
 @socketio.on('end_round', namespace='/game')

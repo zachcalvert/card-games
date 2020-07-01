@@ -171,15 +171,15 @@ $('#action-button').click(function (event) {
     socket.emit('score_hand', {game: gameName, nickname: nickname});
   }
 
-  if (action === 'SCORE CRIB') {
+  if (action === 'CRIB') {
     socket.emit('score_crib', {game: gameName, nickname: nickname});
   }
 
-  if (action === 'NEXT ROUND') {
+  if (action === 'NEXT') {
     socket.emit('end_round', {game: gameName, nickname: nickname});
   }
 
-  if (action === 'PLAY AGAIN') {
+  if (action === 'REMATCH') {
     socket.emit('play_again', {game: gameName, nickname: nickname});
   }
 
@@ -194,17 +194,17 @@ function updateScroll() {
 $(document).on('click', '.player-card', function(e) {
   $(this).siblings().each(function(index, card) {
     if ($(card).hasClass('selected')) {
-      $(this).animate({'margin-top': '20px'}, 200);
+      $(this).animate({'margin-top': '0px'}, 200);
     }
     $(card).removeClass('selected');
   });
 
   $(this).toggleClass('selected');
   if ($(this).hasClass('selected')) {
-    $(this).animate({'margin-top': '0px'}, 200);
+    $(this).animate({'margin-top': '-20px'}, 200);
     $('#action-button').prop('disabled', false);
   } else {
-    $(this).animate({'margin-top': '20px'}, 200);
+    $(this).animate({'margin-top': '0px'}, 200);
     $('#action-button').prop('disabled', true);
   }
 });
