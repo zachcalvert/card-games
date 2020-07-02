@@ -191,6 +191,12 @@ function updateScroll() {
   $(".game-log").scrollTop($(".game-log")[0].scrollHeight);
 }
 
+
+$(document).ready(function() {
+  let welcomeMessage = "Welcome! My name is Cribby and I'm here to help make the game easy and fun.";
+  socket.emit('send_message', {game: gameName, nickname: 'cribby', data: welcomeMessage, private: 'true'});
+});
+
 $(document).on('click', '.player-card', function(e) {
   $(this).siblings().each(function(index, card) {
     if ($(card).hasClass('selected')) {

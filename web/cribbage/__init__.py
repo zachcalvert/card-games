@@ -115,7 +115,10 @@ def send_message(message):
         emit('new_chat_message', {'data': '', 'nickname': message['nickname']}, room=message['game'])
         emit('gif', {'nickname': 'cribby', 'data': result}, room=message['game'])
     else:
-        emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
+        if message.get('private', '') == 'true':
+            emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']})
+        else:
+            emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
 
 
 @socketio.on('start_game', namespace='/game')
