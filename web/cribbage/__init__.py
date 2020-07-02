@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import eventlet
+eventlet.monkey_patch()
+
 import json
 import os
 import random
