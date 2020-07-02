@@ -107,10 +107,14 @@
       });
 
       $(window).on('resize', function() {
-        if ($( window ).width() >= 768) {
-          displayDesktop()
+        if($(document.activeElement).attr('type') === 'text') {
+          // ignore resizes if keyboard is active
         } else {
-          displayMobile()
+         if ($( window ).width() >= 768) {
+           displayDesktop()
+         } else {
+           displayMobile()
+         }
         }
       });
     </script>

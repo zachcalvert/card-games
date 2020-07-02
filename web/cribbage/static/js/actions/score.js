@@ -44,9 +44,9 @@ export function revealCrib(crib, dealer) {
 export function clearTable(next_dealer) {
   $('.crib-card').remove();
   $('.cut-card').remove();
+  $('#deck').show();
   $('#play-total').text('');
   renderCurrentCrib(next_dealer);
-  $('#deck').show();
 }
 
 export function decorateWinner(winner) {
