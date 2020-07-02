@@ -137,6 +137,7 @@ table {
   border: 1px solid #37434D;
   height: 100%;
   width: 70%;
+  max-width: 300px;
   margin: 0 10px;
   position: relative;
 }
@@ -243,7 +244,7 @@ table {
 }
 
 .points-message {
-  color: #37434D;
+  color: #C0C0C0;
   font-size: 15px;
   padding: 2px 0;
 }

@@ -76,36 +76,3 @@ export function invalidCard(card) {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
-export async function updatePlayerStatus(player, status) {
-  // don't display the go message to the player who passed
-  if (status === 'GO' && player === sessionStorage.getItem('nickname')) {
-    return;
-  }
-
-  let playerHeading = $('#' + player);
-  let statusUpdate = $('<div/>', {
-    class: 'player-status-update',
-    html: status
-  });
-  playerHeading.prepend(statusUpdate);
-  await sleep(1000);
-  statusUpdate.fadeOut(1000, 'swing');
-}
-
-export async function updateCribStatus(status) {
-  // hide the crib heading text, display the score, and re-display the crib heading text
-  let cribArea = $('.crib');
-  let statusUpdate = $('<div/>', {
-    class: 'crib-status-update',
-    html: status
-  });
-  $('.crib').find('.panel-heading').css('color', 'rgb(21, 32, 43)');
-  cribArea.prepend(statusUpdate);
-  await sleep(1000);
-  statusUpdate.fadeOut(1000, function() {
-     $('.crib').find('.panel-heading').css('color', 'white');
-  });
-}
-
-
