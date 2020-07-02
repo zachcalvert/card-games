@@ -49,6 +49,12 @@ def get_pegging_total(game):
     return g['pegging']['total']
 
 
+def get_crib(game):
+    g = json.loads(cache.get(game))
+    crib_cards = g['crib']
+    return _sort_cards(crib_cards)
+
+
 def setup_game(name, player):
     g = {
         "name": name,
@@ -113,6 +119,13 @@ def start_game(game):
     return g['dealer'], list(g['players'].keys())
 
 
+def _sort_cards(cards):
+    card_keys_and_values = [{card: CARDS.get(card)} for card in cards]
+    ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
+    ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
+    return ascending_card_ids
+
+
 def deal_hands(game):
     g = json.loads(cache.get(game))
     deck = list(CARDS.keys())
@@ -120,10 +133,7 @@ def deal_hands(game):
 
     for player in g["players"].keys():
         dealt_cards = [deck.pop() for card in range(g['hand_size'])]
-        card_keys_and_values = [{card: CARDS.get(card)} for card in dealt_cards]
-        ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
-        ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
-        g['hands'][player] = ascending_card_ids
+        g['hands'][player] = _sort_cards(dealt_cards)
 
     g['state'] = 'DISCARD'
     g['deck'] = deck

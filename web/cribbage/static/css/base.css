@@ -8,6 +8,8 @@ html, body {
   background: rgb(21, 32, 43);
   color: #D3D3D3;
   height: 100%;
+  padding: 10px;
+  margin: auto!important;
 }
 
 #join {
@@ -41,8 +43,8 @@ html, body {
 
 #leave-game {
   position: absolute;
-  top: 0;
-  right: 10px;
+  top: 5px;
+  right: 5px;
 }
 
 .row {
@@ -51,10 +53,6 @@ html, body {
 
 .col-3, .col-11 {
   height: 100%;
-}
-
-.col-3 {
-  padding-right: 0!important;
 }
 
 table {
@@ -69,7 +67,7 @@ table {
 
 .panel-heading {
   border-bottom: 1px solid #37434D;
-  padding: 10px;
+  padding: 5px 10px;
   display: flex;
   align-items: center;
 }
@@ -85,15 +83,17 @@ table {
 }
 
 .game-log-header {
+  display: none;
   border-bottom: 1px solid #37434D;
   padding: 10px;
+  margin: 0 -15px 0 -15px;
 }
 
 .game-log {
-  padding: 10px 15px;
   height: 80%;
   width: 100%;
   overflow-y: scroll;
+  padding-top: 5px;
 }
 
 ::-webkit-scrollbar {
@@ -112,14 +112,14 @@ table {
   background: #263341;
   border: 1px solid #263341;
   color: #fafafa;
+  height: 100%;
 }
 
 #send_message {
-  display: inline-block;
   position: absolute;
   bottom: 0;
-  width: 100%;
-  padding: 10px 10px 0;
+  margin: 10px 0;
+  width: 90%;
 }
 
 #send_message_button {
@@ -127,7 +127,7 @@ table {
 }
 
 .opponents {
-  height: 30%;
+  height: 25%;
   align-items: center;
   justify-content: center;
 }
@@ -137,19 +137,20 @@ table {
   border: 1px solid #37434D;
   height: 100%;
   width: 70%;
+  max-width: 300px;
   margin: 0 10px;
   position: relative;
 }
 
 .cribbage-table {
-  height: 30%;
+  height: 45%;
   text-align: center;
   align-items: center;
-  padding: 10px 0;
+  padding: 10px 15px;
 }
 
 .player {
-  height: 40%;
+  height: 30%;
 }
 
 .player-nickname {
@@ -177,11 +178,11 @@ table {
 }
 
 .player-play-area {
-  height: 60%;
+  height: 75%;
 }
 
 .opponent-play-area {
-  height: 100%;
+  height: 80%;
 }
 
 .play-pile {
@@ -189,11 +190,11 @@ table {
   text-align: center;
 }
 
-#deck-area {
+.deck-area {
   height: 100%;
-  width: 30%;
   display: flex;
-  flex-direction: column;;
+  flex-direction: column;
+  padding-right: 0!important;
 }
 
 .count-container {
@@ -202,25 +203,8 @@ table {
 }
 
 .count-text {
-  display: none;
   margin-top: auto;
-}
-
-.deck-container {
-  display: inline-flex;
-  text-align: left;
-  height: 75%;
-}
-
-#play-area {
-  height: 100%;
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-}
-
-.scoreboard-container {
-  margin: auto;
+  display: none;
 }
 
 #play-total {
@@ -229,9 +213,14 @@ table {
   font-size: 16px;
 }
 
+.deck-container {
+  height: 75%;
+  display: inline-flex;
+}
+
 .crib {
   height: 100%;
-  width: 30%;
+  width: 50%;
   text-align: center;
 }
 
@@ -240,13 +229,13 @@ table {
 }
 
 .action-button-container {
-  width: 100%;
+  width: 50%;
   height: 20%;
-  text-align: center;
+  text-align: right;
 }
 
 #action-button {
-  width: 50%;
+  width: auto;
   height: 85%;
 }
 
@@ -255,7 +244,7 @@ table {
 }
 
 .points-message {
-  color: #37434D;
+  color: #C0C0C0;
   font-size: 15px;
   padding: 2px 0;
 }
@@ -265,7 +254,8 @@ table {
 }
 
 .gif-message {
-  width: 100%;
+  max-width: 210px;
+  width: 90%;
   border: none;
 }
 
@@ -278,11 +268,16 @@ table {
 table, th, tr, td {
   background: transparent!important;
 }
+
 table {
   border-style: hidden;
+  width: auto!important;
+  margin: auto;
 }
+
 th, td {
   font-size: 18px;
+  padding: 5px 15px!important;
 }
 
 .scoreboard td {

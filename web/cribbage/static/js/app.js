@@ -3,7 +3,7 @@ import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
 import { deal } from "./actions/deal.js";
 import { discard, animateDiscard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
-import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard, updatePlayerStatus, updateCribStatus } from "./actions/peg.js";
+import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
 import { start, resetTable } from "./actions/start.js";
 import { awardPoints, clearTable, displayScoredHand, revealCrib, decorateWinner } from "./actions/score.js";
 
@@ -44,7 +44,7 @@ $('form#send_message').submit(function(event) {
 socket.on('new_chat_message', function(msg, cb) {
   let chatMessage = $('<div/>', {
     class: 'chat-message',
-    html: msg.nickname + ': ' + msg.data
+    html: '<b>' + msg.nickname + '</b>' + ': ' + msg.data
   });
   $('.game-log').append(chatMessage).html();
   updateScroll();
@@ -94,14 +94,6 @@ socket.on('show_card_played', function (msg, cb) {
   peg(msg);
 });
 
-socket.on('update_player_status', function (msg, cb) {
-  updatePlayerStatus(msg.player, msg.status);
-});
-
-socket.on('update_crib_status', function (msg, cb) {
-  updateCribStatus(msg.status);
-});
-
 socket.on('invalid_card', function (msg, cb) {
   invalidCard(msg.card);
 });
@@ -119,7 +111,7 @@ socket.on('clear_pegging_area', function (msg, cb) {
 });
 
 socket.on('reveal_crib', function (msg, cb) {
-  revealCrib();
+  revealCrib(msg.crib, msg.dealer);
 });
 
 socket.on('clear_table', function (msg, cb) {
@@ -171,15 +163,15 @@ $('#action-button').click(function (event) {
     socket.emit('score_hand', {game: gameName, nickname: nickname});
   }
 
-  if (action === 'SCORE CRIB') {
+  if (action === 'CRIB') {
     socket.emit('score_crib', {game: gameName, nickname: nickname});
   }
 
-  if (action === 'NEXT ROUND') {
+  if (action === 'NEXT') {
     socket.emit('end_round', {game: gameName, nickname: nickname});
   }
 
-  if (action === 'PLAY AGAIN') {
+  if (action === 'REMATCH') {
     socket.emit('play_again', {game: gameName, nickname: nickname});
   }
 
@@ -191,6 +183,12 @@ function updateScroll() {
   $(".game-log").scrollTop($(".game-log")[0].scrollHeight);
 }
 
+
+$(document).ready(function() {
+  let welcomeMessage = "Welcome! My name is Cribby and I'm here to help make the game easy and fun.";
+  socket.emit('send_message', {game: gameName, nickname: 'cribby', data: welcomeMessage, private: 'true'});
+});
+
 $(document).on('click', '.player-card', function(e) {
   $(this).siblings().each(function(index, card) {
     if ($(card).hasClass('selected')) {
@@ -201,7 +199,7 @@ $(document).on('click', '.player-card', function(e) {
 
   $(this).toggleClass('selected');
   if ($(this).hasClass('selected')) {
-    $(this).animate({'margin-top': '20px'}, 200);
+    $(this).animate({'margin-top': '-20px'}, 200);
     $('#action-button').prop('disabled', false);
   } else {
     $(this).animate({'margin-top': '0px'}, 200);

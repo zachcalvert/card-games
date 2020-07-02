@@ -1,30 +1,46 @@
 <html>
-    <head>
-        <link rel="stylesheet" href="/static/css/base.css">
-        <link rel="stylesheet" href="/static/css/cards.css">
-        <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/static/css/responsive.css">
-        {{ fontawesome_css() }}
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ game.name }}</title>
-        <script src="/static/js/lib/socketio.min.js"></script>
-        <script src="/static/js/lib/jquery.min.js"></script>
-        <script src="/static/js/lib/jquery-ui.min.js"></script>
-        <script type="module" src="/static/js/app.js"></script>
-    </head>
-    <body>
-      <div class="game container-lg h-100 bg-gradient-dark text-white">
-          <div class="row justify-content-center h-100">
-            <!--CHAT LOG-->
-            <div class="col-3 d-none d-lg-block">
-              <div class="game-log-container rounded panel">
+  <head>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/cards.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    {{ fontawesome_css() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ game.name }}</title>
+    <script src="/static/js/lib/socketio.min.js"></script>
+    <script src="/static/js/lib/jquery.min.js"></script>
+    <script src="/static/js/lib/jquery-ui.min.js"></script>
+    <script type="module" src="/static/js/app.js"></script>
+  </head>
+  <body>
+      <div class="game row container justify-content-center h-100 bg-gradient-dark text-white">
+        <div class="game-play-container col-12">
+          <div class="opponents row-fluid d-flex justify-content-center">
+              {% for name, points in opponents.items() %}
+                <div id="{{ name }}" class="opponent rounded panel panel-default">
+                  <div class="panel-heading">
+                    <span class="player-nickname">{{ name }}</span>
+                    <span class="player-status"></span>
+                  </div>
+                  <div class="row opponent-play-area panel-body">
+                    <div id="{{ name }}-cards" class="player-cards col-12"></div>
+                  </div>
+                </div>
+              {% endfor %}
+          </div>
+          <button id="leave-game" type="submit" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>
+
+
+            <div class="cribbage-table row">
+              <!--CHAT LOG-->
+              <div class="col-9 game-log-container rounded panel">
                 <div class="game-log-header">
-                  <span>messages</span>
+                  <span>chat</span>
                 </div>
                 <div class="game-log"></div>
                 <form id="send_message" class="input-group" method="POST" action='#'>
                   <div class="input-group">
-                    <input type="text" class="form-control" name="message-content" id="message-content" placeholder="Message">
+                    <input type="text" class="form-control" name="message-content" id="message-content" placeholder="message">
                     <div class="input-group-append">
                       <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
                         <span class="fas fa-paper-plane"></span>
@@ -33,59 +49,74 @@
                   </div>
                 </form>
               </div>
+
+              <!--PLAY COUNTER, DECK, CUT CARD-->
+              <div class="deck-area col-3">
+                <div class="count-container">
+                  <div class="count-text">count: </div>
+                  <div id="play-total"></div>
+                </div>
+                <div class="deck-container">
+                  <img id="deck" src="/static/img/cards/facedown.png">
+                </div>
+              </div>
             </div>
 
-            <!--GAME AREA-->
-            <div class="col-11 col-sm-11 col-md-11 col-lg-9 col-xl-9">
-              <div class="opponents row-fluid d-flex justify-content-center">
-                  {% for name, points in opponents.items() %}
-                    <div id="{{ name }}" class="opponent rounded panel panel-default">
-                      <div class="panel-heading">
-                        <span class="player-nickname">{{ name }}</span>
-                        <span class="player-status"></span>
-                      </div>
-                      <div class="row opponent-play-area panel-body">
-                        <div id="{{ name }}-cards" class="player-cards col-12"></div>
-                      </div>
-                    </div>
-                  {% endfor %}
+            <!--player area-->
+            <div id="{{ player_name }}" class="player rounded panel panel-default">
+              <div class="panel-heading">
+                <span class="player-nickname">{{ player_name }}</span>
+                <div class="action-button-container">
+                  <button id="action-button" type="button" class="btn btn-outline-dark">START</button>
+                </div>
               </div>
-              <button id="leave-game" type="submit" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>
-
-              <div class="cribbage-table d-flex justify-content-center">
-                  <div id="deck-area">
-                    <div class="count-container">
-                      <div class="count-text">count: </div>
-                      <div id="play-total"></div>
-                    </div>
-                    <div class="deck-container">
-                      <img id="deck" src="/static/img/cards/facedown.png">
-                    </div>
-                  </div>
-                  <div id="play-area">
-                    <div class="scoreboard-container">
-                    </div>
-                  </div>
-                  <div class="crib rounded panel panel-default">
-                      <div class="panel-heading">crib</div>
-                      <div class="panel-body crib-area">
-                      </div>
-                  </div>
-              </div>
-              <div id="{{ player_name }}" class="player rounded panel panel-default">
-                  <div class="panel-heading">
-                    <span class="player-nickname">{{ player_name }}</span>
-                    <span class="player-status"></span>
-                  </div>
-                  <div class="row player-play-area panel-body">
-                    <div id="{{ player_name }}-cards" class="player-cards col-12"></div>
-                  </div>
-                  <div class="action-button-container">
-                    <button id="action-button" type="button" class="btn btn-outline-dark">START</button>
-                  </div>
+              <div class="row player-play-area panel-body">
+                <div id="{{ player_name }}-cards" class="player-cards h-100 col-12"></div>
               </div>
             </div>
           </div>
-        </div>
-    </body>
+       </div>
+
+    <script>
+      function displayDesktop() {
+        let gameLogContainer = $('.game-log-container');
+        let gamePlayContainer = $('.game-play-container');
+        let game = $('.game');
+        game.prepend(gameLogContainer);
+        gameLogContainer.removeClass('col-9').addClass('col-3');
+        gamePlayContainer.removeClass('col-12').addClass('col-9');
+        $('.game-log-header').show();
+        $('.game-log').css('height', '85%');
+      }
+
+      function displayMobile() {
+        let gamePlayContainer = $('.game-play-container');
+        let gameLogContainer = $('.game-log-container');
+        let cribbageTable = $('.cribbage-table');
+        cribbageTable.prepend(gameLogContainer);
+        gameLogContainer.removeClass('col-3').addClass('col-9');
+        gamePlayContainer.removeClass('col-9').addClass('col-12');
+        $('.game-log-header').hide();
+        $('.game-log').css('height', '80%');
+      }
+
+      $(document).ready(function() {
+        if ($( window ).width() >= 768) {
+          displayDesktop();
+        }
+      });
+
+      $(window).on('resize', function() {
+        if($(document.activeElement).attr('type') === 'text') {
+          // ignore resizes if keyboard is active
+        } else {
+         if ($( window ).width() >= 768) {
+           displayDesktop()
+         } else {
+           displayMobile()
+         }
+        }
+      });
+    </script>
+  </body>
 </html>

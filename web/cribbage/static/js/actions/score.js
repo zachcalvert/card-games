@@ -24,19 +24,27 @@ export function awardPoints(player, amount, reason) {
   });
 }
 
-export function revealCrib() {
-  let cribCards = $('.crib-card');
-  $.each(cribCards, function(index, cribCard) {
-    $(cribCard).addClass('scored');
-    $(cribCard).attr("src",'/static/img/cards/' + cribCard.id);
+export function revealCrib(crib, dealer) {
+  console.log('crib is: ' + crib);
+  console.log('dealer is: ' + dealer);
+
+  $('.player-card').remove();
+  $('.opponent-card').remove();
+
+  $.each(crib, function(index, cardId) {
+    console.log('card id is: ' + cardId);
+    let card = $('<img/>', {
+      class: 'crib-card',
+      src: '/static/img/cards/' + cardId
+    });
+    $('#' + dealer + "-cards").append(card);
   });
 }
 
 export function clearTable(next_dealer) {
-  $('.player-card').remove();
-  $('.opponent-card').remove();
   $('.crib-card').remove();
   $('.cut-card').remove();
+  $('#deck').show();
   $('#play-total').text('');
   renderCurrentCrib(next_dealer);
 }

@@ -115,7 +115,10 @@ def send_message(message):
         emit('new_chat_message', {'data': '', 'nickname': message['nickname']}, room=message['game'])
         emit('gif', {'nickname': 'cribby', 'data': result}, room=message['game'])
     else:
-        emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
+        if message.get('private', '') == 'true':
+            emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']})
+        else:
+            emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
 
 
 @socketio.on('start_game', namespace='/game')
@@ -176,7 +179,7 @@ def peg_round_action(msg):
 
     else:
         bev.record_pass(msg['game'], msg['player'])
-        emit('update_player_status', {'player': msg['player'], 'status': 'GO'}, room=msg['game'])
+        emit('new_chat_message', {'data': '{} passed.'.format(msg['player']), 'nickname': 'cribby'}, room=msg['game'])
 
     next_player, go_point_wins = bev.next_player(msg['game'])
     if go_point_wins:
@@ -189,8 +192,6 @@ def peg_round_action(msg):
 def score_hand(msg):
     points, next_to_score, just_won = bev.score_hand(msg['game'], msg['nickname'])
     emit('display_scored_hand', {'player': msg['nickname']}, room=msg['game'])
-    status = '{} point hand'.format(points)
-    emit('update_player_status', {'player': msg['nickname'], 'status': status}, room=msg['game'])
 
     if just_won:
         return
@@ -198,19 +199,20 @@ def score_hand(msg):
         emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
         dealer = bev.get_dealer(msg['game'])
-        emit('send_turn', {'player': dealer, 'action': 'SCORE CRIB'}, room=msg['game'])
+        emit('send_turn', {'player': dealer, 'action': 'CRIB'}, room=msg['game'])
 
 
 @socketio.on('score_crib', namespace='/game')
 def score_crib(msg):
-    emit('reveal_crib', room=msg['game'])
+    dealer = bev.get_dealer(msg['game'])
+    crib = bev.get_crib(msg['game'])
+    emit('reveal_crib', {'dealer': dealer, 'crib': crib}, room=msg['game'])
     points, just_won = bev.score_crib(msg['game'], msg['nickname'])
-    emit('update_crib_status', {'status': '{} point crib'.format(points)}, room=msg['game'])
 
     if just_won:
         return
     else:
-        emit('send_turn', {'player': 'all', 'action': 'NEXT ROUND'}, room=msg['game'])
+        emit('send_turn', {'player': 'all', 'action': 'NEXT'}, room=msg['game'])
 
 
 @socketio.on('end_round', namespace='/game')
