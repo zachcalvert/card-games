@@ -117,7 +117,7 @@ table {
 
 #send_message {
   position: absolute;
-  bottom: 0;
+  bottom: 40px;
   margin: 10px 0;
   width: 90%;
 }
