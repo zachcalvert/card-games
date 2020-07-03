@@ -83,7 +83,7 @@ def award_points(game, player, amount, total_points, reason):
     if total_points >= POINTS_TO_WIN:
         emit('decorate_winner', {'player': player}, room=game)
         emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribby'}, room=game)
-        emit('send_turn', {'player': 'all', 'action': 'PLAY AGAIN'}, room=game)
+        emit('send_turn', {'player': 'all', 'action': 'REMATCH'}, room=game)
         return True
     return False
 
@@ -199,6 +199,7 @@ def score_hand(msg):
     emit('display_scored_hand', {'player': msg['nickname']}, room=msg['game'])
 
     if points == 0:
+        emit('new_points_message', {'data': "+0 for {} (from hand)".format(msg['nickname']), 'nickname': 'cribby'})
         emit('new_chat_message', {'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
     elif points >= 11:
         emit('new_chat_message', {'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
@@ -222,6 +223,7 @@ def score_crib(msg):
     points, just_won = bev.score_crib(msg['game'], msg['nickname'])
 
     if points == 0:
+        emit('new_points_message', {'data': "+0 for {} (from crib)".format(dealer), 'nickname': 'cribby'})
         emit('new_chat_message', {'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
     elif points >= 9:
         emit('new_chat_message', {'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
