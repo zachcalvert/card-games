@@ -157,7 +157,14 @@ $('#action-button').click(function (event) {
 
   if (action === 'PLAY') {
     let card_played = $('img.player-card.selected').prop('id');
-    socket.emit('peg_round_action', {game: gameName, player: nickname, card_played: card_played});
+    if (card_played) {
+      socket.emit('peg_round_action', {game: gameName, player: nickname, card_played: card_played});
+    } else {
+      let message = 'Psst! Click on a card to play it ;)';
+      socket.emit('send_message', {
+        game: gameName, nickname: 'cribby', private: 'true', data: message});
+    }
+
   }
 
   if (action === 'PASS') {
@@ -190,7 +197,7 @@ function updateScroll() {
 
 
 $(document).ready(function() {
-  let welcomeMessage = "Welcome! My name is Cribby and I'm here to help make the game easy and fun.";
+  let welcomeMessage = "Welcome!";
   socket.emit('send_message', {game: gameName, nickname: 'cribby', data: welcomeMessage, private: 'true'});
 });
 
