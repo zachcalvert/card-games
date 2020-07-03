@@ -47,6 +47,7 @@ export function resetTable() {
   $('.winner').remove();
   $('#play-total').text('');
   $('#deck').show();
+  $('.peg-board').children().remove();
 }
 
 export function start(dealer, players) {

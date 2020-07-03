@@ -121,6 +121,7 @@ table {
   bottom: 0;
   margin: 10px 0;
   width: 90%;
+  height: 40px;
 }
 
 #send_message_button {
@@ -152,8 +153,8 @@ table {
 
 .player {
   height: 30%;
-  width: 100%;
   margin: auto;
+  width: 100%;
 }
 
 .player.desktop {
@@ -228,8 +229,10 @@ table {
 
 .peg-board {
   display: none;
-  height: auto%;
+  height: auto;
   border: 1px solid #37434D;
+  background: #E1C699;
+  color: rgb(21, 32, 43);
 }
 
 .player-track {
