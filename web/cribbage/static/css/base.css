@@ -260,7 +260,7 @@ table {
 }
 .embedded-gif {
   border: none;
-  width: auto;
+  width: 90%;
   padding: 5px;
 }
 
