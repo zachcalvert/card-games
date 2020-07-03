@@ -94,6 +94,7 @@ table {
   width: 100%;
   overflow-y: scroll;
   padding-top: 5px;
+  font-size: 14px;
 }
 
 ::-webkit-scrollbar {
@@ -254,9 +255,13 @@ table {
 }
 
 .gif-message {
-  max-width: 210px;
-  width: 90%;
+  display: inline-flex;
   border: none;
+}
+.embedded-gif {
+  border: none;
+  width: auto;
+  padding: 5px;
 }
 
 .webmaster-warning {

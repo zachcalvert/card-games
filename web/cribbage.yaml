@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
         - name: flask-container
-          image: "gcr.io/optimum-pier-280005/cribbage-app:chat-on-mobile5"
+          image: "gcr.io/optimum-pier-280005/cribbage-app:35"
           resources:
             requests:
-              cpu: 20m
+              cpu: 40m
               memory: 32Mi
             limits:
-              cpu: 35m
+              cpu: 60m
               memory: 48Mi
           env:
             - name: "REDISHOST"

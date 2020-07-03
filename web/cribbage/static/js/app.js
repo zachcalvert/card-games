@@ -61,10 +61,15 @@ socket.on('new_points_message', function(msg, cb) {
 
 
 socket.on('gif', function(msg, cb) {
-  let gifMessage = $('<iframe/>', {
-    class: 'gif-message',
-    src: msg.data
+  let embeddedGif = $('<iframe/>', {
+    class: 'embedded-gif',
+    src: msg.gif
   });
+  let gifMessage = $('<div/>', {
+    class: 'gif-message',
+    html: '<b>' + msg.nickname + ': </b>'
+  });
+  gifMessage.append(embeddedGif);
   $('.game-log').append(gifMessage).html();
   updateScroll();
 });

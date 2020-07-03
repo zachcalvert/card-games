@@ -14,8 +14,8 @@ from flask_fontawesome import FontAwesome
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 
 from cribbage import bev
+from cribbage import cribby
 from cribbage.cards import CARDS
-from cribbage.cribby import Cribby
 from cribbage.utils import rotate_turn, play_or_pass
 
 async_mode = None
@@ -112,11 +112,10 @@ def leave(message):
 @socketio.on('send_message', namespace='/game')
 def send_message(message):
     if message['data'].startswith('/gif '):
-        cribby = Cribby()
         _, search_term = message['data'].split('/gif ')
-        result = cribby.gif(search_term)
-        emit('new_chat_message', {'data': '', 'nickname': message['nickname']}, room=message['game'])
-        emit('gif', {'nickname': 'cribby', 'data': result}, room=message['game'])
+        gif = cribby.find_gif(search_term) or 'Whoopsie!'
+        emit('gif', {'nickname': message['nickname'], 'gif': gif}, room=message['game'])
+        return
     else:
         if message.get('private', '') == 'true':
             emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']})
@@ -182,12 +181,15 @@ def peg_round_action(msg):
 
     else:
         bev.record_pass(msg['game'], msg['player'])
-        emit('new_chat_message', {'data': '{} passed.'.format(msg['player']), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_points_message', {'data': '{} passed.'.format(msg['player']), 'nickname': 'cribby'}, room=msg['game'])
 
     next_player, go_point_wins = bev.next_player(msg['game'])
     if go_point_wins:
         return
     next_action = bev.get_player_action(msg['game'], next_player)
+    if next_action == 'SCORE':
+        emit('new_chat_message', {'data': "Time to score everyone's hand! {} goes first.".format(next_player), 'nickname': 'cribby'})
+
     emit('send_turn', {'player': next_player, 'action': next_action}, room=msg['game'])
 
 
@@ -196,12 +198,19 @@ def score_hand(msg):
     points, next_to_score, just_won = bev.score_hand(msg['game'], msg['nickname'])
     emit('display_scored_hand', {'player': msg['nickname']}, room=msg['game'])
 
+    if points == 0:
+        emit('new_chat_message', {'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+    elif points >= 11:
+        emit('new_chat_message', {'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+
     if just_won:
         return
     elif next_to_score:
+        emit('new_chat_message', {'data': "Time to score {}'s hand!".format(next_to_score), 'nickname': 'cribby'})
         emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
         dealer = bev.get_dealer(msg['game'])
+        emit('new_chat_message', {'data': "Time to score {}'s crib!".format(dealer), 'nickname': 'cribby'})
         emit('send_turn', {'player': dealer, 'action': 'CRIB'}, room=msg['game'])
 
 
@@ -211,6 +220,12 @@ def score_crib(msg):
     crib = bev.get_crib(msg['game'])
     emit('reveal_crib', {'dealer': dealer, 'crib': crib}, room=msg['game'])
     points, just_won = bev.score_crib(msg['game'], msg['nickname'])
+
+    if points == 0:
+        emit('new_chat_message', {'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+    elif points >= 9:
+        emit('new_chat_message', {'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+
 
     if just_won:
         return
