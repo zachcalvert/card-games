@@ -20,8 +20,11 @@ export function awardPoints(player, amount, reason) {
     easing:'swing',
     step: function() {
       $(playerPoints).text(Math.round(this.someValue));
+      $('#' + player + '-player-track-bar').val(this.someValue);
     }
   });
+
+
 }
 
 export function revealCrib(crib, dealer) {

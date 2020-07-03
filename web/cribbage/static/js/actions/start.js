@@ -5,8 +5,6 @@ export function renderCurrentCrib(dealer) {
 }
 
 function buildScoreBoard(players) {
-
-
   $.each(players, function(index, player) {
     let points = $('<span/>', {
       id: 'scoreboard-' + player + '-points',
@@ -15,6 +13,28 @@ function buildScoreBoard(players) {
     let playerName = $('#' + player).find('.player-nickname');
     playerName.append(': ');
     playerName.append(points);
+
+    let playerTrackName = $('<span/>', {
+      id: player + '-player-track-name',
+      class: 'player-track-name col-3',
+      html: player
+    });
+
+    let playerTrackBar = $('<progress/>', {
+      id: player + '-player-track-bar',
+      class: 'player-track-bar col-9',
+      max: 121,
+      value: 0
+    });
+
+    let playerTrack = $('<div/>', {
+      id: player + '-player-track',
+      class: 'player-track row'
+    });
+
+    playerTrack.append(playerTrackName);
+    playerTrack.append(playerTrackBar);
+    $('.peg-board').append(playerTrack);
   });
 }
 

@@ -60,6 +60,8 @@
                   <img id="deck" src="/static/img/cards/facedown.png" alt="This the deck">
                 </div>
               </div>
+
+              <div class="peg-board col-9 rounded"></div>
             </div>
 
             <!--player area-->
@@ -86,6 +88,8 @@
         gameLogContainer.removeClass('col-9').addClass('col-3');
         gamePlayContainer.removeClass('col-12').addClass('col-9');
         $('.game-log-header').show();
+        $('.peg-board').show();
+        $('.player').addClass('desktop');
         $('.game-log').css('height', '85%');
       }
 
@@ -97,6 +101,8 @@
         gameLogContainer.removeClass('col-3').addClass('col-9');
         gamePlayContainer.removeClass('col-9').addClass('col-12');
         $('.game-log-header').hide();
+        $('.peg-board').hide();
+        $('.player').removeClass('desktop');
         $('.game-log').css('height', '80%');
       }
 
