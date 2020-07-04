@@ -3,25 +3,22 @@
   margin: 0;
   text-align: center;
 }
-
 .player-card {
   height: 75%;
   z-index: 1;
   margin: 0 -.5em;
 }
-
 .player-card.selected {
   z-index: 2;
 }
-
 .player-card.to-be-played {
-  margin: 0 -1.3em;
+  margin: 0 -1em;
 }
 .player-card.played {
   margin: 0 -1em;
 }
 .player-card.scored {
-  margin: 0;
+  margin: 0 -.5em;
 }
 
 
@@ -31,13 +28,12 @@
   z-index: 1;
   margin: 0 -.7em;
 }
-
+.opponent-card.to-be-played {
+  margin: 0 -1em;
+}
 .opponent-card.played {
   z-index: 2;
   margin: 0 -2em 0 -0.5em;
-}
-.opponent-card.to-be-played {
-  margin: 0 -1em;
 }
 .opponent-card.scored {
   margin: 0 -.5em;
@@ -58,25 +54,40 @@
 
 .crib-card {
   height: 90%;
+  margin: 0 -.5em;
 }
 
 @media only screen and (max-width: 650px) {
+  /* player cards */
   .player-card {
     margin: 0 -1em;
+  }
+  .player-card.to-be-played {
+    margin: 0 -10%;
   }
   .player-card.played {
     margin: 0 -1.5em;
   }
+  .player-card.scored {
+    margin: 0 -1em;
+  }
+
+  /* opponent cards */
   .opponent-card {
     margin: 0 -1.5em;
   }
   .opponent-card.to-be-played {
-    margin: 0 -1.5em;
+    margin: 0 -2em;
   }
   .opponent-card.played {
-    margin: 0 -2.5em 0 -.7em;
+    margin: 0 -1.5em;
   }
+  .opponent-card.scored {
+    margin: 0 -1.5em;
+  }
+
+  /* crib card */
   .crib-card {
-    margin: 0 -1em;
+    margin: 0 -1.5em;
   }
 }
