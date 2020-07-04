@@ -121,6 +121,7 @@ table {
   bottom: 0;
   margin: 10px 0;
   width: 90%;
+  height: 40px;
 }
 
 #send_message_button {
@@ -152,6 +153,12 @@ table {
 
 .player {
   height: 30%;
+  margin: auto;
+  width: 100%;
+}
+
+.player.desktop {
+  width: 70%;
 }
 
 .player-nickname {
@@ -191,16 +198,15 @@ table {
   text-align: center;
 }
 
-.deck-area {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding-right: 0!important;
+.deck-container {
+  height: 75%;
+  display: inline-flex;
 }
 
 .count-container {
   height: 25%;
   display: inline-flex;
+  margin: auto;
 }
 
 .count-text {
@@ -214,19 +220,42 @@ table {
   font-size: 16px;
 }
 
-.deck-container {
-  height: 75%;
-  display: inline-flex;
-}
-
-.crib {
+.deck-area {
   height: 100%;
-  width: 50%;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding-left: 0!important;
 }
 
-.crib-area {
-  display: inline;
+.peg-board {
+  display: none;
+  height: auto;
+  border: 1px solid #37434D;
+  background: #E1C699;
+  color: rgb(21, 32, 43);
+  padding: 10px;
+}
+
+.player-track {
+  width: 100%;
+  padding: 10px 0;
+  height: 3rem;
+}
+
+.player-track-name {
+  text-align: right;
+}
+
+.player-track-bar {
+  height: 30px;
+  width: 80%;
+}
+
+.progress {
+  height: 25px!important;
+  background: #E1C699!important;
+  padding: 0!important;
+  background: white!important;
 }
 
 .action-button-container {
@@ -256,11 +285,11 @@ table {
 
 .gif-message {
   display: inline-flex;
-  border: none;
 }
+
 .embedded-gif {
   border: none;
-  width: auto;
+  width: 90%;
   padding: 5px;
 }
 
@@ -270,45 +299,7 @@ table {
   font-size: 10px;
 }
 
-table, th, tr, td {
-  background: transparent!important;
-}
-
-table {
-  border-style: hidden;
-  width: auto!important;
-  margin: auto;
-}
-
-th, td {
-  font-size: 18px;
-  padding: 5px 15px!important;
-}
-
-.scoreboard td {
-    text-align: center;
-    vertical-align: middle;
-}
-
 .winner {
   color: #FFD700;
   padding: 5px;
-}
-
-.player-status-update {
-    position: absolute;
-    z-index: 20;
-    width: 50%;
-    padding: 10px;
-    color: #84BE6A;
-    background: rgb(21, 32, 43);
-}
-
-.crib-status-update {
-  position: absolute;
-  z-index: 20;
-  width: auto;
-  padding: 10px;
-  color: #84BE6A;
-  background: rgb(21, 32, 43);
 }

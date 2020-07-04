@@ -48,7 +48,7 @@
 #deck {
   width: 100%;
   max-width: 100px;
-  margin: auto;
+  margin: auto auto auto 20px;
 }
 
 .cut-card {

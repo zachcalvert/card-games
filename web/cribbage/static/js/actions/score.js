@@ -22,6 +22,13 @@ export function awardPoints(player, amount, reason) {
       $(playerPoints).text(Math.round(this.someValue));
     }
   });
+
+  console.log('updating progress bar..');
+  let totalPoints = $("#scoreboard-" + player + "-points").text();
+  console.log(totalPoints);
+  let width = (totalPoints / 121 * 100) + '%';
+  console.log(width);
+  $('#' + player + '-player-progress-bar').css('width', width);
 }
 
 export function revealCrib(crib, dealer) {
