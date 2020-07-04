@@ -5,6 +5,9 @@ export function renderCurrentCrib(dealer) {
 }
 
 function buildScoreBoard(players) {
+
+  let colors = ['bg-danger', 'bg-primary', 'bg-success'];
+
   $.each(players, function(index, player) {
     let points = $('<span/>', {
       id: 'scoreboard-' + player + '-points',
@@ -14,26 +17,33 @@ function buildScoreBoard(players) {
     playerName.append(': ');
     playerName.append(points);
 
-    let playerTrackName = $('<span/>', {
-      id: player + '-player-track-name',
-      class: 'player-track-name col-3',
+    let playerProgressName = $('<span/>', {
+      id: player + '-player-progress-name',
+      class: 'player-progress-name col-3',
       html: player
     });
 
-    let playerTrackBar = $('<progress/>', {
-      id: player + '-player-track-bar',
-      class: 'player-track-bar col-9',
-      max: 121,
-      value: 0
+    let playerProgressBar = $('<div/>', {
+      id: player + '-player-progress-bar',
+      class: 'player-progress-bar progress-bar',
+      role: 'progressbar',
+      style: 'width: 0%'
     });
+    let colorClass = colors[index];
+    playerProgressBar.addClass(colorClass);
+
+    let playerProgress = $('<div/>', {
+      class: 'progress col-9'
+     });
+    playerProgress.append(playerProgressBar);
 
     let playerTrack = $('<div/>', {
       id: player + '-player-track',
       class: 'player-track row'
     });
 
-    playerTrack.append(playerTrackName);
-    playerTrack.append(playerTrackBar);
+    playerTrack.append(playerProgressName);
+    playerTrack.append(playerProgress);
     $('.peg-board').append(playerTrack);
   });
 }

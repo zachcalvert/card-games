@@ -233,11 +233,13 @@ table {
   border: 1px solid #37434D;
   background: #E1C699;
   color: rgb(21, 32, 43);
+  padding: 10px;
 }
 
 .player-track {
   width: 100%;
   padding: 10px 0;
+  height: 3rem;
 }
 
 .player-track-name {
@@ -247,6 +249,13 @@ table {
 .player-track-bar {
   height: 30px;
   width: 80%;
+}
+
+.progress {
+  height: 25px!important;
+  background: #E1C699!important;
+  padding: 0!important;
+  background: white!important;
 }
 
 .action-button-container {

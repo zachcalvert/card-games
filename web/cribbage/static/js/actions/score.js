@@ -20,11 +20,15 @@ export function awardPoints(player, amount, reason) {
     easing:'swing',
     step: function() {
       $(playerPoints).text(Math.round(this.someValue));
-      $('#' + player + '-player-track-bar').val(this.someValue);
     }
   });
 
-
+  console.log('updating progress bar..');
+  let totalPoints = $("#scoreboard-" + player + "-points").text();
+  console.log(totalPoints);
+  let width = (totalPoints / 121 * 100) + '%';
+  console.log(width);
+  $('#' + player + '-player-progress-bar').css('width', width);
 }
 
 export function revealCrib(crib, dealer) {
