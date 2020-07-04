@@ -188,7 +188,7 @@ def peg_round_action(msg):
         return
     next_action = bev.get_player_action(msg['game'], next_player)
     if next_action == 'SCORE':
-        emit('new_chat_message', {'data': "Time to score everyone's hand! {} goes first.".format(next_player), 'nickname': 'cribby'})
+        emit('new_chat_message', {'data': "Time to score everyone's hand! {} goes first.".format(next_player), 'nickname': 'cribby'}, room=msg['game'])
 
     emit('send_turn', {'player': next_player, 'action': next_action}, room=msg['game'])
 
@@ -199,7 +199,7 @@ def score_hand(msg):
     emit('display_scored_hand', {'player': msg['nickname']}, room=msg['game'])
 
     if points == 0:
-        emit('new_points_message', {'data': "+0 for {} (from hand)".format(msg['nickname']), 'nickname': 'cribby'})
+        emit('new_points_message', {'data': "+0 for {} (from hand)".format(msg['nickname']), 'nickname': 'cribby'}, room=msg['game'])
         emit('new_chat_message', {'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
     elif points >= 11:
         emit('new_chat_message', {'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
@@ -207,11 +207,11 @@ def score_hand(msg):
     if just_won:
         return
     elif next_to_score:
-        emit('new_chat_message', {'data': "Time to score {}'s hand!".format(next_to_score), 'nickname': 'cribby'})
+        emit('new_chat_message', {'data': "Time to score {}'s hand..".format(next_to_score), 'nickname': 'cribby'}, room=msg['game'])
         emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
         dealer = bev.get_dealer(msg['game'])
-        emit('new_chat_message', {'data': "Time to score {}'s crib!".format(dealer), 'nickname': 'cribby'})
+        emit('new_chat_message', {'data': "Time to score {}'s crib..".format(dealer), 'nickname': 'cribby'}, room=msg['game'])
         emit('send_turn', {'player': dealer, 'action': 'CRIB'}, room=msg['game'])
 
 
@@ -223,11 +223,10 @@ def score_crib(msg):
     points, just_won = bev.score_crib(msg['game'], msg['nickname'])
 
     if points == 0:
-        emit('new_points_message', {'data': "+0 for {} (from crib)".format(dealer), 'nickname': 'cribby'})
+        emit('new_points_message', {'data': "+0 for {} (from crib)".format(dealer), 'nickname': 'cribby'}, room=msg['game'])
         emit('new_chat_message', {'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
     elif points >= 9:
         emit('new_chat_message', {'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
-
 
     if just_won:
         return

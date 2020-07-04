@@ -1,23 +1,20 @@
 export function renderCurrentTurnDisplay(player, action) {
-  $('#action-button').html(action);
+  let actionButton = $('#action-button');
+  let playerStatuses = $(".player-status");
+  actionButton.html(action);
+  playerStatuses.find('button.btn-outline-warning').remove();
   if (player === 'all') {
-    $(".player-status").find('button.btn-outline-warning').remove();
-    $(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
-    $('#action-button').prop('disabled', false);
+    actionButton.prop('disabled', false);
   }
   else {
-    // disable current turn display for all
-    $(".player-status").find('button.btn-outline-warning').remove();
-    $('#action-button').prop('disabled', true);
+    actionButton.prop('disabled', true);
 
     // enable current turn display for player
     if ((action === 'PASS' || action === 'PLAY')) {
       $('#' + player).find(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">TURN</button>');
-    } else {
-      $('#' + player).find(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">' + action + '</button>');
     }
     if (player === sessionStorage.getItem('nickname')) {
-      $('#action-button').prop('disabled', false);
+      actionButton.prop('disabled', false);
     }
   }
 
