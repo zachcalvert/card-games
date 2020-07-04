@@ -29,7 +29,7 @@ export function renderCurrentTurnDisplay(player, action) {
       $(dealtArea).append(card);
     });
     $('.play-pile').remove();
-    $('.player-cards').removeClass('col-6').addClass('col-12').css('text-align', 'center');
+    $('.player-cards').removeClass('col-5').addClass('col-12').css('text-align', 'center');
     $('#play-total').fadeOut(500, 'swing');
     $('.count-text').fadeOut(500, 'swing');
   }
@@ -37,8 +37,34 @@ export function renderCurrentTurnDisplay(player, action) {
 
 function moveCardFromHandToPlayArea(card, nickname) {
   let handCard = $('#' + card);
+  let playPile = $('#' + nickname).find('.play-pile');
+  let toBePlayed = $('#' + nickname).find('.player-cards');
+
   handCard.removeClass('to-be-played').addClass('played');
-  $('#' + nickname).find('.play-pile').append(handCard);
+  playPile.append(handCard);
+
+  console.log('num played cards is ' + playPile.children().length)
+  switch  (playPile.children().length) {
+    case 1:
+      playPile.removeClass('col-4').addClass('col-5');
+      toBePlayed.removeClass('col-8').addClass('col-7');
+      break;
+    case 2:
+      playPile.removeClass('col-5').addClass('col-6');
+      toBePlayed.removeClass('col-7').addClass('col-6');
+      break;
+    case 3:
+      playPile.removeClass('col-6').addClass('col-7');
+      toBePlayed.removeClass('col-6').addClass('col-5');
+      break;
+    case 4:
+      playPile.removeClass('col-7').addClass('col-8');
+      toBePlayed.removeClass('col-5').addClass('col-4');
+      break;
+    default:
+      // code block
+  }
+
   if (nickname === sessionStorage.getItem('nickname')) {
     handCard.removeClass('selected');
     $(handCard).css('margin-top', '0px');
