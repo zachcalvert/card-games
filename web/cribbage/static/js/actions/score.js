@@ -23,9 +23,8 @@ export function awardPoints(player, amount, reason) {
     }
   });
 
-  console.log('updating progress bar..');
-  let totalPoints = $("#scoreboard-" + player + "-points").text();
-  console.log(totalPoints);
+  let totalPoints = current + amount;
+  console.log(player + ' has ' + totalPoints);
   let width = (totalPoints / 121 * 100) + '%';
   console.log(width);
   $('#' + player + '-player-progress-bar').css('width', width);

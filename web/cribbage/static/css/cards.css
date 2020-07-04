@@ -15,10 +15,10 @@
 }
 
 .player-card.to-be-played {
-  margin: 0 -.8em;
+  margin: 0 -1.3em;
 }
 .player-card.played {
-  margin: 0 -1.5em;
+  margin: 0 -1em;
 }
 .player-card.scored {
   margin: 0;
@@ -29,15 +29,15 @@
 .opponent-card {
   height: 90%;
   z-index: 1;
-  margin: 0 -1em;
+  margin: 0 -.7em;
 }
 
 .opponent-card.played {
   z-index: 2;
-  margin: 0 -3em 0 -0.5em;
+  margin: 0 -2em 0 -0.5em;
 }
 .opponent-card.to-be-played {
-  margin: 0 -1.5em;
+  margin: 0 -1em;
 }
 .opponent-card.scored {
   margin: 0 -.5em;
@@ -46,19 +46,37 @@
 
 /* OTHER CARD TYPES */
 #deck {
-  width: 100%;
-  max-width: 100px;
-  margin: auto auto auto 20px;
+  height: 100px;
+  margin: auto;
 }
 
 .cut-card {
-  width: 95%;
-  max-width: 100px;
+  height: 95px;
   margin: auto;
   z-index: 2;
 }
 
 .crib-card {
   height: 90%;
-  margin: 0 -1em;
+}
+
+@media only screen and (max-width: 650px) {
+  .player-card {
+    margin: 0 -1em;
+  }
+  .player-card.played {
+    margin: 0 -1.5em;
+  }
+  .opponent-card {
+    margin: 0 -1.5em;
+  }
+  .opponent-card.to-be-played {
+    margin: 0 -1.5em;
+  }
+  .opponent-card.played {
+    margin: 0 -2.5em 0 -.7em;
+  }
+  .crib-card {
+    margin: 0 -1em;
+  }
 }

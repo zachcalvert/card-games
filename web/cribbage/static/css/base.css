@@ -224,7 +224,6 @@ table {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding-left: 0!important;
 }
 
 .peg-board {
@@ -233,12 +232,11 @@ table {
   border: 1px solid #37434D;
   background: #E1C699;
   color: rgb(21, 32, 43);
-  padding: 10px;
 }
 
 .player-track {
   width: 100%;
-  padding: 10px 0;
+  padding: 10px;
   height: 3rem;
 }
 
