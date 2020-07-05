@@ -1,3 +1,4 @@
+/* GENERAL LAYOUT */
 html, body {
   height: 100%;
   background-color: rgb(21, 32, 43)!important;
@@ -12,35 +13,6 @@ html, body {
   margin: auto!important;
 }
 
-#join {
-  display: flex;
-  flex-direction: column;
-}
-
-#play_game {
-  margin: auto;
-}
-
-.join-game-input {
-  margin-bottom: 0!important;
-}
-
-.announcement {
-    width: 100%;
-    margin: 0 30%;
-    color: pink;
-    font-size: 16px;
-    text-align: center;
-}
-
-.joinErrorMessage {
-    width: 100%;
-    margin: 0 30%;
-    color: pink;
-    font-size: 12px;
-    text-align: center;
-}
-
 #leave-game {
   position: absolute;
   top: 5px;
@@ -53,10 +25,6 @@ html, body {
 
 .col-3, .col-11 {
   height: 100%;
-}
-
-table {
-  background: transparent;
 }
 
 .panel {
@@ -75,7 +43,48 @@ table {
 .panel-body {
   padding: 10px;
 }
+/* END GENERAL LAYOUT */
 
+
+/* LOBBY*/
+#join {
+  display: flex;
+  flex-direction: column;
+}
+
+#play_game {
+  margin: auto;
+}
+
+.join-game-input {
+  margin-bottom: 0!important;
+}
+
+.announcement {
+  width: 100%;
+  margin: 0 30%;
+  color: pink;
+  font-size: 16px;
+  text-align: center;
+}
+
+.joinErrorMessage {
+  width: 100%;
+  margin: 0 30%;
+  color: pink;
+  font-size: 12px;
+  text-align: center;
+}
+
+.webmaster-warning {
+  position: fixed;
+  bottom: 10px;
+  font-size: 10px;
+}
+/*END LOBBY*/
+
+
+/*  CHAT LOG  */
 .game-log-container {
   height: 100%;
   text-align: left;
@@ -128,6 +137,29 @@ table {
   display: block;
 }
 
+.points-message {
+  color: #C0C0C0;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.chat-message {
+  padding: 2px 0;
+}
+
+.gif-message {
+  display: inline-flex;
+}
+
+.embedded-gif {
+  border: none;
+  width: 90%;
+  padding: 5px;
+}
+/*  END CHAT LOG  */
+
+
+/*  TOP ROW  */
 .opponents {
   height: 25%;
   align-items: center;
@@ -143,59 +175,22 @@ table {
   margin: 0 10px;
   position: relative;
 }
+/*  END TOP ROW  */
 
-.cribbage-table {
+
+/*  MIDDLE ROW  */
+.middle-area {
   height: 45%;
   text-align: center;
   align-items: center;
   padding: 10px 15px;
 }
 
-.player {
-  height: 30%;
-  margin: auto;
-  width: 100%;
-}
 
-.player.desktop {
-  width: 70%;
-}
-
-.player-nickname {
-  width: 50%;
-  text-align: left;
-}
-
-.player-status {
-  width: 50%;
-  text-align: right;
-}
-
-.dealer-icon {
-  padding-right: 5px;
-  color: gold;
-}
-
-.current-turn-icon {
-  padding-right: 5px;
-  color: #1CA1F2;
-}
-
-.player-action, .player-cards {
-  display: inline-block;
-}
-
-.player-play-area {
-  height: 75%;
-}
-
-.opponent-play-area {
-  height: 80%;
-}
-
-.play-pile {
+.deck-area {
   height: 100%;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .deck-container {
@@ -218,12 +213,6 @@ table {
   margin-left: 0.25em;
   margin-top: auto;
   font-size: 16px;
-}
-
-.deck-area {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
 }
 
 .peg-board {
@@ -251,9 +240,48 @@ table {
 
 .progress {
   height: 25px!important;
-  background: #E1C699!important;
   padding: 0!important;
   background: white!important;
+}
+/*  END MIDDLE ROW  */
+
+
+/*  BOTTOM ROW  */
+.player {
+  height: 30%;
+  margin: auto;
+  width: 100%;
+}
+
+.player.desktop {
+  width: 70%;
+}
+
+.player-nickname {
+  width: 50%;
+  text-align: left;
+}
+
+.player-status {
+  width: 50%;
+  text-align: right;
+}
+
+.player-cards {
+  display: inline-block;
+}
+
+.player-play-area {
+  height: 75%;
+}
+
+.opponent-play-area {
+  height: 80%;
+}
+
+.play-pile {
+  height: 100%;
+  text-align: center;
 }
 
 .action-button-container {
@@ -270,32 +298,7 @@ table {
 #action-button:enabled {
   background: #1CA1F2;
 }
-
-.points-message {
-  color: #C0C0C0;
-  font-size: 12px;
-  padding: 2px 0;
-}
-
-.chat-message {
-  padding: 2px 0;
-}
-
-.gif-message {
-  display: inline-flex;
-}
-
-.embedded-gif {
-  border: none;
-  width: 90%;
-  padding: 5px;
-}
-
-.webmaster-warning {
-  position: fixed;
-  bottom: 10px;
-  font-size: 10px;
-}
+/* END BOTTOM ROW  */
 
 .winner {
   color: #FFD700;

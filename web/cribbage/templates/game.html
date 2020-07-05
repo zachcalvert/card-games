@@ -31,7 +31,7 @@
           <button id="leave-game" type="submit" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>
 
 
-            <div class="cribbage-table row">
+            <div class="middle-area row">
               <!--CHAT LOG-->
               <div class="col-9 game-log-container rounded panel">
                 <div class="game-log-header">
@@ -96,8 +96,8 @@
       function displayMobile() {
         let gamePlayContainer = $('.game-play-container');
         let gameLogContainer = $('.game-log-container');
-        let cribbageTable = $('.cribbage-table');
-        cribbageTable.prepend(gameLogContainer);
+        let middleArea = $('.middle-area');
+        middleArea.prepend(gameLogContainer);
         gameLogContainer.removeClass('col-3').addClass('col-9');
         gamePlayContainer.removeClass('col-9').addClass('col-12');
         $('.game-log-header').hide();
