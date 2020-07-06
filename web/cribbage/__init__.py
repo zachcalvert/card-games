@@ -116,6 +116,13 @@ def send_message(message):
         gif = cribby.find_gif(search_term) or 'Whoopsie!'
         emit('gif', {'nickname': message['nickname'], 'gif': gif}, room=message['game'])
         return
+    elif message['data'].startswith('/blob '):
+        print('received blob request')
+        _, blob_request = message['data'].split('/blob ')
+        found = cribby.find_blob(blob_request)
+        if found:
+            emit('blob', {'nickname': message['nickname'], 'blob': blob_request}, room=message['game'])
+        return
     else:
         if message.get('private', '') == 'true':
             emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']})

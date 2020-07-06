@@ -74,6 +74,20 @@ socket.on('gif', function(msg, cb) {
   updateScroll();
 });
 
+socket.on('blob', function(msg, cb) {
+  let chatMessage = $('<div/>', {
+    class: 'chat-message',
+    html: '<b>' + msg.nickname + '</b>' + ':'
+  });
+  let blob = $('<div/>', {
+    class: msg.blob,
+    html: ''
+  });
+  $('.game-log').append(chatMessage).html();
+  $('.game-log').append(blob).html();
+  updateScroll();
+});
+
 
 // DEAL
 socket.on('deal_hands', function (msg, cb) {

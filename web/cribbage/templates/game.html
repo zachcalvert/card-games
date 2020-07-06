@@ -1,9 +1,9 @@
 <html>
   <head>
     <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/blobs.css">
     <link rel="stylesheet" href="/static/css/cards.css">
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/responsive.css">
     {{ fontawesome_css() }}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ game.name }}</title>
@@ -40,6 +40,9 @@
                 <div class="game-log"></div>
                 <form id="send_message" class="input-group" method="POST" action='#'>
                   <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="fas fa-smile-o"></span>
+                    </div>
                     <input type="text" class="form-control" name="message-content" id="message-content" placeholder="message">
                     <div class="input-group-append">
                       <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">

@@ -37,3 +37,14 @@ def find_gif(search_term):
     index = random.choice(range(20))
     gif = api_response.data[index]
     return gif.embed_url
+
+
+def find_blob(blob_request):
+    """
+    Look for the blob with the given param. If can't find it, return a blob with text saying as much.
+    """
+    blobs = {'hyped', 'veryhappy'}
+    if blob_request in blobs:
+        print('found the request blob: {}'.format(blob_request))
+        return True
+    return False
