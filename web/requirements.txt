@@ -18,3 +18,4 @@ mock
 gunicorn
 eventlet
 giphy_client
+Flask-gzip

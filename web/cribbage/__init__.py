@@ -11,6 +11,7 @@ import redis
 from threading import Lock
 from flask import Flask, render_template, session, request, Markup, redirect, url_for, jsonify
 from flask_fontawesome import FontAwesome
+from flask_gzip import Gzip
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 
 from cribbage import bev
@@ -23,6 +24,7 @@ async_mode = None
 app = Flask(__name__)
 
 fa = FontAwesome(app)
+gzip = Gzip(app)
 socketio = SocketIO(app, async_mode=async_mode)
 
 thread = None
