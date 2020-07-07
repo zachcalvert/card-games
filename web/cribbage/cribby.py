@@ -21,10 +21,12 @@ ZERO_POINT_RESPONSES = [
 GREAT_HAND_RESPONSES = [
     'wow!',
     'nice hand!',
-    '👀 look at that!',
     '👏👏👏',
     'you go glenn coco!',
 ]
+
+BLOBS = {'hype', 'happy', 'dang', 'ugh', 'wink', 'sleepy', 'sad', 'gimme', 'rage', 'panic', 'nervous', 'dang', 'smile',
+         'grimace', 'wat', 'dancer', 'drumroll', 'party', 'cheers', 'conga', 'yay', 'dizzy', 'cry'}
 
 
 def find_gif(search_term):
@@ -43,8 +45,7 @@ def find_blob(blob_request):
     """
     Look for the blob with the given param. If can't find it, return a blob with text saying as much.
     """
-    blobs = {'hyped', 'veryhappy'}
-    if blob_request in blobs:
+    if blob_request in BLOBS:
         print('found the request blob: {}'.format(blob_request))
-        return True
+        return blob_request
     return False

@@ -80,11 +80,11 @@ socket.on('blob', function(msg, cb) {
     html: '<b>' + msg.nickname + '</b>' + ':'
   });
   let blob = $('<div/>', {
-    class: msg.blob,
+    class: 'blob ' + msg.blob,
     html: ''
   });
+  chatMessage.append(blob);
   $('.game-log').append(chatMessage).html();
-  $('.game-log').append(blob).html();
   updateScroll();
 });
 
