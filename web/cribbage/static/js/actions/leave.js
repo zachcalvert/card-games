@@ -6,8 +6,6 @@ export function announcePlayerLeave(msg) {
 export function clearSessionData() {
    sessionStorage.removeItem('nickname');
    sessionStorage.removeItem('gameName');
-   sessionStorage.removeItem('players');
-   sessionStorage.removeItem('cut');
-   sessionStorage.removeItem('cards');
+   sessionStorage.removeItem('ws');
    window.location.href = "/";
 }

@@ -62,6 +62,13 @@ export function resetTable() {
   $('#deck').show();
   $('.peg-board').children().remove();
   $('.player-points').remove();
+
+  if ($('play-pile')) {
+    $('.play-pile').remove();
+    $(".player-cards").removeClass(function (index, className) {
+      return (className.match(/(^|\s)col-\S+/g) || []).join(' ');
+    }).addClass('col-12');
+  }
 }
 
 export function start(dealer, players) {
