@@ -22,6 +22,7 @@ socket.on('player_join', function (msg, cb) {
 });
 
 socket.on('start_game', function (msg, cb) {
+  sessionStorage.setItem('ws', msg.winningScore);
   start(msg.dealer, msg.players);
 });
 
@@ -153,7 +154,7 @@ $('#action-button').click(function (event) {
   let action = $(this).text();
 
   if (action === 'START') {
-    socket.emit('start_game', {game: gameName});
+    $('#start-menu').modal();
   }
 
   if (action === 'DEAL') {
@@ -178,7 +179,6 @@ $('#action-button').click(function (event) {
       socket.emit('send_message', {
         game: gameName, nickname: 'cribby', private: 'true', data: message});
     }
-
   }
 
   if (action === 'PASS') {
@@ -205,10 +205,15 @@ $('#action-button').click(function (event) {
   return false;
 });
 
+$('#start-game').click(function (event) {
+  let winningScore = $('#winning-score').val();
+  socket.emit('start_game', {game: gameName, winningScore: winningScore});
+  $('#start-menu').modal('hide');
+});
+
 function updateScroll() {
   $(".game-log").scrollTop($(".game-log")[0].scrollHeight);
 }
-
 
 $(document).ready(function() {
   let welcomeMessage = "Welcome!";

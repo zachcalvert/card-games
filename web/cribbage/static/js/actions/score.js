@@ -10,6 +10,7 @@ export function displayScoredHand(player) {
 }
 
 export function awardPoints(player, amount, reason) {
+  let winningScore = sessionStorage.getItem('ws');
   let playerPoints = $("#scoreboard-" + player + "-points");
   $(playerPoints).animate({color: '#7FFF00'}, 500);
   $(playerPoints).animate({color: 'white)'}, 1000);
@@ -25,7 +26,7 @@ export function awardPoints(player, amount, reason) {
 
   let totalPoints = current + amount;
   console.log(player + ' has ' + totalPoints);
-  let width = (totalPoints / 121 * 100) + '%';
+  let width = (totalPoints / winningScore * 100) + '%';
   console.log(width);
   $('#' + player + '-player-progress-bar').css('width', width);
 }

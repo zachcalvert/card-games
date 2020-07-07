@@ -11,10 +11,13 @@ function buildScoreBoard(players) {
   $.each(players, function(index, player) {
     let points = $('<span/>', {
       id: 'scoreboard-' + player + '-points',
+      class: 'player-points',
       html: 0
     });
     let playerName = $('#' + player).find('.player-nickname');
-    playerName.append(': ');
+    if (!(playerName.text().includes(': '))) {
+      playerName.append(': ');
+    }
     playerName.append(points);
 
     let playerProgressName = $('<span/>', {
@@ -58,6 +61,7 @@ export function resetTable() {
   $('#play-total').text('');
   $('#deck').show();
   $('.peg-board').children().remove();
+  $('.player-points').remove();
 }
 
 export function start(dealer, players) {

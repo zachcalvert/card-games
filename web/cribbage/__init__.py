@@ -28,8 +28,6 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 thread_lock = Lock()
 
-POINTS_TO_WIN = 121
-
 
 @app.route('/', defaults={'reason': None}, methods=['GET', 'POST'])
 @app.route('/<reason>', methods=['GET', 'POST'])
@@ -75,12 +73,12 @@ def game_detail():
     return redirect(url_for('index'))
 
 
-def award_points(game, player, amount, total_points, reason):
+def award_points(game, player, amount, reason, just_won):
     if amount > 0:
         emit('new_points_message', {'data': '+{} for {} ({})'.format(amount, player, reason)}, room=game)
         emit('award_points', {'player': player, 'amount': amount, 'reason': 'pegging'}, room=game)
 
-    if total_points >= POINTS_TO_WIN:
+    if just_won:
         emit('decorate_winner', {'player': player}, room=game)
         emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribby'}, room=game)
         emit('send_turn', {'player': 'all', 'action': 'REMATCH'}, room=game)
@@ -136,10 +134,10 @@ def send_message(message):
 
 @socketio.on('start_game', namespace='/game')
 def start_game(msg):
-    dealer, players = bev.start_game(msg['game'])
-    chat_message = "Start your engines! It's {}'s crib.".format(dealer)
+    dealer, players = bev.start_game(msg['game'], msg['winningScore'])
+    chat_message = "First to {} wins! It's {}'s crib.".format(msg['winningScore'], dealer)
     emit('new_chat_message', {'data': chat_message, 'nickname': 'cribby'}, room=msg['game'])
-    emit('start_game', {'dealer': dealer, 'players': players}, room=msg['game'])
+    emit('start_game', {'dealer': dealer, 'players': players, 'winningScore': msg['winningScore']}, room=msg['game'])
 
 
 @socketio.on('deal_hands', namespace='/game')
@@ -260,10 +258,12 @@ def end_round(msg):
 def play_again(msg):
     all_want_to_play_again = bev.play_again(msg['game'], msg['nickname'])
     if all_want_to_play_again:
-        bev.reset_game_dict(msg['game'])
+        winning_score = bev.reset_game_dict(msg['game'])
         emit('reset_table', room=msg['game'])
-        dealer, players = bev.start_game(msg['game'])
-        emit('start_game', {'dealer': dealer, 'players': players}, room=msg['game'])
+        dealer, players = bev.start_game(msg['game'], winning_score)
+        emit('start_game', {'dealer': dealer, 'players': players, 'winningScore': winning_score}, room=msg['game'])
+        message = "First to {} wins! It's {}'s crib to start.".format(winning_score, dealer)
+        emit('new_chat_message', {'data': message, 'nickname': 'cribby'}, room=msg['game'])
 
 
 if __name__ == '__main__':
