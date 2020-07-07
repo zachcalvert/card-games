@@ -26,7 +26,7 @@ GREAT_HAND_RESPONSES = [
 ]
 
 BLOBS = {'hype', 'sigh', 'wink', 'bored', 'sad', 'gimme', 'rage', 'panic', 'smile', 'grimace', 'wat',
-         'dancer', 'party', 'cheers', 'conga', 'yay', 'mad', 'sweating', 'stare', 'goodnight'}
+         'dancer', 'party', 'cheers', 'conga', 'yay', 'mad', 'sweating', 'stare', 'goodnight', 'babyangel'}
 
 
 def find_gif(search_term):

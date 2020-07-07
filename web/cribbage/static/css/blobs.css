@@ -71,6 +71,9 @@
 .tada {
     background-image: url('/static/img/blobs/tada.gif');
 }
+.babyangel {
+  background-image: url('/static/img/blobs/babyangel.gif');;
+}
 .goodnight {
   background-image: url('/static/img/blobs/goodnight.gif');;
 }
