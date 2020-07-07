@@ -26,10 +26,10 @@
 .opponent-card {
   height: 90%;
   z-index: 1;
-  margin: 0 -.7em;
+  margin: 0 -1em;
 }
 .opponent-card.to-be-played {
-  margin: 0 -1em;
+  margin: 0 -1.5em;
 }
 .opponent-card.played {
   z-index: 2;
