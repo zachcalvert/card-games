@@ -134,8 +134,10 @@ def send_message(message):
 
 @socketio.on('start_game', namespace='/game')
 def start_game(msg):
-    dealer, players = bev.start_game(msg['game'], msg['winningScore'])
+    dealer, players = bev.start_game(msg['game'], msg['winningScore'], msg['jokers'])
     chat_message = "First to {} wins! It's {}'s crib.".format(msg['winningScore'], dealer)
+    if msg['jokers']:
+        chat_message += " We're playing with jokers."
     emit('new_chat_message', {'data': chat_message, 'nickname': 'cribby'}, room=msg['game'])
     emit('start_game', {'dealer': dealer, 'players': players, 'winningScore': msg['winningScore']}, room=msg['game'])
 
@@ -145,6 +147,14 @@ def deal_hands(msg):
     hands = bev.deal_hands(msg['game'])
     emit('deal_hands', {'hands': hands}, room=msg['game'])
     emit('send_turn', {'player': 'all', 'action': 'DISCARD'}, room=msg['game'])
+
+
+@socketio.on('select_joker', namespace='/game')
+def select_joker(msg):
+    card, text = bev.replace_joker(msg['game'], msg['player'], msg['joker'])
+    emit('show_chosen_joker', {'player': msg['player'], 'card': card}, room=msg['game'])
+    emit('new_chat_message', {'data': "{} got a joker! They've made it a {}.".format(msg['player'], text),
+                              'nickname': 'cribby'}, room=msg['game'])
 
 
 @socketio.on('discard', namespace='/game')
@@ -258,11 +268,13 @@ def end_round(msg):
 def play_again(msg):
     all_want_to_play_again = bev.play_again(msg['game'], msg['nickname'])
     if all_want_to_play_again:
-        winning_score = bev.reset_game_dict(msg['game'])
+        winning_score, jokers = bev.reset_game_dict(msg['game'])
         emit('reset_table', room=msg['game'])
-        dealer, players = bev.start_game(msg['game'], winning_score)
+        dealer, players = bev.start_game(msg['game'], winning_score, jokers)
         emit('start_game', {'dealer': dealer, 'players': players, 'winningScore': winning_score}, room=msg['game'])
         message = "First to {} wins! It's {}'s crib to start.".format(winning_score, dealer)
+        if jokers:
+            message += " We're playing with jokers."
         emit('new_chat_message', {'data': message, 'nickname': 'cribby'}, room=msg['game'])
 
 
