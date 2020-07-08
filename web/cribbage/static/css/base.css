@@ -304,3 +304,35 @@ html, body {
   color: #FFD700;
   padding: 5px;
 }
+
+/*JOKER SELECTION*/
+div.card-selector-ranks-row {
+  display: table;
+  width: 100%;
+  table-layout: fixed;    /* For cells of equal size */
+}
+div.card-selector-ranks-row span {
+  display: table-cell;
+  text-align: center;
+  font-size: 24px;
+}
+.joker-rank-selection.selected {
+  border: 2px solid blue;
+  border-radius: 10%;
+}
+
+div.card-selector-suits-row {
+  text-align: center;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.joker-suit-selection {
+  width: 20%;
+  padding: 5px;
+  margin: auto 10px;
+}
+.joker-suit-selection.selected {
+  border: 2px solid blue;
+  border-radius: 10%;
+}

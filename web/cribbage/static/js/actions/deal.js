@@ -20,4 +20,22 @@ export function deal(msg) {
       });
     }
   });
+
+  console.log('checking for jokers');
+  if ($('.player-cards').find('img#joker').length !== 0) {
+    console.log('found one!')
+    $('#joker-selector').modal();
+  }
 };
+
+export function showChosenJoker(player, card) {
+  if (player === sessionStorage.getItem('nickname')) {
+    $('#' + player).find('#joker').remove();
+    let cardImage = $('<img/>', {
+      id: card,
+      class: 'player-card',
+      src: '/static/img/cards/' + card
+    });
+    $('#' + player + '-cards').append(cardImage);
+  }
+}

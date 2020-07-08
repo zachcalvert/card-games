@@ -310,5 +310,8 @@ CARDS = {
     "rank": 8,
     "value": 8,
     "suit": "diamonds"
+  },
+  "joker": {
+    "rank": 99,
   }
 }

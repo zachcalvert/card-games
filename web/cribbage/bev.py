@@ -85,7 +85,7 @@ def remove_player(game, player):
         cache.set(game, json.dumps(g))
 
 
-def start_game(game, winning_score):
+def start_game(game, winning_score, jokers):
     g = json.loads(cache.get(game))
     players = list(g['players'].keys())
     dealer = random.choice(players)
@@ -108,6 +108,7 @@ def start_game(game, winning_score):
             'run': [],
             'total': 0
         },
+        'jokers': jokers,
         'scored_hands': [],
         'ok_with_next_round': [],
         'play_again': [],
@@ -130,6 +131,10 @@ def _sort_cards(cards):
 def deal_hands(game):
     g = json.loads(cache.get(game))
     deck = list(CARDS.keys())
+
+    if g['jokers']:
+        deck += ['joker', 'joker']
+
     random.shuffle(deck)
 
     for player in g["players"].keys():
@@ -140,6 +145,20 @@ def deal_hands(game):
     g['deck'] = deck
     cache.set(game, json.dumps(g))
     return g['hands']
+
+
+def replace_joker(game, player, text):
+    g = json.loads(cache.get(game))
+
+    rank, suit = text.split(' of ')
+    suits_of_that_rank = {k: v for k, v in CARDS.items() if k != 'joker' and v['name'] == rank}
+    card_dict = {k: v for k, v in suits_of_that_rank.items() if v['suit'] == suit}
+    card = list(card_dict.keys())[0]
+
+    g['hands'][player].remove('joker')
+    g['hands'][player].append(card)
+    cache.set(game, json.dumps(g))
+    return card, text
 
 
 def discard(game, player, card):
@@ -440,10 +459,11 @@ def reset_game_dict(game):
         'players': {},
         "name": game,
         "state": "INIT",
-        "winning_score": g['winning_score']
+        "winning_score": g['winning_score'],
+        "jokers": g['jokers']
     }
     for player in players:
         game_dict['players'][player] = 0
 
     cache.set(game, json.dumps(game_dict))
-    return g['winning_score']
+    return game_dict['winning_score'], game_dict['jokers']

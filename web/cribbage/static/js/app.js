@@ -1,6 +1,6 @@
 import { announcePlayerJoin } from "./actions/join.js";
 import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
-import { deal } from "./actions/deal.js";
+import { deal, showChosenJoker } from "./actions/deal.js";
 import { discard, animateDiscard } from "./actions/discard.js";
 import { revealCutCard } from "./actions/cut.js";
 import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
@@ -94,6 +94,11 @@ socket.on('blob', function(msg, cb) {
 socket.on('deal_hands', function (msg, cb) {
   deal(msg);
 });
+
+socket.on('show_chosen_joker', function (msg, cb) {
+  showChosenJoker(msg.player, msg.card);
+});
+
 
 socket.on('discard', function (msg, cb) {
   discard(msg);
@@ -207,9 +212,23 @@ $('#action-button').click(function (event) {
 
 $('#start-game').click(function (event) {
   let winningScore = $('#winning-score').val();
-  socket.emit('start_game', {game: gameName, winningScore: winningScore});
+  let jokers = $('#play-with-jokers').prop('checked');
+  console.log('jokers is ' + jokers);
+  socket.emit('start_game', {game: gameName, winningScore: winningScore, jokers: jokers});
   $('#start-menu').modal('hide');
 });
+
+$('#select-joker').click(function (event) {
+  let joker = $('#select-joker').text();
+  console.log(nickname + ' chose their joker');
+  socket.emit('select_joker', {game: gameName, player: nickname, joker: joker});
+  $('#joker-selector').modal('hide');
+  if ($('.player-cards').find('img#joker').length !== 0) {
+    console.log('found another one!');
+    $('#joker-selector').modal('show');
+  }
+});
+
 
 function updateScroll() {
   $(".game-log").scrollTop($(".game-log")[0].scrollHeight);
@@ -235,5 +254,27 @@ $(document).on('click', '.player-card', function(e) {
   } else {
     $(this).animate({'margin-top': '0px'}, 200);
     $('#action-button').prop('disabled', true);
+  }
+});
+
+$(document).on('click', '.joker-rank-selection', function(e) {
+  $('.joker-rank-selection').removeClass('selected');
+  $(this).toggleClass('selected');
+  if ($('.joker-suit-selection.selected').length === 1) {
+    let rank = $('.joker-rank-selection.selected').data('value');
+    let suit = $('.joker-suit-selection.selected').data('value');
+    $('#select-joker').text(rank + ' of ' + suit);
+    $('#select-joker').prop('disabled', false);
+  }
+});
+
+$(document).on('click', '.joker-suit-selection', function(e) {
+  $('.joker-suit-selection').removeClass('selected');
+  $(this).toggleClass('selected');
+  if ($('.joker-rank-selection.selected').length === 1) {
+    let rank = $('.joker-rank-selection.selected').data('value');
+    let suit = $('.joker-suit-selection.selected').data('value');
+    $('#select-joker').text(rank + ' of ' + suit);
+    $('#select-joker').prop('disabled', false);
   }
 });
