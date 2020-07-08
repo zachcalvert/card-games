@@ -138,9 +138,7 @@ def deal_hands(game):
     random.shuffle(deck)
 
     for player in g["players"].keys():
-        dealt_cards = [deck.pop() for card in range(4)]
-        dealt_cards.append('joker')
-        dealt_cards.append('joker')
+        dealt_cards = [deck.pop() for card in range(g['hand_size'])]
         g['hands'][player] = _sort_cards(dealt_cards)
 
     g['state'] = 'DISCARD'
