@@ -121,8 +121,8 @@ def send_message(message):
         if found:
             emit('blob', {'nickname': message['nickname'], 'blob': blob_request}, room=message['game'])
         else:
-            known_blobs = ', '.join(blob for blob in list(cribby.BLOBS))
-            msg = "Heyo! Blobs I know about are: {}. Only you can see this message".format(known_blobs)
+            known_blobs = ', '.join(blob for blob in sorted(list(cribby.BLOBS)))
+            msg = "Heyo! Blobs I know about are: {}. <br />**Only you can see this message**".format(known_blobs)
             emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
         return
     else:

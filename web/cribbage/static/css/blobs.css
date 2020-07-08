@@ -77,3 +77,22 @@
 .goodnight {
   background-image: url('/static/img/blobs/goodnight.gif');;
 }
+.yep {
+    background-image: url('/static/img/blobs/yep.gif');
+}
+.nope {
+    background-image: url('/static/img/blobs/nope.gif');
+}
+.aww {
+  background-image: url('/static/img/blobs/aww.gif');;
+}
+.dundundun {
+  background-image: url('/static/img/blobs/dundundun.gif');;
+}
+.kiss {
+  background-image: url('/static/img/blobs/kiss.gif');;
+}
+.wave {
+  background-image: url('/static/img/blobs/wave.gif');;
+}
+
