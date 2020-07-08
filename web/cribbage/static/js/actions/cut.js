@@ -9,6 +9,14 @@ export function revealCutCard(card) {
   addPlayPile();
   $('.count-text').show();
   $('#play-total').show().text(0);
+
+  // if (card === 'joker') {
+  //   if (is dealer)
+  //     $('#joker-selector').modal({
+  //       backdrop: 'static',
+  //       keyboard: false
+  //   });
+  // }
 }
 
 function addPlayPile() {

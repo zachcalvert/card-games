@@ -159,6 +159,8 @@ $('#action-button').click(function (event) {
   let action = $(this).text();
 
   if (action === 'START') {
+    let message = nickname + ' is setting up the game..';
+    socket.emit('send_message', {game: gameName, nickname: 'cribby', data: message});
     $('#start-menu').modal();
   }
 
@@ -220,11 +222,11 @@ $('#start-game').click(function (event) {
 
 $('#select-joker').click(function (event) {
   let joker = $('#select-joker').text();
-  console.log(nickname + ' chose their joker');
   socket.emit('select_joker', {game: gameName, player: nickname, joker: joker});
+  $('.joker-rank-selection').removeClass('selected');
+  $('.joker-suit-selection').removeClass('selected');
   $('#joker-selector').modal('hide');
-  if ($('.player-cards').find('img#joker').length !== 0) {
-    console.log('found another one!');
+  if ($('.player-cards').find('img#joker').length > 1) {
     $('#joker-selector').modal('show');
   }
 });

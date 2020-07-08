@@ -23,8 +23,10 @@ export function deal(msg) {
 
   console.log('checking for jokers');
   if ($('.player-cards').find('img#joker').length !== 0) {
-    console.log('found one!')
-    $('#joker-selector').modal();
+    $('#joker-selector').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
   }
 };
 

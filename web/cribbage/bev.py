@@ -141,6 +141,7 @@ def deal_hands(game):
         dealt_cards = [deck.pop() for card in range(g['hand_size'])]
         g['hands'][player] = _sort_cards(dealt_cards)
 
+
     g['state'] = 'DISCARD'
     g['deck'] = deck
     cache.set(game, json.dumps(g))

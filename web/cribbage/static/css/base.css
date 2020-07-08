@@ -310,6 +310,7 @@ div.card-selector-ranks-row {
   display: table;
   width: 100%;
   table-layout: fixed;    /* For cells of equal size */
+  margin: 20px 0;
 }
 div.card-selector-ranks-row span {
   display: table-cell;
