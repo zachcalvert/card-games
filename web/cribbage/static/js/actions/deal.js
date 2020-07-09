@@ -9,6 +9,13 @@ export function deal(msg) {
         });
         $('#' + player + '-cards').append(cardImage);
       });
+      console.log('checking for jokers');
+      if ($('#' + player + '-cards').find('img#joker').length !== 0) {
+        $('#joker-selector').modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      }
     } else {
       $.each(cards, function(index, card) {
         let cardImage = $('<img/>', {
@@ -20,14 +27,6 @@ export function deal(msg) {
       });
     }
   });
-
-  console.log('checking for jokers');
-  if ($('.player-cards').find('img#joker').length !== 0) {
-    $('#joker-selector').modal({
-        backdrop: 'static',
-        keyboard: false
-    });
-  }
 };
 
 export function showChosenJoker(player, card) {
