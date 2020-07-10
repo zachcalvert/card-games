@@ -43,20 +43,20 @@ function moveCardFromHandToPlayArea(card, nickname) {
   console.log('num played cards is ' + playPile.children().length)
   switch  (playPile.children().length) {
     case 1:
-      playPile.removeClass('col-4').addClass('col-5');
-      toBePlayed.removeClass('col-8').addClass('col-7');
+      playPile.removeClass('col-2').addClass('col-4');
+      toBePlayed.removeClass('col-10').addClass('col-8');
       break;
     case 2:
-      playPile.removeClass('col-5').addClass('col-6');
-      toBePlayed.removeClass('col-7').addClass('col-6');
+      playPile.removeClass('col-4').addClass('col-6');
+      toBePlayed.removeClass('col-8').addClass('col-6');
       break;
     case 3:
-      playPile.removeClass('col-6').addClass('col-7');
-      toBePlayed.removeClass('col-6').addClass('col-5');
+      playPile.removeClass('col-6').addClass('col-8');
+      toBePlayed.removeClass('col-6').addClass('col-4');
       break;
     case 4:
-      playPile.removeClass('col-7').addClass('col-8');
-      toBePlayed.removeClass('col-5').addClass('col-4');
+      playPile.removeClass('col-8').addClass('col-10');
+      toBePlayed.removeClass('col-4').addClass('col-2');
       break;
     default:
       // code block
