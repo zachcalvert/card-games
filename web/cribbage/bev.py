@@ -146,8 +146,6 @@ def deal_hands(game):
 
     for count, player in enumerate(g["players"].keys(), 1):
         dealt_cards = [deck.pop() for card in range(6)]
-        # joker = 'joker' + str(count)
-        # dealt_cards.append(joker)
         g['hands'][player] = _sort_cards(g, dealt_cards)
 
     g['state'] = 'DISCARD'
@@ -216,8 +214,7 @@ def cut_deck(game):
     just_won = False
 
     g = json.loads(cache.get(game))
-    # g['cut_card'] = g['deck'].pop()
-    g['cut_card'] = 'joker1'
+    g['cut_card'] = g['deck'].pop()
     g['state'] = 'PLAY'
 
     if g['cut_card'] in ['56594b3880', '95f92b2f0c', '1d5eb77128', '110e6e5b19']:
