@@ -192,8 +192,10 @@ def peg_round_action(msg):
 
         just_won = bev.score_play(msg['game'], msg['player'], msg['card_played'])
         new_total = bev.record_play(msg['game'], msg['player'], msg['card_played'])
+
+        # swap out joker here?
         emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total},
-                 room=msg['game'])
+             room=msg['game'])
         if just_won:
             return
 
