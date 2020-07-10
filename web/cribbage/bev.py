@@ -154,19 +154,30 @@ def deal_hands(game):
     return g['hands']
 
 
-def set_joker(game, joker, text):
-    g = json.loads(cache.get(game))
+def get_card_object_from_text(text):
+    """
+    Expects text in the form: 'Ace of diamonds', 'Ten of clubs', 'Queen of spades'
 
+    :return: card_dict of the corresponding card
+    """
     # find the requested card in CARDS
     rank, suit = text.split(' of ')
     suits_of_that_rank = {k: v for k, v in CARDS.items() if v['name'] == rank}
     card_dict = {k: v for k, v in suits_of_that_rank.items() if v['suit'] == suit}
-    card = list(card_dict.keys())[0]
-    # copy the contents of that card's values into this joker's entry
-    g['cards'][joker] = card_dict[card]
+    return card_dict
 
+
+def set_joker(game, joker, text):
+    g = json.loads(cache.get(game))
+
+    # get the requested replacement
+    card_dict = get_card_object_from_text(text)
+    card_id = list(card_dict.keys())[0]
+
+    # copy the contents of that card's values into this joker's entry
+    g['cards'][joker] = card_dict[card_id]
     cache.set(game, json.dumps(g))
-    return card, text
+    return card_id, text
 
 
 def discard(game, player, card):
