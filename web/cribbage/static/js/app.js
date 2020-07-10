@@ -221,15 +221,19 @@ $('#start-game').click(function (event) {
 });
 
 $('#select-joker').click(function (event) {
+  let jokerModal = $('#joker-selector');
   let joker = $('#' + nickname).find('[id^=joker]').prop('id');
-  console.log('replacing this joker: ' + joker);
   let replacement = $('#select-joker').text();
   socket.emit('select_joker', {game: gameName, player: nickname, joker: joker, replacement: replacement});
+
+  $(joker).removeClass('replace-me');
   $('.joker-rank-selection').removeClass('selected');
   $('.joker-suit-selection').removeClass('selected');
-  $('#joker-selector').modal('hide');
-  if ($('.player-cards').find('img#joker').length > 0) {
-    $('#joker-selector').modal('show');
+  jokerModal.modal('hide');
+
+  console.log('there are now ' + $('.player-cards').find('.replace-me').length + 'jokers left');
+  if ($('.player-cards').find('.replace-me').length > 1) {
+    jokerModal.modal('show');
   }
 });
 

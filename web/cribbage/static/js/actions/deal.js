@@ -12,11 +12,9 @@ export function deal(msg) {
         $('#' + player + '-cards').append(cardImage);
       });
 
-      console.log('checking for jokers');
       $.each(JOKERS, function(index, joker) {
-        console.log('checking for this one ' + joker);
-        if ($('#' + player + '-cards').find(joker).length > 0) {
-          console.log('found one!');
+        if ($('#' + player).find(joker).length > 0) {
+          $('#' + player).find(joker).addClass('replace-me')
           $('#joker-selector').modal({
             backdrop: 'static',
             keyboard: false
