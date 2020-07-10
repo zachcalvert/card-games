@@ -117,7 +117,7 @@ socket.on('show_cut_card', function (msg, cb) {
   let isJoker = (msg.cut_card === 'joker1' || msg.cut_card === 'joker2');
   if (isJoker) {
     let message =  "The cut card is a joker! As dealer, " + msg.dealer + " gets to set it.";
-    socket.emit('send_message', {game: gameName, nickname: 'cribby', data: message});
+    socket.emit('send_message', {game: gameName, nickname: 'cribby', data: message}, room=msg['game']);
   }
   revealCutCard(msg.cut_card, msg.dealer, isJoker);
   renderCurrentTurnDisplay(msg.turn, 'PLAY');
@@ -178,7 +178,7 @@ $('#action-button').click(function (event) {
   }
 
   if (action === 'DISCARD') {
-    let card = $('img.player-card.selected').prop('id');
+    let card = $('img.card.selected').prop('id');
     if (card) {
       socket.emit('discard', {game: gameName, player: nickname, card: card});
     } else {
@@ -193,7 +193,7 @@ $('#action-button').click(function (event) {
   }
 
   if (action === 'PLAY') {
-    let card_played = $('img.player-card.selected').prop('id');
+    let card_played = $('img.card.selected').prop('id');
     if (card_played) {
       socket.emit('peg_round_action', {game: gameName, player: nickname, card_played: card_played});
     } else {

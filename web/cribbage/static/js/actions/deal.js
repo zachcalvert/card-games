@@ -6,7 +6,7 @@ export function deal(msg) {
       $.each(cards, function(index, card) {
         let cardImage = $('<img/>', {
           id: card,
-          class: 'player-card',
+          class: 'card player-card',
           src: '/static/img/cards/' + card
         });
         $('#' + player + '-cards').append(cardImage);
@@ -26,7 +26,7 @@ export function deal(msg) {
       $.each(cards, function(index, card) {
         let cardImage = $('<img/>', {
           id: card,
-          class: 'opponent-card',
+          class: 'card',
           src: '/static/img/cards/facedown.png'
         });
         $('#' + player + '-cards').append(cardImage);
@@ -37,19 +37,15 @@ export function deal(msg) {
 
 export function showChosenJoker(player, joker, replacementId) {
   $('#' + player).find('#' + joker).remove();
+  let cardImage = $('<img/>', {
+    id: joker,
+    class: 'card',
+    src: '/static/img/cards/' + replacementId
+  });
+
   if (player === sessionStorage.getItem('nickname')) {
-    let cardImage = $('<img/>', {
-      id: joker,
-      class: 'player-card',
-      src: '/static/img/cards/' + replacementId
-    });
-    $('#' + player + '-cards').append(cardImage);
-  } else {
-    let cardImage = $('<img/>', {
-      id: joker,
-      class: 'opponent-card',
-      src: '/static/img/cards/facedown.png'
-    });
-    $('#' + player + '-cards').append(cardImage);
+    $(cardImage).addClass('player-card');
   }
+
+  $('#' + player + '-cards').append(cardImage);
 }

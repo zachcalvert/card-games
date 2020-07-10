@@ -26,7 +26,7 @@ function addPlayPile() {
     class: 'play-pile col-2 justify-content-center',
   });
   $('.player-play-area').prepend(playPile);
-  let playerCards = $('.player-card');
+  let playerCards = $('.player-cards').find('.card');
   $.each(playerCards, function(index, playerCard) {
     $(playerCard).addClass('to-be-played');
   });

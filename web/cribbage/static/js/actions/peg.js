@@ -26,7 +26,7 @@ export function renderCurrentTurnDisplay(player, action) {
       $(dealtArea).append(card);
     });
     $('.play-pile').remove();
-    $('.player-cards').removeClass('col-5').addClass('col-12').css('text-align', 'center');
+    $('.player-cards').removeClass('col-2').addClass('col-12').css('text-align', 'center');
     $('#play-total').fadeOut(500, 'swing');
     $('.count-text').fadeOut(500, 'swing');
   }

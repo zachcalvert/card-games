@@ -35,8 +35,7 @@ export function revealCrib(crib, dealer) {
   console.log('crib is: ' + crib);
   console.log('dealer is: ' + dealer);
 
-  $('.player-card').remove();
-  $('.opponent-card').remove();
+  $('.card').remove();
 
   $.each(crib, function(index, cardId) {
     console.log('card id is: ' + cardId);

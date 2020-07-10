@@ -52,8 +52,7 @@ function buildScoreBoard(players) {
 }
 
 export function resetTable() {
-  $('.player-card').remove();
-  $('.opponent-card').remove();
+  $('.card').remove();
   $('.crib-card').remove();
   $('.cut-card').remove();
   $('.scoreboard').remove();

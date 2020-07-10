@@ -269,6 +269,8 @@ html, body {
 
 .player-cards {
   display: inline-block;
+  margin: 0;
+  text-align: center;
 }
 
 .player-play-area {
