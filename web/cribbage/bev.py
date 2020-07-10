@@ -91,7 +91,7 @@ def remove_player(game, player):
         cache.set(game, json.dumps(g))
 
 
-def start_game(game, winning_score, jokers):
+def start_game(game, winning_score=121, jokers=False):
     g = json.loads(cache.get(game))
     players = list(g['players'].keys())
     dealer = random.choice(players)
@@ -144,8 +144,8 @@ def deal_hands(game):
     deck = list(g['cards'].keys())
     random.shuffle(deck)
 
-    for count, player in enumerate(g["players"].keys(), 1):
-        dealt_cards = [deck.pop() for card in range(6)]
+    for player in g["players"].keys():
+        dealt_cards = [deck.pop() for card in range(g['hand_size'])]
         g['hands'][player] = _sort_cards(g, dealt_cards)
 
     g['state'] = 'DISCARD'
