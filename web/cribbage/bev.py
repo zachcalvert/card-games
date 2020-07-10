@@ -184,8 +184,14 @@ def discard(game, player, card):
     if all_done:
         if len(g['players'].keys()) == 1:
             # deal an extra two from the deck for this lonely soul
-            first = g['deck'].pop()
-            second = g['deck'].pop()
+            first = 'joker'
+            while 'joker' in first:
+                first = g['deck'].pop()
+
+            second = 'joker'
+            while 'joker' in second:
+                second = g['deck'].pop()
+
             deal_extra_crib_card(game, first)
             deal_extra_crib_card(game, second)
             g['crib'].append(first)
@@ -193,7 +199,9 @@ def discard(game, player, card):
 
         if len(g['players'].keys()) == 3:
             # deal an extra one from the deck
-            extra_crib_card = g['deck'].pop()
+            extra_crib_card = 'joker'
+            while 'joker' in extra_crib_card:
+                extra_crib_card = g['deck'].pop()
             deal_extra_crib_card(game, extra_crib_card)
             g['crib'].append(extra_crib_card)
 
