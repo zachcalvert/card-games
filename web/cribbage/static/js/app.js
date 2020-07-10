@@ -2,7 +2,7 @@ import { announcePlayerJoin } from "./actions/join.js";
 import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
 import { deal, showChosenJoker } from "./actions/deal.js";
 import { discard, animateDiscard } from "./actions/discard.js";
-import { revealCutCard } from "./actions/cut.js";
+import { revealCutCard, showCutJoker } from "./actions/cut.js";
 import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
 import { start, resetTable } from "./actions/start.js";
 import { awardPoints, clearTable, displayScoredHand, revealCrib, decorateWinner } from "./actions/score.js";
@@ -99,6 +99,10 @@ socket.on('show_chosen_joker', function (msg, cb) {
   showChosenJoker(msg.player, msg.joker, msg.replacement);
 });
 
+socket.on('show_cut_joker', function (msg, cb) {
+  showCutJoker(msg.player, msg.replacement);
+});
+
 
 socket.on('discard', function (msg, cb) {
   discard(msg);
@@ -110,7 +114,12 @@ socket.on('deal_extra_crib_card', function (msg, cb) {
 
 // CUT
 socket.on('show_cut_card', function (msg, cb) {
-  revealCutCard(msg.cut_card, msg.dealer);
+  let isJoker = (msg.cut_card === 'joker1' || msg.cut_card === 'joker2');
+  if (isJoker) {
+    let message =  "The cut card is a joker! As dealer, " + msg.dealer + " gets to set it.";
+    socket.emit('send_message', {game: gameName, nickname: 'cribby', data: message});
+  }
+  revealCutCard(msg.cut_card, msg.dealer, isJoker);
   renderCurrentTurnDisplay(msg.turn, 'PLAY');
 });
 
@@ -170,7 +179,13 @@ $('#action-button').click(function (event) {
 
   if (action === 'DISCARD') {
     let card = $('img.player-card.selected').prop('id');
-    socket.emit('discard', {game: gameName, player: nickname, card: card});
+    if (card) {
+      socket.emit('discard', {game: gameName, player: nickname, card: card});
+    } else {
+      let message = 'Psst! Click on a card to discard it ;)';
+      socket.emit('send_message', {
+        game: gameName, nickname: 'cribby', private: 'true', data: message});
+    }
   }
 
   if (action === 'CUT') {
@@ -220,18 +235,32 @@ $('#start-game').click(function (event) {
   $('#start-menu').modal('hide');
 });
 
-$('#select-joker').click(function (event) {
-  let jokerModal = $('#joker-selector');
-  let joker = $('#' + nickname).find('[id^=joker]').prop('id');
-  let replacement = $('#select-joker').text();
-  socket.emit('select_joker', {game: gameName, player: nickname, joker: joker, replacement: replacement});
 
-  $(joker).removeClass('replace-me');
+function findAndSendJoker(player) {
+  let replacement = $('#select-joker').text();
+
+  let hand_joker = $('#' + player).find('[id^=joker]').prop('id');
+  if (hand_joker) {
+    $(hand_joker).removeClass('replace-me');
+    socket.emit('select_joker_for_hand', {game: gameName, player: nickname, joker: hand_joker, replacement: replacement});
+  }
+
+  let cut_joker = $('.deck-container').find('[id^=joker]').prop('id');
+  if (cut_joker) {
+    socket.emit('select_joker_for_cut', {game: gameName, player: nickname, joker: cut_joker, replacement: replacement});
+  }
+
+  // clean up
   $('.joker-rank-selection').removeClass('selected');
   $('.joker-suit-selection').removeClass('selected');
+  $('#select-joker').text('Select');
+}
+
+$('#select-joker').click(function (event) {
+  findAndSendJoker(nickname);
+  let jokerModal = $('#joker-selector');
   jokerModal.modal('hide');
 
-  console.log('there are now ' + $('.player-cards').find('.replace-me').length + 'jokers left');
   if ($('.player-cards').find('.replace-me').length > 1) {
     jokerModal.modal('show');
   }
@@ -244,7 +273,7 @@ function updateScroll() {
 }
 
 $(document).ready(function() {
-  let welcomeMessage = "Welcome!";
+  let welcomeMessage = "Welcome, " + nickname + '!';
   socket.emit('send_message', {game: gameName, nickname: 'cribby', data: welcomeMessage, private: 'true'});
 });
 

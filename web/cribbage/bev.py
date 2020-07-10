@@ -144,10 +144,10 @@ def deal_hands(game):
     deck = list(g['cards'].keys())
     random.shuffle(deck)
 
-    for player in g["players"].keys():
-        dealt_cards = [deck.pop() for card in range(4)]
-        dealt_cards.append('joker1')
-        dealt_cards.append('joker2')
+    for count, player in enumerate(g["players"].keys(), 1):
+        dealt_cards = [deck.pop() for card in range(6)]
+        # joker = 'joker' + str(count)
+        # dealt_cards.append(joker)
         g['hands'][player] = _sort_cards(g, dealt_cards)
 
     g['state'] = 'DISCARD'
@@ -156,7 +156,7 @@ def deal_hands(game):
     return g['hands']
 
 
-def set_joker(game, player, joker, text):
+def set_joker(game, joker, text):
     g = json.loads(cache.get(game))
 
     # find the requested card in CARDS
@@ -167,8 +167,6 @@ def set_joker(game, player, joker, text):
     # copy the contents of that card's values into this joker's entry
     g['cards'][joker] = card_dict[card]
 
-    # g['hands'][player].remove(joker)
-    # g['hands'][player].append(card)
     cache.set(game, json.dumps(g))
     return card, text
 
@@ -210,7 +208,8 @@ def cut_deck(game):
     just_won = False
 
     g = json.loads(cache.get(game))
-    g['cut_card'] = g['deck'].pop()
+    # g['cut_card'] = g['deck'].pop()
+    g['cut_card'] = 'joker1'
     g['state'] = 'PLAY'
 
     if g['cut_card'] in ['56594b3880', '95f92b2f0c', '1d5eb77128', '110e6e5b19']:
@@ -222,7 +221,7 @@ def cut_deck(game):
     g['turn'] = g['first_to_score']
     cache.set(game, json.dumps(g))
 
-    return g['cut_card'], g['turn'], just_won
+    return g['cut_card'], g['turn'], g['dealer']
 
 
 def score_play(game, player, card):
@@ -392,7 +391,8 @@ def score_hand(game, player):
     g = json.loads(cache.get(game))
     player_cards = g['played_cards'][player]
     cards = [g['cards'].get(card) for card in player_cards]
-    hand = Hand(cards, g['cut_card'])
+    cut_card = g['cards'].get(g['cut_card'])
+    hand = Hand(cards, cut_card)
     hand_points = hand.calculate_points()
 
     g['players'][player] += hand_points
@@ -414,7 +414,8 @@ def score_crib(game, player):
 
     g = json.loads(cache.get(game))
     crib_cards = [g['cards'].get(card) for card in g['crib']]
-    crib = Hand(crib_cards, g['cut_card'], is_crib=True)
+    cut_card = g['cards'].get(g['cut_card'])
+    crib = Hand(crib_cards, cut_card, is_crib=True)
     crib_points = crib.calculate_points()
     g['players'][player] += crib_points
     if g['players'][player] >= g['winning_score']:

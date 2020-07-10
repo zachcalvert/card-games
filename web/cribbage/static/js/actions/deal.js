@@ -14,7 +14,7 @@ export function deal(msg) {
 
       $.each(JOKERS, function(index, joker) {
         if ($('#' + player).find(joker).length > 0) {
-          $('#' + player).find(joker).addClass('replace-me')
+          $('#' + player).find(joker).addClass('replace-me');
           $('#joker-selector').modal({
             backdrop: 'static',
             keyboard: false

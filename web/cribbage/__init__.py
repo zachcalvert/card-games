@@ -148,11 +148,19 @@ def deal_hands(msg):
     emit('send_turn', {'player': 'all', 'action': 'DISCARD'}, room=msg['game'])
 
 
-@socketio.on('select_joker', namespace='/game')
-def select_joker(msg):
-    replacement, text = bev.set_joker(msg['game'], msg['player'], msg['joker'], msg['replacement'])
+@socketio.on('select_joker_for_hand', namespace='/game')
+def select_joker_for_hand(msg):
+    replacement, text = bev.set_joker(msg['game'], msg['joker'], msg['replacement'])
     emit('show_chosen_joker', {'player': msg['player'], 'joker': msg['joker'], 'replacement': replacement}, room=msg['game'])
     emit('new_chat_message', {'data': "{} got a joker! They've made it a {}.".format(msg['player'], text),
+                              'nickname': 'cribby'}, room=msg['game'])
+
+
+@socketio.on('select_joker_for_cut', namespace='/game')
+def select_joker_for_cut(msg):
+    replacement, text = bev.set_joker(msg['game'], msg['joker'], msg['replacement'])
+    emit('show_cut_joker', {'player': msg['player'], 'replacement': replacement}, room=msg['game'])
+    emit('new_chat_message', {'data': "The cut card is the {}.".format(text),
                               'nickname': 'cribby'}, room=msg['game'])
 
 
@@ -169,8 +177,8 @@ def discard(msg):
 
 @socketio.on('cut_deck', namespace='/game')
 def cut_deck(msg):
-    cut_card, turn, winning_cut = bev.cut_deck(msg['game'])
-    emit('show_cut_card', {"cut_card": cut_card, 'turn': turn}, room=msg['game'])
+    cut_card, turn, dealer = bev.cut_deck(msg['game'])
+    emit('show_cut_card', {"cut_card": cut_card, 'turn': turn, 'dealer': dealer}, room=msg['game'])
 
 
 @socketio.on('peg_round_action', namespace='/game')
