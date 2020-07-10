@@ -1,4 +1,4 @@
-export function revealCutCard(card) {
+export function revealCutCard(card, dealer) {
   let cutCardImage = $('<img/>', {
     id: card,
     class: 'cut-card',
@@ -10,13 +10,14 @@ export function revealCutCard(card) {
   $('.count-text').show();
   $('#play-total').show().text(0);
 
-  // if (card === 'joker') {
-  //   if (is dealer)
-  //     $('#joker-selector').modal({
-  //       backdrop: 'static',
-  //       keyboard: false
-  //   });
-  // }
+  if (card === 'joker') {
+    if (dealer === sessionStorage.getItem('nickname')) {
+      $('#joker-selector').modal({
+        backdrop: 'static',
+        keyboard: false
+      });
+    }
+  }
 }
 
 function addPlayPile() {

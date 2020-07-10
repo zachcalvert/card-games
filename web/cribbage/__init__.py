@@ -15,7 +15,6 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, ro
 
 from cribbage import bev
 from cribbage import cribby
-from cribbage.cards import CARDS
 from cribbage.utils import rotate_turn, play_or_pass
 
 async_mode = None
@@ -151,8 +150,8 @@ def deal_hands(msg):
 
 @socketio.on('select_joker', namespace='/game')
 def select_joker(msg):
-    card, text = bev.replace_joker(msg['game'], msg['player'], msg['joker'])
-    emit('show_chosen_joker', {'player': msg['player'], 'card': card}, room=msg['game'])
+    replacement, text = bev.set_joker(msg['game'], msg['player'], msg['joker'], msg['replacement'])
+    emit('show_chosen_joker', {'player': msg['player'], 'joker': msg['joker'], 'replacement': replacement}, room=msg['game'])
     emit('new_chat_message', {'data': "{} got a joker! They've made it a {}.".format(msg['player'], text),
                               'nickname': 'cribby'}, room=msg['game'])
 
@@ -183,7 +182,7 @@ def peg_round_action(msg):
     """
     if 'card_played' in msg.keys():
         total = bev.get_pegging_total(msg['game'])
-        if CARDS.get(msg['card_played'])['value'] > (31 - total):
+        if bev.get_card_value(msg['game'], msg['card_played']) > (31 - total):
             emit('invalid_card', {'card': msg['card_played']})
             return
 

@@ -1,5 +1,5 @@
 <!-- Joker selection -->
-<div class="modal" id="joker-selector" tabindex="-1" role="dialog" aria-labelledby="joker-selector-label" aria-hidden="true">
+<div class="modal fade" id="joker-selector" tabindex="-1" role="dialog" aria-labelledby="joker-selector-label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -33,3 +33,30 @@
     </div>
   </div>
 </div>
+
+<script>
+  let submitButton = $("#select-joker");
+
+  function updateSubmitButton() {
+    let rank = $('.joker-rank-selection.selected').data('value');
+    let suit = $('.joker-suit-selection.selected').data('value');
+    submitButton.text(rank + ' of ' + suit);
+    submitButton.prop('disabled', false);
+  }
+
+  $(document).on('click', '.joker-rank-selection', function(e) {
+    $('.joker-rank-selection').removeClass('selected');
+    $(this).toggleClass('selected');
+    if ($('.joker-suit-selection.selected').length === 1) {
+      updateSubmitButton();
+    }
+  });
+
+  $(document).on('click', '.joker-suit-selection', function(e) {
+    $('.joker-suit-selection').removeClass('selected');
+    $(this).toggleClass('selected');
+    if ($('.joker-rank-selection.selected').length === 1) {
+      updateSubmitButton();
+    }
+  });
+</script>

@@ -6,7 +6,7 @@ from .cards import CARDS
 
 class Hand:
     def __init__(self, cards, cut_card, is_crib=False):
-        self.cards = [CARDS.get(card_id) for card_id in cards]
+        self.cards = cards
         self.cut_card = CARDS.get(cut_card)
         self.is_crib = is_crib
 

@@ -52,7 +52,13 @@ def get_pegging_total(game):
 def get_crib(game):
     g = json.loads(cache.get(game))
     crib_cards = g['crib']
-    return _sort_cards(crib_cards)
+    return _sort_cards(g, crib_cards)
+
+
+def get_card_value(game, card_id):
+    g = json.loads(cache.get(game))
+    card = g['cards'][card_id]
+    return card['value']
 
 
 def setup_game(name, player):
@@ -92,26 +98,27 @@ def start_game(game, winning_score, jokers):
     first_to_score = rotate_turn(dealer, players)
     cutter = rotate_reverse(dealer, players)
     g.update({
-        'state': 'DEAL',
-        'dealer': dealer,
+        'cards': CARDS,
+        'crib': [],
         'cutter': cutter,
-        'first_to_score': first_to_score,
+        'dealer': dealer,
         'deck': [],
+        'first_to_score': first_to_score,
         'hand_size': 6 if len(players) <= 2 else 5,
         'hands': {},
-        'played_cards': {},
-        'crib': [],
-        'turn': dealer,
+        'jokers': jokers,
+        'ok_with_next_round': [],
         'pegging': {
             'cards': [],
             'passed': [],
             'run': [],
             'total': 0
         },
-        'jokers': jokers,
-        'scored_hands': [],
-        'ok_with_next_round': [],
         'play_again': [],
+        'played_cards': {},
+        'scored_hands': [],
+        'state': 'DEAL',
+        'turn': dealer,
         'winning_score': int(winning_score)
     })
     for player in players:
@@ -121,8 +128,8 @@ def start_game(game, winning_score, jokers):
     return g['dealer'], list(g['players'].keys())
 
 
-def _sort_cards(cards):
-    card_keys_and_values = [{card: CARDS.get(card)} for card in cards]
+def _sort_cards(g, cards):
+    card_keys_and_values = [{card: g['cards'].get(card)} for card in cards]
     ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
     ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
     return ascending_card_ids
@@ -130,17 +137,17 @@ def _sort_cards(cards):
 
 def deal_hands(game):
     g = json.loads(cache.get(game))
-    deck = list(CARDS.keys())
-
     if g['jokers']:
-        deck += ['joker', 'joker']
+        g['cards']['joker1'] = {'rank': 98}
+        g['cards']['joker2'] = {'rank': 99}
 
+    deck = list(g['cards'].keys())
     random.shuffle(deck)
 
     for player in g["players"].keys():
-        dealt_cards = [deck.pop() for card in range(g['hand_size'])]
-        g['hands'][player] = _sort_cards(dealt_cards)
-
+        dealt_cards = [deck.pop() for card in range(5)]
+        dealt_cards.append('joker2')
+        g['hands'][player] = _sort_cards(g, dealt_cards)
 
     g['state'] = 'DISCARD'
     g['deck'] = deck
@@ -148,16 +155,19 @@ def deal_hands(game):
     return g['hands']
 
 
-def replace_joker(game, player, text):
+def set_joker(game, player, joker, text):
     g = json.loads(cache.get(game))
 
+    # find the requested card in CARDS
     rank, suit = text.split(' of ')
-    suits_of_that_rank = {k: v for k, v in CARDS.items() if k != 'joker' and v['name'] == rank}
+    suits_of_that_rank = {k: v for k, v in CARDS.items() if v['name'] == rank}
     card_dict = {k: v for k, v in suits_of_that_rank.items() if v['suit'] == suit}
     card = list(card_dict.keys())[0]
+    # copy the contents of that card's values into this joker's entry
+    g['cards'][joker] = card_dict[card]
 
-    g['hands'][player].remove('joker')
-    g['hands'][player].append(card)
+    # g['hands'][player].remove(joker)
+    # g['hands'][player].append(card)
     cache.set(game, json.dumps(g))
     return card, text
 
@@ -183,7 +193,7 @@ def discard(game, player, card):
             g['crib'].append(second)
 
         if len(g['players'].keys()) == 3:
-            # deal and extra one from the deck
+            # deal an extra one from the deck
             extra_crib_card = g['deck'].pop()
             deal_extra_crib_card(game, extra_crib_card)
             g['crib'].append(extra_crib_card)
@@ -204,7 +214,7 @@ def cut_deck(game):
 
     if g['cut_card'] in ['56594b3880', '95f92b2f0c', '1d5eb77128', '110e6e5b19']:
         g['players'][g['dealer']] += 2
-        if  g['players'][g['dealer']] >= g['winning_score']:
+        if g['players'][g['dealer']] >= g['winning_score']:
             just_won = True
         just_won = award_points(game, g['dealer'], 2, 'cutting a jack', just_won)
 
@@ -219,8 +229,8 @@ def score_play(game, player, card):
 
     just_won = False
     g = json.loads(cache.get(game))
-    card_played = CARDS[card]
-    cards_on_table = [CARDS.get(card) for card in g['pegging']['cards']]
+    card_played = g['cards'][card]
+    cards_on_table = [g['cards'].get(card) for card in g['pegging']['cards']]
     points = 0
 
     def _is_run(ranks):
@@ -261,7 +271,7 @@ def score_play(game, player, card):
 
 def record_play(game, player, card):
     g = json.loads(cache.get(game))
-    value = CARDS[card]['value']
+    value = g['cards'][card]['value']
     try:
         g['hands'][player].remove(card)
     except ValueError:
@@ -366,7 +376,7 @@ def get_player_action(game, player):
     else:
         if g['pegging']['total'] == 31:
             return 'PLAY'
-        card_values = [CARDS[card]['value'] for card in g['hands'][player]]
+        card_values = [g['cards'][card]['value'] for card in g['hands'][player]]
         next_action = play_or_pass(card_values, g['pegging']['total'])
 
     cache.set(game, json.dumps(g))
@@ -380,7 +390,8 @@ def score_hand(game, player):
 
     g = json.loads(cache.get(game))
     player_cards = g['played_cards'][player]
-    hand = Hand(player_cards, g['cut_card'])
+    cards = [g['cards'].get(card) for card in player_cards]
+    hand = Hand(cards, g['cut_card'])
     hand_points = hand.calculate_points()
 
     g['players'][player] += hand_points
@@ -401,7 +412,8 @@ def score_crib(game, player):
     just_won = False
 
     g = json.loads(cache.get(game))
-    crib = Hand(g['crib'], g['cut_card'], is_crib=True)
+    crib_cards = [g['cards'].get(card) for card in g['crib']]
+    crib = Hand(crib_cards, g['cut_card'], is_crib=True)
     crib_points = crib.calculate_points()
     g['players'][player] += crib_points
     if g['players'][player] >= g['winning_score']:
@@ -424,7 +436,7 @@ def end_round(game, player):
         next_to_score_first = rotate_turn(next_to_deal, list(g['players'].keys()))
 
         g.update({
-            'state': 'DEAL',
+            'cards': CARDS,
             'crib': [],
             'cutter': next_cutter,
             'dealer': next_to_deal,
@@ -433,6 +445,7 @@ def end_round(game, player):
             'ok_with_next_round': [],
             'played_cards': {},
             'scored_hands': [],
+            'state': 'DEAL',
             'turn': next_to_deal,
         })
         for player in list(g['players'].keys()):

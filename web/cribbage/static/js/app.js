@@ -96,7 +96,7 @@ socket.on('deal_hands', function (msg, cb) {
 });
 
 socket.on('show_chosen_joker', function (msg, cb) {
-  showChosenJoker(msg.player, msg.card);
+  showChosenJoker(msg.player, msg.joker, msg.replacement);
 });
 
 
@@ -110,7 +110,7 @@ socket.on('deal_extra_crib_card', function (msg, cb) {
 
 // CUT
 socket.on('show_cut_card', function (msg, cb) {
-  revealCutCard(msg.cut_card, msg.turn);
+  revealCutCard(msg.cut_card, msg.dealer);
   renderCurrentTurnDisplay(msg.turn, 'PLAY');
 });
 
@@ -212,28 +212,31 @@ $('#action-button').click(function (event) {
   return false;
 });
 
+
 $('#start-game').click(function (event) {
   let winningScore = $('#winning-score').val();
   let jokers = $('#play-with-jokers').prop('checked');
-  console.log('jokers is ' + jokers);
   socket.emit('start_game', {game: gameName, winningScore: winningScore, jokers: jokers});
   $('#start-menu').modal('hide');
 });
 
 $('#select-joker').click(function (event) {
-  let joker = $('#select-joker').text();
-  socket.emit('select_joker', {game: gameName, player: nickname, joker: joker});
+  let joker = $('#' + nickname).find('[id^=joker]').prop('id');
+  console.log('replacing this joker: ' + joker);
+  let replacement = $('#select-joker').text();
+  socket.emit('select_joker', {game: gameName, player: nickname, joker: joker, replacement: replacement});
   $('.joker-rank-selection').removeClass('selected');
   $('.joker-suit-selection').removeClass('selected');
   $('#joker-selector').modal('hide');
-  if ($('.player-cards').find('img#joker').length > 1) {
+  if ($('.player-cards').find('img#joker').length > 0) {
     $('#joker-selector').modal('show');
   }
 });
 
 
 function updateScroll() {
-  $(".game-log").scrollTop($(".game-log")[0].scrollHeight);
+  let gameLog = $(".game-log");
+  gameLog.scrollTop(gameLog[0].scrollHeight);
 }
 
 $(document).ready(function() {
@@ -256,27 +259,5 @@ $(document).on('click', '.player-card', function(e) {
   } else {
     $(this).animate({'margin-top': '0px'}, 200);
     $('#action-button').prop('disabled', true);
-  }
-});
-
-$(document).on('click', '.joker-rank-selection', function(e) {
-  $('.joker-rank-selection').removeClass('selected');
-  $(this).toggleClass('selected');
-  if ($('.joker-suit-selection.selected').length === 1) {
-    let rank = $('.joker-rank-selection.selected').data('value');
-    let suit = $('.joker-suit-selection.selected').data('value');
-    $('#select-joker').text(rank + ' of ' + suit);
-    $('#select-joker').prop('disabled', false);
-  }
-});
-
-$(document).on('click', '.joker-suit-selection', function(e) {
-  $('.joker-suit-selection').removeClass('selected');
-  $(this).toggleClass('selected');
-  if ($('.joker-rank-selection.selected').length === 1) {
-    let rank = $('.joker-rank-selection.selected').data('value');
-    let suit = $('.joker-suit-selection.selected').data('value');
-    $('#select-joker').text(rank + ' of ' + suit);
-    $('#select-joker').prop('disabled', false);
   }
 });
