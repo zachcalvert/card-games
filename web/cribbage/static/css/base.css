@@ -339,3 +339,10 @@ div.card-selector-suits-row {
   border: 2px solid blue;
   border-radius: 10%;
 }
+
+.piggy {
+  background-repeat: no-repeat;
+  background-size: 50px 50px;
+  width: 50px;
+  height: 50px;
+}

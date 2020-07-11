@@ -1,3 +1,4 @@
+import os
 import random
 
 import giphy_client
@@ -56,6 +57,8 @@ def find_piggy(piggy_request):
     """
     Look for the blob with the given param. If can't find it, return a blob with text saying as much.
     """
-    if piggy_request in PIGS:
+    piggys = os.listdir('cribbage/static/img/pigs/')
+    piggy = '{}.gif'.format(piggy_request)
+    if piggy in piggys:
         return piggy_request
     return False

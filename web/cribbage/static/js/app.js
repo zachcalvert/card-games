@@ -81,10 +81,27 @@ socket.on('blob', function(msg, cb) {
     html: '<b>' + msg.nickname + '</b>' + ':'
   });
   let blob = $('<div/>', {
-    class: 'blob ' + msg.blob,
+    class: 'blob ',
     html: ''
   });
+  $(blob).css('background-image', 'url(/static/img/blobs/' + msg.blob + '.gif)');
   chatMessage.append(blob);
+  $('.game-log').append(chatMessage).html();
+  updateScroll();
+});
+
+socket.on('piggy', function(msg, cb) {
+  let chatMessage = $('<div/>', {
+    class: 'chat-message',
+    html: '<b>' + msg.nickname + '</b>' + ':'
+  });
+  let piggy = $('<div/>', {
+    class: 'piggy ',
+    html: ''
+  });
+  $(piggy).css('background-image', 'url(/static/img/pigs/' + msg.piggy + '.gif)');
+
+  chatMessage.append(piggy);
   $('.game-log').append(chatMessage).html();
   updateScroll();
 });
