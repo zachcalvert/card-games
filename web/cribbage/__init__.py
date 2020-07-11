@@ -124,6 +124,17 @@ def send_message(message):
             msg = "Heyo! Blobs I know about are: {}. <br />**Only you can see this message**".format(known_blobs)
             emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
         return
+    elif message['data'].startswith('/piggy '):
+        print('received piggy request')
+        _, piggy_request = message['data'].split('/piggy ')
+        found = cribby.find_piggy(piggy_request)
+        if found:
+            emit('piggy', {'nickname': message['nickname'], 'piggy': piggy_request}, room=message['game'])
+        else:
+            known_piggys = ', '.join(piggy for piggy in sorted(list(cribby.PIGS)))
+            msg = "Heyo! Piggys I know about are: {}. <br />**Only you can see this message**".format(known_piggys)
+            emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
+        return
     else:
         if message.get('private', '') == 'true':
             emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']})

@@ -50,3 +50,12 @@ def find_blob(blob_request):
         print('found the request blob: {}'.format(blob_request))
         return blob_request
     return False
+
+
+def find_piggy(piggy_request):
+    """
+    Look for the blob with the given param. If can't find it, return a blob with text saying as much.
+    """
+    if piggy_request in PIGS:
+        return piggy_request
+    return False
