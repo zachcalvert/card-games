@@ -127,11 +127,11 @@ def send_message(message):
     elif message['data'].startswith('/piggy '):
         print('received piggy request')
         _, piggy_request = message['data'].split('/piggy ')
-        found = cribby.find_piggy(piggy_request)
+        found, known_piggys = cribby.find_piggy(piggy_request)
         if found:
             emit('piggy', {'nickname': message['nickname'], 'piggy': piggy_request}, room=message['game'])
         else:
-            known_piggys = ', '.join(piggy for piggy in sorted(list(cribby.PIGS)))
+            known_piggys = ', '.join(piggy for piggy in sorted(known_piggys))
             msg = "Heyo! Piggys I know about are: {}. <br />**Only you can see this message**".format(known_piggys)
             emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
         return

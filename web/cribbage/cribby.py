@@ -57,8 +57,8 @@ def find_piggy(piggy_request):
     """
     Look for the blob with the given param. If can't find it, return a blob with text saying as much.
     """
-    piggys = os.listdir('cribbage/static/img/pigs/')
-    piggy = '{}.gif'.format(piggy_request)
-    if piggy in piggys:
-        return piggy_request
-    return False
+    piggy_gifs = os.listdir('cribbage/static/img/pigs/')
+    piggys = set([piggy_gif.strip('.gif') for piggy_gif in piggy_gifs])
+    if piggy_request in piggys:
+        return True, []
+    return False, piggys
