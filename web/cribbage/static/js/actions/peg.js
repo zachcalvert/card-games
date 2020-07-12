@@ -40,7 +40,6 @@ function moveCardFromHandToPlayArea(card, nickname) {
   handCard.removeClass('to-be-played').addClass('played');
   playPile.append(handCard);
 
-  console.log('num played cards is ' + playPile.children().length)
   switch  (playPile.children().length) {
     case 1:
       playPile.removeClass('col-2').addClass('col-4');

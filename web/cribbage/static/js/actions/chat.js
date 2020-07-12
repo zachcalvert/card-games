@@ -8,7 +8,6 @@ export function addMessage(type, nickname, contents) {
     class: type + '-message',
     html: '<b>' + nickname + ': </b>'
   });
-  console.log(message);
   message.append(contents);
   $('.game-log').append(message).html();
   updateScroll();

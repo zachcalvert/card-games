@@ -25,20 +25,14 @@ export function awardPoints(player, amount, reason) {
   });
 
   let totalPoints = current + amount;
-  console.log(player + ' has ' + totalPoints);
   let width = (totalPoints / winningScore * 100) + '%';
-  console.log(width);
   $('#' + player + '-player-progress-bar').css('width', width);
 }
 
 export function revealCrib(crib, dealer) {
-  console.log('crib is: ' + crib);
-  console.log('dealer is: ' + dealer);
-
   $('.card').remove();
 
   $.each(crib, function(index, cardId) {
-    console.log('card id is: ' + cardId);
     let card = $('<img/>', {
       class: 'crib-card',
       src: '/static/img/cards/' + cardId
