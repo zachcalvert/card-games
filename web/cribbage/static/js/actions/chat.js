@@ -4,9 +4,13 @@ function updateScroll() {
 }
 
 export function addMessage(type, nickname, contents) {
+  let text = '';
+  if (type !== 'points') {
+    text = '<b>' + nickname + ': </b>';
+  }
   let message = $('<div/>', {
     class: type + '-message',
-    html: '<b>' + nickname + ': </b>'
+    html: text
   });
   message.append(contents);
   $('.game-log').append(message).html();
