@@ -114,7 +114,7 @@ def send_message(message):
         gif = cribby.find_gif(search_term) or 'Whoopsie!'
         emit('gif', {'nickname': message['nickname'], 'gif': gif}, room=message['game'])
         return
-    elif message['data'].startswith('/'):
+    elif message['data'].startswith('/') and ' ' in message['data']:
         type, request = message['data'].strip('/').split(' ')
         if type in {'blob', 'piggy'}:
             found, known_animations = cribby.find_animation(type, request)
@@ -124,12 +124,12 @@ def send_message(message):
                 known = ', '.join(k for k in sorted(known_animations))
                 msg = "Heyo! {}s I know about are: {}. <br /><b>*Only you can see this message*</b>".format(type, known)
                 emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
-        return
+            return
+
+    if message.get('private', '') == 'true':
+        emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']})
     else:
-        if message.get('private', '') == 'true':
-            emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']})
-        else:
-            emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
+        emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
 
 
 @socketio.on('start_game', namespace='/game')
