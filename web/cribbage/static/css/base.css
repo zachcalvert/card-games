@@ -340,7 +340,7 @@ div.card-selector-suits-row {
   border-radius: 10%;
 }
 
-.piggy {
+.blob, .piggy {
   background-repeat: no-repeat;
   background-size: 50px 50px;
   width: 50px;

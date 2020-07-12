@@ -26,10 +26,6 @@ GREAT_HAND_RESPONSES = [
     'you go glenn coco!',
 ]
 
-BLOBS = {'hype', 'sigh', 'wink', 'bored', 'sad', 'gimme', 'rage', 'panic', 'smile', 'grimace', 'wat',
-         'dancer', 'party', 'cheers', 'conga', 'yay', 'mad', 'sweating', 'stare', 'goodnight', 'babyangel',
-         'nervous', 'nope', 'aww', 'kiss', 'dundundun', 'yep', 'wave'}
-
 
 def find_gif(search_term):
     try:
@@ -43,22 +39,8 @@ def find_gif(search_term):
     return gif.embed_url
 
 
-def find_blob(blob_request):
-    """
-    Look for the blob with the given param. If can't find it, return a blob with text saying as much.
-    """
-    if blob_request in BLOBS:
-        print('found the request blob: {}'.format(blob_request))
-        return blob_request
-    return False
-
-
-def find_piggy(piggy_request):
-    """
-    Look for the blob with the given param. If can't find it, return a blob with text saying as much.
-    """
-    piggy_gifs = os.listdir('cribbage/static/img/pigs/')
-    piggys = set([piggy_gif.strip('.gif') for piggy_gif in piggy_gifs])
-    if piggy_request in piggys:
+def find_animation(type, instance):
+    instances = set([instance.strip('.gif') for instance in os.listdir('cribbage/static/img/{}/'.format(type))])
+    if instance in instances:
         return True, []
-    return False, piggys
+    return False, instances
