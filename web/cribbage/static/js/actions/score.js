@@ -26,7 +26,7 @@ export function awardPoints(player, amount, reason) {
 
   let totalPoints = current + amount;
   let width = (totalPoints / winningScore * 100) + '%';
-  $('#' + player + '-player-progress-bar').css('width', width);
+  $('#' + player + '-player-progress-bar').css('width', width).text(totalPoints);
 }
 
 export function revealCrib(crib, dealer) {
