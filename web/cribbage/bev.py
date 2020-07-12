@@ -167,6 +167,20 @@ def get_card_object_from_text(text):
     return card_dict
 
 
+def card_text_from_id(card_id):
+    """
+    Return text representation of card
+    :param card_id:
+    :return:
+    """
+    print('ehrehhrehre')
+    if 'joker' in card_id:
+        return 'a joker'
+    else:
+        card = CARDS[card_id]
+        return 'the {} of {}'.format(card['rank'], card['suit'])
+
+
 def set_joker(game, joker, text):
     g = json.loads(cache.get(game))
 
