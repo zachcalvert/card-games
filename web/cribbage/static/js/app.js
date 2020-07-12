@@ -1,13 +1,12 @@
-import { announcePlayerJoin } from "./actions/join.js";
-import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
-
 import { addMessage } from "./actions/chat.js";
+import { revealCutCard, showCutJoker } from "./actions/cut.js";
 import { deal, showChosenJoker } from "./actions/deal.js";
 import { discard, animateDiscard } from "./actions/discard.js";
-import { revealCutCard, showCutJoker } from "./actions/cut.js";
+import { announcePlayerJoin } from "./actions/join.js";
+import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
 import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
-import { start, resetTable } from "./actions/start.js";
 import { awardPoints, clearTable, displayScoredHand, revealCrib, decorateWinner } from "./actions/score.js";
+import { start, resetTable } from "./actions/start.js";
 
 const namespace = '/game';
 const socket = io(namespace);
