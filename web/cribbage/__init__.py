@@ -199,18 +199,21 @@ def peg_round_action(msg):
             emit('invalid_card', {'card': msg['card_played']})
             return
 
+        card_text = bev.card_text_from_id(msg['card_played'])
+        emit('new_points_message', {'data': '{} played the {}'.format(msg['player'], card_text)}, room=msg['game'])
+
         just_won = bev.score_play(msg['game'], msg['player'], msg['card_played'])
         new_total = bev.record_play(msg['game'], msg['player'], msg['card_played'])
 
-        # swap out joker here?
         emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total},
              room=msg['game'])
+
         if just_won:
             return
 
     else:
         bev.record_pass(msg['game'], msg['player'])
-        emit('new_points_message', {'data': '{} passed.'.format(msg['player']), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_points_message', {'data': '{} passed.'.format(msg['player'])}, room=msg['game'])
 
     next_player, go_point_wins = bev.next_player(msg['game'])
     if go_point_wins:
