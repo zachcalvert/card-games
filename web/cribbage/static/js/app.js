@@ -1,5 +1,7 @@
 import { announcePlayerJoin } from "./actions/join.js";
 import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
+
+import { addMessage } from "./actions/chat.js";
 import { deal, showChosenJoker } from "./actions/deal.js";
 import { discard, animateDiscard } from "./actions/discard.js";
 import { revealCutCard, showCutJoker } from "./actions/cut.js";
@@ -37,73 +39,35 @@ socket.on('player_leave', function (msg, cb) {
 
 
 // send message
-$('form#send_message').submit(function(event) {
+$('#send_message').submit(function(event) {
   socket.emit('send_message', {game: gameName, nickname: nickname, data: $('#message-content').val()});
   $("#message-content").val("");
   return false;
 });
+
 socket.on('new_chat_message', function(msg, cb) {
-  let chatMessage = $('<div/>', {
-    class: 'chat-message',
-    html: '<b>' + msg.nickname + '</b>' + ': ' + msg.data
-  });
-  $('.game-log').append(chatMessage).html();
-  updateScroll();
+  addMessage('chat', msg.nickname, msg.data);
 });
 
 socket.on('new_points_message', function(msg, cb) {
-  let pointsMessage = $('<div/>', {
-    class: 'points-message',
-    html: msg.data
-  });
-  $('.game-log').append(pointsMessage).html();
-  updateScroll();
+  addMessage('points', msg.nickname, msg.data);
 });
-
 
 socket.on('gif', function(msg, cb) {
   let embeddedGif = $('<iframe/>', {
     class: 'embedded-gif',
     src: msg.gif
   });
-  let gifMessage = $('<div/>', {
-    class: 'gif-message',
-    html: '<b>' + msg.nickname + ': </b>'
-  });
-  gifMessage.append(embeddedGif);
-  $('.game-log').append(gifMessage).html();
-  updateScroll();
+  addMessage('gif', msg.nickname, embeddedGif);
 });
 
-socket.on('blob', function(msg, cb) {
-  let chatMessage = $('<div/>', {
-    class: 'chat-message',
-    html: '<b>' + msg.nickname + '</b>' + ':'
-  });
-  let blob = $('<div/>', {
-    class: 'blob ',
+socket.on('animation', function(msg, cb) {
+  let animation = $('<div/>', {
+    class: msg.type,
     html: ''
   });
-  $(blob).css('background-image', 'url(/static/img/blobs/' + msg.blob + '.gif)');
-  chatMessage.append(blob);
-  $('.game-log').append(chatMessage).html();
-  updateScroll();
-});
-
-socket.on('piggy', function(msg, cb) {
-  let chatMessage = $('<div/>', {
-    class: 'chat-message',
-    html: '<b>' + msg.nickname + '</b>' + ':'
-  });
-  let piggy = $('<div/>', {
-    class: 'piggy ',
-    html: ''
-  });
-  $(piggy).css('background-image', 'url(/static/img/pigs/' + msg.piggy + '.gif)');
-
-  chatMessage.append(piggy);
-  $('.game-log').append(chatMessage).html();
-  updateScroll();
+  $(animation).css('background-image', 'url(/static/img/' + msg.type + '/' + msg.instance + '.gif)');
+  addMessage('animation', msg.nickname, animation);
 });
 
 
@@ -282,12 +246,6 @@ $('#select-joker').click(function (event) {
     jokerModal.modal('show');
   }
 });
-
-
-function updateScroll() {
-  let gameLog = $(".game-log");
-  gameLog.scrollTop(gameLog[0].scrollHeight);
-}
 
 $(document).ready(function() {
   let welcomeMessage = "Welcome, " + nickname + '!';

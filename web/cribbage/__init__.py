@@ -108,32 +108,22 @@ def leave(message):
 
 @socketio.on('send_message', namespace='/game')
 def send_message(message):
+
     if message['data'].startswith('/gif '):
         _, search_term = message['data'].split('/gif ')
         gif = cribby.find_gif(search_term) or 'Whoopsie!'
         emit('gif', {'nickname': message['nickname'], 'gif': gif}, room=message['game'])
         return
-    elif message['data'].startswith('/blob '):
-        print('received blob request')
-        _, blob_request = message['data'].split('/blob ')
-        found = cribby.find_blob(blob_request)
-        if found:
-            emit('blob', {'nickname': message['nickname'], 'blob': blob_request}, room=message['game'])
-        else:
-            known_blobs = ', '.join(blob for blob in sorted(list(cribby.BLOBS)))
-            msg = "Heyo! Blobs I know about are: {}. <br />**Only you can see this message**".format(known_blobs)
-            emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
-        return
-    elif message['data'].startswith('/piggy '):
-        print('received piggy request')
-        _, piggy_request = message['data'].split('/piggy ')
-        found, known_piggys = cribby.find_piggy(piggy_request)
-        if found:
-            emit('piggy', {'nickname': message['nickname'], 'piggy': piggy_request}, room=message['game'])
-        else:
-            known_piggys = ', '.join(piggy for piggy in sorted(known_piggys))
-            msg = "Heyo! Piggys I know about are: {}. <br />**Only you can see this message**".format(known_piggys)
-            emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
+    elif message['data'].startswith('/'):
+        type, request = message['data'].strip('/').split(' ')
+        if type in {'blob', 'piggy'}:
+            found, known_animations = cribby.find_animation(type, request)
+            if found:
+                emit('animation', {'nickname': message['nickname'], 'type': type, 'instance': request}, room=message['game'])
+            else:
+                known = ', '.join(k for k in sorted(known_animations))
+                msg = "Heyo! {}s I know about are: {}. <br /><b>*Only you can see this message*</b>".format(type, known)
+                emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
         return
     else:
         if message.get('private', '') == 'true':
