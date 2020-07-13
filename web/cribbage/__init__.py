@@ -7,7 +7,6 @@ import os
 import random
 import redis
 
-
 from threading import Lock
 from flask import Flask, render_template, session, request, Markup, redirect, url_for, jsonify
 from flask_fontawesome import FontAwesome
