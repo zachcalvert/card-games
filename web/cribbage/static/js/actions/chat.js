@@ -9,8 +9,8 @@ export function addMessage(type, nickname, contents) {
     class: type + '-message message',
     html: text
   });
-  if (type === 'score') {
-    message.css({'color': '#2E8B57'});
+  if (nickname) {
+    message.append('<b>' + nickname + ': </b>');
   }
   message.append(contents);
   $('.game-log').append(message).html();
