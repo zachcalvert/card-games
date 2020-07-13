@@ -180,7 +180,6 @@ html, body {
 
 /*  MIDDLE ROW  */
 .middle-area {
-  height: 45%;
   text-align: center;
   align-items: center;
   padding: 10px 15px;
@@ -205,6 +204,10 @@ html, body {
   background: #E1C699;
   color: rgb(21, 32, 43);
   padding: 10px;
+}
+
+.peg-board-buffer {
+  display: none;
 }
 
 .player-track {

@@ -13,70 +13,70 @@
     <script type="module" src="/static/js/app.js"></script>
   </head>
   <body>
-      <div class="game row container justify-content-center h-100 bg-gradient-dark text-white">
-        <div class="game-play-container col-12">
-          <div class="opponents row-fluid d-flex justify-content-center">
-              {% for name, points in opponents.items() %}
-                <div id="{{ name }}" class="opponent rounded panel panel-default">
-                  <div class="panel-heading">
-                    <span class="player-nickname">{{ name }}</span>
-                    <span class="player-status"></span>
-                  </div>
-                  <div class="row opponent-play-area panel-body">
-                    <div id="{{ name }}-cards" class="player-cards col-12"></div>
-                  </div>
+    <div class="game row container justify-content-center h-100 bg-gradient-dark text-white">
+      <div class="game-play-container col-12">
+        <div class="opponents row-fluid d-flex justify-content-center">
+            {% for name, points in opponents.items() %}
+              <div id="{{ name }}" class="opponent rounded panel panel-default">
+                <div class="panel-heading">
+                  <span class="player-nickname">{{ name }}</span>
+                  <span class="player-status"></span>
                 </div>
-              {% endfor %}
-          </div>
-          <button id="leave-game" type="submit" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>
-
-
-            <div class="middle-area row">
-              <!--CHAT LOG-->
-              <div class="col-9 game-log-container rounded panel">
-                <div class="game-log-header">
-                  <span>chat</span>
-                </div>
-                <div class="game-log"></div>
-                <form id="send_message" class="input-group" method="POST" action='#'>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="fas fa-smile-o"></span>
-                    </div>
-                    <input type="text" class="form-control" name="message-content" id="message-content" placeholder="message">
-                    <div class="input-group-append">
-                      <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
-                        <span class="fas fa-paper-plane"></span>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-
-              <div class="peg-board-buffer col-1"></div>
-              <div class="peg-board col-8 rounded"></div>
-              <!--DECK, CUT CARD-->
-              <div class="deck-area col-3">
-                <div class="deck-container">
-                  <img id="deck" src="/static/img/cards/facedown.png" alt="This the deck">
+                <div class="row opponent-play-area panel-body">
+                  <div id="{{ name }}-cards" class="player-cards col-12"></div>
                 </div>
               </div>
+            {% endfor %}
+        </div>
+        <button id="leave-game" type="submit" class="btn btn-outline-danger"><i class="fa fa-times"></i></button>
+
+
+          <div class="middle-area row flex-grow-1">
+            <!--CHAT LOG-->
+            <div class="col-9 game-log-container rounded panel">
+              <div class="game-log-header">
+                <span>chat</span>
+              </div>
+              <div class="game-log"></div>
+              <form id="send_message" class="input-group" method="POST" action='#'>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="fas fa-smile-o"></span>
+                  </div>
+                  <input type="text" class="form-control" name="message-content" id="message-content" placeholder="message">
+                  <div class="input-group-append">
+                    <button id="send_message_button" class="btn btn-secondary btn-sm" type="submit">
+                      <span class="fas fa-paper-plane"></span>
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
 
-            <!--player area-->
-            <div id="{{ player_name }}" class="player rounded panel panel-default">
-              <div class="panel-heading">
-                <span class="player-nickname">{{ player_name }}</span>
-                <div class="action-button-container">
-                  <button id="action-button" type="button" class="btn btn-outline-dark">START</button>
-                </div>
-              </div>
-              <div class="row player-play-area panel-body">
-                <div id="{{ player_name }}-cards" class="player-cards h-100 col-12"></div>
+            <div class="peg-board-buffer col-1"></div>
+            <div class="peg-board col-8 rounded"></div>
+            <!--DECK, CUT CARD-->
+            <div class="deck-area col-3">
+              <div class="deck-container">
+                <img id="deck" src="/static/img/cards/facedown.png" alt="This the deck">
               </div>
             </div>
           </div>
-       </div>
+
+          <!--player area-->
+          <div id="{{ player_name }}" class="player rounded panel panel-default">
+            <div class="panel-heading">
+              <span class="player-nickname">{{ player_name }}</span>
+              <div class="action-button-container">
+                <button id="action-button" type="button" class="btn btn-outline-dark">START</button>
+              </div>
+            </div>
+            <div class="row player-play-area panel-body">
+              <div id="{{ player_name }}-cards" class="player-cards h-100 col-12"></div>
+            </div>
+          </div>
+        </div>
+     </div>
 
     {% include 'startModal.html' %}
     {% include 'jokerModal.html' %}
