@@ -161,7 +161,7 @@ html, body {
 
 /*  TOP ROW  */
 .opponents {
-  height: 25%;
+  height: 180px;
   align-items: center;
   justify-content: center;
 }
@@ -170,7 +170,7 @@ html, body {
   display: inline-block;
   border: 1px solid #37434D;
   height: 100%;
-  width: 70%;
+  width: 95%;
   max-width: 300px;
   margin: 0 10px;
   position: relative;
@@ -232,13 +232,10 @@ html, body {
 
 /*  BOTTOM ROW  */
 .player {
-  height: 30%;
+  height: 195px;
   margin: auto;
   width: 100%;
-}
-
-.player.desktop {
-  width: 70%;
+  max-width: 360px;
 }
 
 .player-nickname {
