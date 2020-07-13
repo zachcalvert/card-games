@@ -110,7 +110,7 @@ class Hand:
         return False
 
     def _has_nobs(self):
-        jacks = [card for card in self.cards if card["name"] == 'Jack']
+        jacks = [card for card in self.cards if card["name"] == 'jack']
         if jacks:
             potential_nobs = [jack["suit"] for jack in jacks]
             if self.cut_card["suit"] in potential_nobs:

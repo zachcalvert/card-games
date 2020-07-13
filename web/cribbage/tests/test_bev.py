@@ -550,7 +550,7 @@ class TestPlayScoring:
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         seven_of_clubs = 'c6f4900f82'
-        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        just_won, points, points_source = bev.score_play('test', 'kathy', seven_of_clubs)
         assert not just_won
         bev.record_play('test', 'kathy', seven_of_clubs)
         g = json.loads(fake_redis.get('test'))
@@ -590,7 +590,7 @@ class TestPlayScoring:
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         seven_of_clubs = 'c6f4900f82'
-        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        just_won, points, points_source = bev.score_play('test', 'kathy', seven_of_clubs)
         assert not just_won
         bev.record_play('test', 'kathy', seven_of_clubs)
         g = json.loads(fake_redis.get('test'))
@@ -627,7 +627,7 @@ class TestPlayScoring:
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         seven_of_clubs = 'c6f4900f82'
-        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        just_won, points, points_source = bev.score_play('test', 'kathy', seven_of_clubs)
         assert not just_won
         bev.record_play('test', 'kathy', seven_of_clubs)
         g = json.loads(fake_redis.get('test'))
@@ -664,7 +664,7 @@ class TestPlayScoring:
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         seven_of_clubs = 'c6f4900f82'
-        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        just_won, points, points_source = bev.score_play('test', 'kathy', seven_of_clubs)
         assert not just_won
         bev.record_play('test', 'kathy', seven_of_clubs)
         g = json.loads(fake_redis.get('test'))
@@ -701,7 +701,7 @@ class TestPlayScoring:
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         seven_of_clubs = 'c6f4900f82'
-        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        just_won, points, points_source = bev.score_play('test', 'kathy', seven_of_clubs)
         assert not just_won
         bev.record_play('test', 'kathy', seven_of_clubs)
         g = json.loads(fake_redis.get('test'))
@@ -741,7 +741,7 @@ class TestPlayScoring:
         fake_redis.set('test', json.dumps(game_dict))
         bev.cache = fake_redis
         seven_of_clubs = 'c6f4900f82'
-        just_won = bev.score_play('test', 'kathy', seven_of_clubs)
+        just_won, points, points_source = bev.score_play('test', 'kathy', seven_of_clubs)
         assert not just_won
         bev.record_play('test', 'kathy', seven_of_clubs)
         g = json.loads(fake_redis.get('test'))
