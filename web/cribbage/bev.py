@@ -178,7 +178,7 @@ def card_text_from_id(card_id):
         return 'a joker'
     else:
         card = CARDS[card_id]
-        return 'the {} of {}'.format(card['rank'], card['suit'])
+        return 'the {} of {}'.format(card['name'], card['suit'])
 
 
 def set_joker(game, joker, text):
@@ -256,6 +256,7 @@ def cut_deck(game):
 
 def score_play(game, player, card):
     from cribbage import award_points, clear_pegging_area
+    points_source = []
 
     just_won = False
     g = json.loads(cache.get(game))
@@ -269,34 +270,48 @@ def score_play(game, player, card):
             return True
         return False
 
+    if (g['pegging']['total'] + card_played['value']) == 15:
+        points += 2
+        points_source.append('fifteen two')
+
+    run_length = 0
     if g['pegging']['run']:   # Is there already a run going? If so, try to add to it
         ranks = sorted([rank for rank in g['pegging']['run']] + [card_played['rank']])
         run_is_continued = _is_run(ranks)
         g['pegging']['run'] = ranks if run_is_continued else []
-        points += len(g['pegging']['run'])
+        run_length = len(g['pegging']['run'])
+
     elif len(cards_on_table) >= 2:  # or maybe this card has started a new run
         ranks = sorted([card['rank'] for card in cards_on_table[:2]] + [card_played['rank']])
         g['pegging']['run'] = ranks if _is_run(ranks) else []
-        points += len(g['pegging']['run'])
+        run_length = len(g['pegging']['run'])
+
+    if run_length > 2:
+        points += run_length
+        points_source.append('run of {}'.format(run_length))
 
     ranks = [card['rank'] for card in cards_on_table]  # evaluate for pairs, threes, and fours
+    count = 0
     for count, rank in enumerate(ranks, 1):
         if card_played['rank'] == rank:
             points += count*2
         else:
             break
+    if count > 1:
+        d = {2: 'pair of', 3: 'three', 4: 'four'}
+        points_source.append('{} {}s'.format(d.get(count), card_played['name']))
 
-    if (g['pegging']['total'] + card_played['value']) in [15, 31]:
+    if (g['pegging']['total'] + card_played['value']) == 31:
         points += 2
+        points_source.append('31')
 
     if points > 0:
         g['players'][player] += points
         if g['players'][player] >= g['winning_score']:
             just_won = True
-        award_points(game, player, points, 'pegging', just_won)
 
     cache.set(game, json.dumps(g))
-    return just_won
+    return just_won, points, points_source
 
 
 def record_play(game, player, card):

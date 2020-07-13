@@ -74,7 +74,7 @@ def game_detail():
 
 def award_points(game, player, amount, reason, just_won):
     if amount > 0:
-        emit('new_points_message', {'data': '+{} for {} ({})'.format(amount, player, reason)}, room=game)
+        emit('points_scored_message', {'data': '<b>+{} for {}</b>  ({})'.format(amount, player, reason)}, room=game)
         emit('award_points', {'player': player, 'amount': amount, 'reason': 'pegging'}, room=game)
 
     if just_won:
@@ -199,15 +199,18 @@ def peg_round_action(msg):
             emit('invalid_card', {'card': msg['card_played']})
             return
 
-        card_text = bev.card_text_from_id(msg['card_played'])
-        emit('new_points_message', {'data': '{} played the {}'.format(msg['player'], card_text)}, room=msg['game'])
+        just_won, points_scored, points_source = bev.score_play(msg['game'], msg['player'], msg['card_played'])
 
-        just_won = bev.score_play(msg['game'], msg['player'], msg['card_played'])
         new_total = bev.record_play(msg['game'], msg['player'], msg['card_played'])
+        card_text = bev.card_text_from_id(msg['card_played'])
+        message = '{} played {}. <b>({})</b>'.format(msg['player'], card_text, new_total)
 
-        emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total},
-             room=msg['game'])
+        emit('new_points_message', {'data': message}, room=msg['game'])
+        emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played']}, room=msg['game'])
 
+        if points_scored > 0:
+            reason = ', '.join(ps for ps in sorted(points_source))
+            award_points(msg['game'], msg['player'], points_scored, reason, just_won)
         if just_won:
             return
 

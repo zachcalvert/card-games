@@ -21,9 +21,10 @@ ZERO_POINT_RESPONSES = [
 
 GREAT_HAND_RESPONSES = [
     'wow!',
-    'nice hand!',
+    'nice!',
     '👏👏👏',
     'you go glenn coco!',
+    'woop woop'
 ]
 
 

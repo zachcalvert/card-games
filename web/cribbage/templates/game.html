@@ -53,17 +53,14 @@
                 </form>
               </div>
 
-              <!--PLAY COUNTER, DECK, CUT CARD-->
+              <div class="peg-board-buffer col-1"></div>
+              <div class="peg-board col-8 rounded"></div>
+              <!--DECK, CUT CARD-->
               <div class="deck-area col-3">
-                <div class="count-container">
-                  <div class="count-text">count: </div>
-                  <div id="play-total"></div>
-                </div>
                 <div class="deck-container">
                   <img id="deck" src="/static/img/cards/facedown.png" alt="This the deck">
                 </div>
               </div>
-              <div class="peg-board col-9 rounded"></div>
             </div>
 
             <!--player area-->
@@ -94,6 +91,7 @@
         gamePlayContainer.removeClass('col-12').addClass('col-9');
         $('.game-log-header').show();
         $('.peg-board').show();
+        $('.peg-board-buffer').show();
         $('.player').addClass('desktop');
       }
 
@@ -106,6 +104,7 @@
         gamePlayContainer.removeClass('col-9').addClass('col-12');
         $('.game-log-header').hide();
         $('.peg-board').hide();
+        $('.peg-board-buffer').hide();
         $('.player').removeClass('desktop');
         $('.game-log').css('height', '80%');
       }

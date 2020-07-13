@@ -48,6 +48,11 @@ socket.on('new_chat_message', function(msg, cb) {
   addMessage('chat', msg.nickname, msg.data);
 });
 
+socket.on('points_scored_message', function(msg, cb) {
+  addMessage('points_scored', msg.nickname, msg.data);
+});
+
+// TODO: Rename!
 socket.on('new_points_message', function(msg, cb) {
   addMessage('points', msg.nickname, msg.data);
 });
@@ -97,7 +102,7 @@ socket.on('show_cut_card', function (msg, cb) {
   let isJoker = (msg.cut_card === 'joker1' || msg.cut_card === 'joker2');
   if (isJoker) {
     let message =  "The cut card is a joker! As dealer, " + msg.dealer + " gets to set it.";
-    socket.emit('send_message', {game: gameName, nickname: 'cribby', data: message}, room=msg['game']);
+    socket.emit('send_message', {game: gameName, nickname: 'cribby', data: message});
   }
   revealCutCard(msg.cut_card, msg.dealer, isJoker);
   renderCurrentTurnDisplay(msg.turn, 'PLAY');

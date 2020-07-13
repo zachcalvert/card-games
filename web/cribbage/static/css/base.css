@@ -194,25 +194,8 @@ html, body {
 }
 
 .deck-container {
-  height: 75%;
+  height: 100%;
   display: inline-flex;
-}
-
-.count-container {
-  height: 25%;
-  display: inline-flex;
-  margin: auto;
-}
-
-.count-text {
-  margin-top: auto;
-  display: none;
-}
-
-#play-total {
-  margin-left: 0.25em;
-  margin-top: auto;
-  font-size: 16px;
 }
 
 .peg-board {
@@ -221,6 +204,7 @@ html, body {
   border: 1px solid #37434D;
   background: #E1C699;
   color: rgb(21, 32, 43);
+  padding: 10px;
 }
 
 .player-track {
