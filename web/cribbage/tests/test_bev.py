@@ -761,3 +761,57 @@ class TestPlayScoring:
 
     def test_fifteen_two_and_three_of_a_kind(self):
         pass
+
+
+class TestResetGameDict:
+
+    def test_reset(self):
+        fake_redis = fakeredis.FakeRedis()
+        game_dict = {
+            'cards': CARDS,
+            'crib': ['04a70825ff', '5c6bdd4fee', '9aa045dd99', 'bd4b01946d'],
+            'cutter': 'brendon',
+            'dealer': 'jason',
+            'deck': ['d00bb3f3b7','64fe85d796','fc0f324620','276f33cf69','04f17d1351','f6571e162f','de1c863a7f',
+                     'a482167f2a','ce46b344a3','ae2caea4bb','4dfe41e461','597e4519ac','c88623fa16','e26d0bead3',
+                     'dd3749a1bc','83ef982410','4c8519af34','6d95c18472','b1fb3bec6f','c88523b677','32f7615119',
+                     'd7ca85cf5e','30e1ddb610','85ba715700','a6a3e792b4','1d5eb77128','110e6e5b19','d1c9fde8ef',
+                     '75e734d054','36493dcc05','e356ece3fc','95f92b2f0c','def8effef6','60575e1068','9eba093a9d',
+                     'a20b6dac2c','f696d1f2d3','fa0873dd7d','ff2de622d8','3698fe0420'],
+            'first_to_score': 'brendon',
+            'hand_size': 6,
+            'hands': {
+                'brendon': [],
+                'jason': []},
+            'jokers': True,
+            'name': 'homemovies',
+            'ok_with_next_round': ['brendon', 'jason'],
+            'pegging': {
+                'cards': ['4de6b73ab8', 'e4fc8b9004', '5e1e7e60ab', 'ace1293f8a', 'd3a2460e93', '56594b3880',
+                          '4f99bf15e5', 'c6f4900f82'],
+                'passed': [], 'run': [], 'total': 0
+            },
+            'play_again': [],
+            'played_cards': {'brendon': [],
+                             'jason': []},
+            'players': {'brendon': 12, 'jason': 11},
+            'scored_hands': ['brendon', 'jason'],
+            'state': 'SCORE',
+            'turn': 'jason',
+            'winning_score': 121}
+
+        fake_redis.set('homemovies', json.dumps(game_dict))
+        bev.cache = fake_redis
+
+        bev.reset_game_dict('homemovies')
+
+        expected = {
+            "jokers": True,
+            "name": 'homemovies',
+            'players': {'brendon': 0, 'jason': 0},
+            "state": "INIT",
+            "winning_score": 121,
+        }
+
+        g = json.loads(fake_redis.get('homemovies'))
+        assert g == expected
