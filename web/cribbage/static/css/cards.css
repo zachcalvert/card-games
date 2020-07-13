@@ -1,5 +1,5 @@
 .card {
-  height: 100px;
+  height: 120px;
   z-index: 1;
   display: inline;
   background: none;
@@ -32,8 +32,8 @@
 }
 
 .crib-card {
-  height: 100px;
-  margin: 0 -1em;
+  height: 120px;
+  margin: 0 -.5em;
 }
 
 @media only screen and (max-width: 650px) {
