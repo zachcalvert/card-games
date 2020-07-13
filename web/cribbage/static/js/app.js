@@ -134,6 +134,14 @@ socket.on('award_points', function (msg, cb) {
 
 socket.on('decorate_winner', function (msg, cb) {
   decorateWinner(msg.player);
+
+  $.ajax({
+    type : 'POST',
+    url : "/game_summary/",
+    data : {'game': gameName }
+  }).done(function( msg ) {
+    $('#game-summary').modal();
+  });
 });
 
 $('#action-button').click(function (event) {

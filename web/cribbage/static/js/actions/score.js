@@ -51,5 +51,5 @@ export function clearTable(next_dealer) {
 
 export function decorateWinner(winner) {
   let playerName = $('#' + winner).find('.player-nickname');
-  playerName.append('<span class="winner fas fa-crown"></span>')
+  playerName.append('<span class="winner fas fa-crown"></span>');
 }
