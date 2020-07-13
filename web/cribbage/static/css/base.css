@@ -207,6 +207,10 @@ html, body {
   padding: 10px;
 }
 
+.peg-board-buffer {
+  display: none;
+}
+
 .player-track {
   width: 100%;
   padding: 10px;
