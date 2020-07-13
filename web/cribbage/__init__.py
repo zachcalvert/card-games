@@ -74,12 +74,12 @@ def game_detail():
 
 def award_points(game, player, amount, reason, just_won):
     if amount > 0:
-        emit('points_scored_message', {'data': '<b>+{} for {}</b>  ({})'.format(amount, player, reason)}, room=game)
+        emit('new_message', {'type': 'score',  'data': '<b>+{} for {}</b>  ({})'.format(amount, player, reason)}, room=game)
         emit('award_points', {'player': player, 'amount': amount, 'reason': 'pegging'}, room=game)
 
     if just_won:
         emit('decorate_winner', {'player': player}, room=game)
-        emit('new_chat_message', {'data': '{} wins!'.format(player), 'nickname': 'cribby'}, room=game)
+        emit('new_message', {'type': 'chat', 'data': '{} wins!'.format(player), 'nickname': 'cribby'}, room=game)
         emit('send_turn', {'player': 'all', 'action': 'REMATCH'}, room=game)
         return True
     return False
@@ -123,22 +123,22 @@ def send_message(message):
             else:
                 known = ', '.join(k for k in sorted(known_animations))
                 msg = "Heyo! {}s I know about are: {}. <br /><b>*Only you can see this message*</b>".format(type, known)
-                emit('new_chat_message', {'nickname': 'cribby', 'data': msg})
+                emit('new_message', {'type': 'chat', 'nickname': 'cribby', 'data': msg})
             return
 
     if message.get('private', '') == 'true':
-        emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']})
+        emit('new_message', {'type': 'chat', 'data': message['data'], 'nickname': message['nickname']})
     else:
-        emit('new_chat_message', {'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
+        emit('new_message', {'type': 'chat', 'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
 
 
 @socketio.on('start_game', namespace='/game')
 def start_game(msg):
     dealer, players = bev.start_game(msg['game'], msg['winningScore'], msg['jokers'])
-    chat_message = "First to {} wins! It's {}'s crib.".format(msg['winningScore'], dealer)
+    message = "First to {} wins! It's {}'s crib.".format(msg['winningScore'], dealer)
     if msg['jokers']:
-        chat_message += " We're playing with jokers."
-    emit('new_chat_message', {'data': chat_message, 'nickname': 'cribby'}, room=msg['game'])
+        message += " We're playing with jokers."
+    emit('new_message', {'type': 'chat', 'data': message, 'nickname': 'cribby'}, room=msg['game'])
     emit('start_game', {'dealer': dealer, 'players': players, 'winningScore': msg['winningScore']}, room=msg['game'])
 
 
@@ -153,7 +153,7 @@ def deal_hands(msg):
 def select_joker_for_hand(msg):
     replacement, text = bev.set_joker(msg['game'], msg['joker'], msg['replacement'])
     emit('show_chosen_joker', {'player': msg['player'], 'joker': msg['joker'], 'replacement': replacement}, room=msg['game'])
-    emit('new_chat_message', {'data': "{} got a joker! They've made it a {}.".format(msg['player'], text),
+    emit('new_message', {'type': 'chat', 'data': "{} got a joker! They've made it a {}.".format(msg['player'], text),
                               'nickname': 'cribby'}, room=msg['game'])
 
 
@@ -161,7 +161,7 @@ def select_joker_for_hand(msg):
 def select_joker_for_cut(msg):
     replacement, text = bev.set_joker(msg['game'], msg['joker'], msg['replacement'])
     emit('show_cut_joker', {'player': msg['player'], 'replacement': replacement}, room=msg['game'])
-    emit('new_chat_message', {'data': "The cut card is the {}.".format(text),
+    emit('new_message', {'type': 'chat', 'data': "The cut card is the {}.".format(text),
                               'nickname': 'cribby'}, room=msg['game'])
 
 
@@ -205,7 +205,7 @@ def peg_round_action(msg):
         card_text = bev.card_text_from_id(msg['card_played'])
         message = '{} played {}. <b>({})</b>'.format(msg['player'], card_text, new_total)
 
-        emit('new_points_message', {'data': message}, room=msg['game'])
+        emit('new_message', {'type': 'action', 'data': message}, room=msg['game'])
         emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played']}, room=msg['game'])
 
         if points_scored > 0:
@@ -216,14 +216,14 @@ def peg_round_action(msg):
 
     else:
         bev.record_pass(msg['game'], msg['player'])
-        emit('new_points_message', {'data': '{} passed.'.format(msg['player'])}, room=msg['game'])
+        emit('new_message', {'type': 'action', 'data': '{} passed.'.format(msg['player'])}, room=msg['game'])
 
     next_player, go_point_wins = bev.next_player(msg['game'])
     if go_point_wins:
         return
     next_action = bev.get_player_action(msg['game'], next_player)
     if next_action == 'SCORE':
-        emit('new_chat_message', {'data': "Time to score everyone's hand! {} goes first.".format(next_player), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': "Time to score everyone's hand! {} goes first.".format(next_player), 'nickname': 'cribby'}, room=msg['game'])
 
     emit('send_turn', {'player': next_player, 'action': next_action}, room=msg['game'])
 
@@ -234,19 +234,19 @@ def score_hand(msg):
     emit('display_scored_hand', {'player': msg['nickname']}, room=msg['game'])
 
     if points == 0:
-        emit('new_points_message', {'data': "+0 for {} (from hand)".format(msg['nickname']), 'nickname': 'cribby'}, room=msg['game'])
-        emit('new_chat_message', {'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': "+0 for {} (from hand)".format(msg['nickname']), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
     elif points >= 11:
-        emit('new_chat_message', {'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
 
     if just_won:
         return
     elif next_to_score:
-        emit('new_chat_message', {'data': "Time to score {}'s hand..".format(next_to_score), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': "Time to score {}'s hand..".format(next_to_score), 'nickname': 'cribby'}, room=msg['game'])
         emit('send_turn', {'player': next_to_score, 'action': 'SCORE'}, room=msg['game'])
     else:
         dealer = bev.get_dealer(msg['game'])
-        emit('new_chat_message', {'data': "Time to score {}'s crib..".format(dealer), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': "Time to score {}'s crib..".format(dealer), 'nickname': 'cribby'}, room=msg['game'])
         emit('send_turn', {'player': dealer, 'action': 'CRIB'}, room=msg['game'])
 
 
@@ -258,10 +258,10 @@ def score_crib(msg):
     points, just_won = bev.score_crib(msg['game'], msg['nickname'])
 
     if points == 0:
-        emit('new_points_message', {'data': "+0 for {} (from crib)".format(dealer), 'nickname': 'cribby'}, room=msg['game'])
-        emit('new_chat_message', {'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'score', 'data': "+0 for {} (from crib)".format(dealer), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
     elif points >= 9:
-        emit('new_chat_message', {'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
 
     if just_won:
         return
@@ -276,7 +276,7 @@ def end_round(msg):
         dealer = bev.get_dealer(msg['game'])
         emit('clear_table', {'next_dealer': dealer}, room=msg['game'])
         message = "New round! It is now {}'s crib.".format(dealer)
-        emit('new_chat_message', {'data': message, 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': message, 'nickname': 'cribby'}, room=msg['game'])
         emit('send_turn', {'player': dealer, 'action': 'DEAL'}, room=msg['game'])
 
 
@@ -291,7 +291,7 @@ def play_again(msg):
         message = "First to {} wins! It's {}'s crib to start.".format(winning_score, dealer)
         if jokers:
             message += " We're playing with jokers."
-        emit('new_chat_message', {'data': message, 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': message, 'nickname': 'cribby'}, room=msg['game'])
 
 
 if __name__ == '__main__':

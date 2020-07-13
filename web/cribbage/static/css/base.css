@@ -137,14 +137,17 @@ html, body {
   display: block;
 }
 
-.points-message {
-  color: #C0C0C0;
-  font-size: 12px;
+.message {
   padding: 2px 0;
+  color: gainsboro;
 }
 
-.chat-message {
-  padding: 2px 0;
+.action-message {
+  color: #C0C0C0;
+}
+
+.score-message {
+  color: #2E8B57;
 }
 
 .gif-message {

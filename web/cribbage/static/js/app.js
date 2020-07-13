@@ -44,17 +44,8 @@ $('#send_message').submit(function(event) {
   return false;
 });
 
-socket.on('new_chat_message', function(msg, cb) {
-  addMessage('chat', msg.nickname, msg.data);
-});
-
-socket.on('points_scored_message', function(msg, cb) {
-  addMessage('points_scored', msg.nickname, msg.data);
-});
-
-// TODO: Rename!
-socket.on('new_points_message', function(msg, cb) {
-  addMessage('points', msg.nickname, msg.data);
+socket.on('new_message', function(msg, cb) {
+  addMessage(msg.type, msg.nickname, msg.data);
 });
 
 socket.on('gif', function(msg, cb) {
