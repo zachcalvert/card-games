@@ -5,10 +5,8 @@ export function renderCurrentTurnDisplay(player, action) {
   playerStatuses.find('button.btn-outline-warning').remove();
   if (player === 'all') {
     actionButton.prop('disabled', false);
-  }
-  else {
+  } else {
     actionButton.prop('disabled', true);
-
     // enable current turn display for player
     if ((action === 'PASS' || action === 'PLAY')) {
       $('#' + player).find(".player-status").append('<button class="btn btn-outline-warning btn-sm disabled">TURN</button>');
@@ -93,8 +91,4 @@ export function clearPeggingArea() {
 
 export function invalidCard(card) {
   $('#' + card).parent().toggleClass('selected');
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
 }
