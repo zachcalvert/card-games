@@ -8,16 +8,12 @@ from cribbage.cards import CARDS
 
 class TestStartGame:
 
-    def test_start_with_two_players(self):
+    def test_start_with_two_players(self, two_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'name': 'cheers',
-            'state': 'INIT',
-            'players': {'sam': 0, 'diane': 0}
-        }
-        fake_redis.set('cheers', json.dumps(game_dict))
+        fake_redis.set('cheers', json.dumps(two_player_game_unstarted))
         bev.cache = fake_redis
         bev.start_game('cheers')
+
         g = json.loads(fake_redis.get('cheers'))
         assert g['state'] == 'DEAL'
         assert g['hand_size'] == 6
@@ -27,20 +23,12 @@ class TestStartGame:
         assert g['winning_score'] == 121
         assert not g['jokers']
 
-    def test_start_with_three_players(self):
+    def test_start_with_three_players(self, three_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'name': 'cheers',
-            'state': 'INIT',
-            'players': {
-                'sam': 0,
-                'diane': 0,
-                'norm': 0
-            }
-        }
-        fake_redis.set('cheers', json.dumps(game_dict))
+        fake_redis.set('cheers', json.dumps(three_player_game_unstarted))
         bev.cache = fake_redis
         bev.start_game('cheers')
+
         g = json.loads(fake_redis.get('cheers'))
         assert g['state'] == 'DEAL'
         assert g['hand_size'] == 5
@@ -51,16 +39,12 @@ class TestStartGame:
         assert g['winning_score'] == 121
         assert not g['jokers']
 
-    def test_start_with_jokers(self):
+    def test_start_with_jokers(self, two_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'name': 'cheers',
-            'state': 'INIT',
-            'players': {'sam': 0, 'diane': 0}
-        }
-        fake_redis.set('cheers', json.dumps(game_dict))
+        fake_redis.set('cheers', json.dumps(two_player_game_unstarted))
         bev.cache = fake_redis
         bev.start_game('cheers', jokers=True)
+
         g = json.loads(fake_redis.get('cheers'))
         assert g['state'] == 'DEAL'
         assert g['hand_size'] == 6
@@ -70,16 +54,12 @@ class TestStartGame:
         assert g['winning_score'] == 121
         assert g['jokers']
 
-    def test_start_shorter_game(self):
+    def test_start_shorter_game(self, two_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'name': 'cheers',
-            'state': 'INIT',
-            'players': {'sam': 0, 'diane': 0}
-        }
-        fake_redis.set('cheers', json.dumps(game_dict))
+        fake_redis.set('cheers', json.dumps(two_player_game_unstarted))
         bev.cache = fake_redis
         bev.start_game('cheers', winning_score=60)
+
         g = json.loads(fake_redis.get('cheers'))
         assert g['state'] == 'DEAL'
         assert g['hand_size'] == 6
@@ -89,43 +69,28 @@ class TestStartGame:
         assert g['winning_score'] == 60
         assert not g['jokers']
 
+
 class TestDeal:
 
-    def test_deal_unique_cards(self):
+    def test_deal_unique_cards(self, three_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'name': 'cheers',
-            'state': 'DEAL',
-            'players': {
-                'sam': 0,
-                'diane': 0,
-                'norm': 0
-            }
-        }
-        fake_redis.set('cheers', json.dumps(game_dict))
+        fake_redis.set('cheers', json.dumps(three_player_game_unstarted))
         bev.cache = fake_redis
         bev.start_game('cheers')
         bev.deal_hands('cheers')
+
         g = json.loads(fake_redis.get('cheers'))
         assert g['state'] == 'DISCARD'
-        for player in game_dict['players'].keys():
+        for player in three_player_game_unstarted['players'].keys():
             assert player in g['hands'].keys()
             assert len(g['hands'][player]) == g['hand_size']
 
 
 class TestDiscard:
 
-    def test_first_discard(self):
+    def test_first_discard(self, two_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'name': 'cheers',
-            'state': 'DEAL',
-            'players': {
-                'sam': 0,
-                'diane': 0
-            }
-        }
-        fake_redis.set('cheers', json.dumps(game_dict))
+        fake_redis.set('cheers', json.dumps(two_player_game_unstarted))
         bev.cache = fake_redis
         bev.start_game('cheers')
         bev.deal_hands('cheers')
@@ -136,17 +101,9 @@ class TestDiscard:
         assert not all_done
         assert g['state'] == 'DISCARD'
 
-    def test_first_to_be_done_discarding(self):
+    def test_first_to_be_done_discarding(self, two_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'name': 'cheers',
-            'state': 'DEAL',
-            'players': {
-                'sam': 0,
-                'diane': 0
-            }
-        }
-        fake_redis.set('cheers', json.dumps(game_dict))
+        fake_redis.set('cheers', json.dumps(two_player_game_unstarted))
         bev.cache = fake_redis
         bev.start_game('cheers')
         bev.deal_hands('cheers')
@@ -158,17 +115,9 @@ class TestDiscard:
         assert not all_done
         assert g['state'] == 'DISCARD'
 
-    def test_all_have_discarded(self):
+    def test_all_have_discarded(self, two_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'name': 'cheers',
-            'state': 'DEAL',
-            'players': {
-                'sam': 0,
-                'diane': 0
-            }
-        }
-        fake_redis.set('cheers', json.dumps(game_dict))
+        fake_redis.set('cheers', json.dumps(two_player_game_unstarted))
         bev.cache = fake_redis
         bev.start_game('cheers')
         bev.deal_hands('cheers')
@@ -188,34 +137,9 @@ class TestDiscard:
 
 class TestCut:
 
-    def test_cut(self):
+    def test_cut(self, two_player_game_fully_dealt):
         fake_redis = fakeredis.FakeRedis()
-        game_dict = {
-            'cards': CARDS,
-            'crib': ['04a70825ff', '5c6bdd4fee', '9aa045dd99', 'bd4b01946d'],
-            'cutter': 'brendon',
-            'dealer': 'jason',
-            'deck': ['d00bb3f3b7','64fe85d796','fc0f324620','276f33cf69','04f17d1351','f6571e162f','de1c863a7f',
-                     'a482167f2a','ce46b344a3','ae2caea4bb','4dfe41e461','597e4519ac','c88623fa16','e26d0bead3',
-                     'dd3749a1bc','83ef982410','4c8519af34','6d95c18472','b1fb3bec6f','c88523b677','32f7615119',
-                     'd7ca85cf5e','30e1ddb610','85ba715700','a6a3e792b4','1d5eb77128','110e6e5b19','d1c9fde8ef',
-                     '75e734d054','36493dcc05','e356ece3fc','95f92b2f0c','def8effef6','60575e1068','9eba093a9d',
-                     'a20b6dac2c','f696d1f2d3','fa0873dd7d','ff2de622d8','3698fe0420'],
-            'first_to_score': 'brendon',
-            'hand_size': 6,
-            'hands': {
-                'brendon': ['4de6b73ab8', 'e4fc8b9004', '5e1e7e60ab', 'ace1293f8a'],
-                'jason': ['d3a2460e93', '56594b3880', '4f99bf15e5', 'c6f4900f82']},
-            'name': 'homemovies',
-            'ok_with_next_round': [],
-            'pegging': {'cards': [], 'passed': [], 'run': [], 'total': 0},
-            'play_again': [],
-            'played_cards': {'brendon': [], 'jason': []},
-            'players': {'brendon': 0, 'jason': 0},
-            'scored_hands': [],
-            'state': 'CUT',
-            'turn': 'jason'}
-        fake_redis.set('homemovies', json.dumps(game_dict))
+        fake_redis.set('homemovies', json.dumps(two_player_game_fully_dealt))
         bev.cache = fake_redis
 
         bev.cut_deck('homemovies')
