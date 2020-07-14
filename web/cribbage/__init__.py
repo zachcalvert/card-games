@@ -118,7 +118,7 @@ def send_message(message):
         return
     elif message['data'].startswith('/') and ' ' in message['data']:
         type, request = message['data'].strip('/').split(' ')
-        if type in {'blob', 'piggy'}:
+        if type in {'blob', 'piggy', 'meow'}:
             found, known_animations = cribby.find_animation(type, request)
             if found:
                 emit('animation', {'nickname': message['nickname'], 'type': type, 'instance': request}, room=message['game'])
