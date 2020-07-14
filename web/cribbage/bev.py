@@ -217,18 +217,16 @@ def cut_deck(game):
 
     if g['cut_card'] in ['56594b3880', '95f92b2f0c', '1d5eb77128', '110e6e5b19']:
         g['players'][g['dealer']] += 2
-        if g['players'][g['dealer']] >= g['winning_score']:
-            just_won = True
         just_won = award_points(game, g['dealer'], 2, 'cutting a jack', just_won)
 
     g['turn'] = g['first_to_score']
     cache.set(game, json.dumps(g))
 
-    return g['cut_card'], g['turn'], g['dealer']
+    return g['cut_card'], g['turn'], g['dealer'], just_won
 
 
 def score_play(game, player, card):
-    from cribbage import award_points, clear_pegging_area
+    from cribbage import award_points
     points_source = []
 
     just_won = False
@@ -333,7 +331,7 @@ def next_player_who_has_cards(players_to_check_in_order, hands):
 
 
 def next_player(game):
-    from cribbage import award_points, clear_pegging_area
+    from cribbage import award_points
 
     just_won = False
     g = json.loads(cache.get(game))

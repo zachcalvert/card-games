@@ -4,7 +4,7 @@ import { deal, showChosenJoker } from "./actions/deal.js";
 import { discard, animateDiscard } from "./actions/discard.js";
 import { announcePlayerJoin } from "./actions/join.js";
 import { announcePlayerLeave, clearSessionData } from "./actions/leave.js";
-import { peg, renderCurrentTurnDisplay, clearPeggingArea, invalidCard } from "./actions/peg.js";
+import { peg, renderCurrentTurnDisplay, invalidCard } from "./actions/peg.js";
 import { awardPoints, clearTable, displayScoredHand, revealCrib, decorateWinner } from "./actions/score.js";
 import { start, resetTable } from "./actions/start.js";
 
@@ -114,10 +114,6 @@ socket.on('send_turn', function(msg, cb) {
 
 socket.on('display_scored_hand', function(msg, cb) {
   displayScoredHand(msg.player);
-});
-
-socket.on('clear_pegging_area', function (msg, cb) {
-  clearPeggingArea();
 });
 
 socket.on('reveal_crib', function (msg, cb) {

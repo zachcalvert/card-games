@@ -89,10 +89,6 @@ def deal_extra_crib_card(game, card):
     emit('deal_extra_crib_card', {'card': card}, room=game)
 
 
-def clear_pegging_area(game):
-    emit('clear_pegging_area', room=game)
-
-
 @socketio.on('join', namespace='/game')
 def join(message):
     join_room(message['game'])
@@ -178,8 +174,10 @@ def discard(msg):
 
 @socketio.on('cut_deck', namespace='/game')
 def cut_deck(msg):
-    cut_card, turn, dealer = bev.cut_deck(msg['game'])
+    cut_card, turn, dealer, just_won = bev.cut_deck(msg['game'])
     emit('show_cut_card', {"cut_card": cut_card, 'turn': turn, 'dealer': dealer}, room=msg['game'])
+    if just_won:
+        return
 
 
 @socketio.on('peg_round_action', namespace='/game')

@@ -85,10 +85,6 @@ export function peg(msg) {
   updateRunningTotal(msg.new_total);
 }
 
-export function clearPeggingArea() {
-  $('#play-total').html(0);
-}
-
 export function invalidCard(card) {
   $('#' + card).parent().toggleClass('selected');
 }
