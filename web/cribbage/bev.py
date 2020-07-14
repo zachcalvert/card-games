@@ -14,7 +14,7 @@ import more_itertools as mit
 
 from cribbage.cards import CARDS
 from cribbage.hand import Hand
-from cribbage.utils import rotate_turn,rotate_reverse, play_or_pass
+from cribbage.utils import rotate_turn,rotate_reverse, play_or_pass, card_object_from_text
 
 redis_host = os.environ.get('REDISHOST', 'localhost')
 cache = redis.StrictRedis(host=redis_host, port=6379)
@@ -154,38 +154,11 @@ def deal_hands(game):
     return g['hands']
 
 
-def get_card_object_from_text(text):
-    """
-    Expects text in the form: 'Ace of diamonds', 'Ten of clubs', 'Queen of spades'
-
-    :return: card_dict of the corresponding card
-    """
-    # find the requested card in CARDS
-    rank, suit = text.split(' of ')
-    suits_of_that_rank = {k: v for k, v in CARDS.items() if v['name'] == rank}
-    card_dict = {k: v for k, v in suits_of_that_rank.items() if v['suit'] == suit}
-    return card_dict
-
-
-def card_text_from_id(card_id):
-    """
-    Return text representation of card
-    :param card_id:
-    :return:
-    """
-    print('ehrehhrehre')
-    if 'joker' in card_id:
-        return 'a joker'
-    else:
-        card = CARDS[card_id]
-        return 'the {} of {}'.format(card['name'], card['suit'])
-
-
 def set_joker(game, joker, text):
     g = json.loads(cache.get(game))
 
     # get the requested replacement
-    card_dict = get_card_object_from_text(text)
+    card_dict = card_object_from_text(text)
     card_id = list(card_dict.keys())[0]
 
     # copy the contents of that card's values into this joker's entry
@@ -465,7 +438,9 @@ def score_crib(game, player):
     g['players'][player] += crib_points
     if g['players'][player] >= g['winning_score']:
         just_won = True
+
     award_points(game, player, crib_points, 'from crib', just_won)
+
     cache.set(game, json.dumps(g))
     return crib_points, just_won
 

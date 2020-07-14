@@ -15,7 +15,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, ro
 
 from cribbage import bev
 from cribbage import cribby
-from cribbage.utils import rotate_turn, play_or_pass
+from cribbage.utils import rotate_turn, play_or_pass, card_text_from_id
 
 async_mode = None
 
@@ -202,7 +202,7 @@ def peg_round_action(msg):
         just_won, points_scored, points_source = bev.score_play(msg['game'], msg['player'], msg['card_played'])
 
         new_total = bev.record_play(msg['game'], msg['player'], msg['card_played'])
-        card_text = bev.card_text_from_id(msg['card_played'])
+        card_text = card_text_from_id(msg['card_played'])
         message = '{} played {}. <b>({})</b>'.format(msg['player'], card_text, new_total)
 
         emit('new_points_message', {'data': message}, room=msg['game'])
