@@ -5,15 +5,12 @@ function updateScroll() {
 
 export function addMessage(type, nickname, contents) {
   let text = '';
-  if ((type !== 'points') && (type !== 'points_scored')) {
-    text = '<b style="color: gainsboro">' + nickname + ': </b>';
-  }
   let message = $('<div/>', {
-    class: type + '-message',
+    class: type + '-message message',
     html: text
   });
-  if (type === 'points_scored') {
-    message.css({'color': '#2E8B57'});
+  if (nickname) {
+    message.append('<b>' + nickname + ': </b>');
   }
   message.append(contents);
   $('.game-log').append(message).html();
