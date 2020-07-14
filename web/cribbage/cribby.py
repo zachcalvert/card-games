@@ -24,7 +24,7 @@ GREAT_HAND_RESPONSES = [
     'nice!',
     '👏👏👏',
     'you go glenn coco!',
-    'woop woop'
+    'woop woop',
 ]
 
 
@@ -41,7 +41,8 @@ def find_gif(search_term):
 
 
 def find_animation(type, instance):
-    instances = set([instance.strip('.gif') for instance in os.listdir('cribbage/static/img/{}/'.format(type))])
+    # slice off the '.gif'
+    instances = set([instance[:-4] for instance in os.listdir('cribbage/static/img/{}/'.format(type))])
     if instance in instances:
         return True, []
     return False, instances

@@ -58,7 +58,7 @@ def game_detail():
         if game['state'] != 'INIT' and player not in game['players'].keys():
             return redirect(url_for('index', reason='already-exists'))
 
-        if len(game['players']) >= 3:
+        if len(game['players']) >= 4:
             return redirect(url_for('index', reason='full-game'))
 
         if player not in game["players"]:
