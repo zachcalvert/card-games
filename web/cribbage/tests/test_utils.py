@@ -95,6 +95,7 @@ class TestGetCardTextFromId:
         expected = 'the ace of hearts'
         assert card_text_from_id('bd4b01946d') == expected
 
-    def test_ace_of_hearts(self):
+    def test_jokers(self):
         expected = 'a joker'
-        assert card_text_from_id('joker2') == expected
+        for joker in ['joker1', 'joker2']:
+            assert card_text_from_id(joker) == expected
