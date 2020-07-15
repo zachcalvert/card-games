@@ -57,10 +57,11 @@ export function resetTable() {
   $('.cut-card').remove();
   $('.scoreboard').remove();
   $('.winner').remove();
-  $('#play-total').text('');
   $('#deck').show();
   $('.peg-board').children().remove();
   $('.player-points').remove();
+  $('.opponent').show();
+  $('.game-summary').hide();
 
   if ($('play-pile')) {
     $('.play-pile').remove();

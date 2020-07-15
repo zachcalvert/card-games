@@ -72,6 +72,13 @@ def game_detail():
     return redirect(url_for('index'))
 
 
+@app.route('/game_summary/', methods=['POST'])
+def game_summary():
+    game = request.form['game']
+    summary = bev.get_game_summary(game)
+    return summary
+
+
 def award_points(game, player, amount, reason, just_won):
     if amount > 0:
         emit('new_message', {'type': 'score',  'data': '<b>+{} for {}</b>  ({})'.format(amount, player, reason)}, room=game)
