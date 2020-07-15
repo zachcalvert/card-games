@@ -1,7 +1,6 @@
 """
 Beverley manages the state of the game and all the cache interactions.
 """
-
 import json
 import logging
 import os
