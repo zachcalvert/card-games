@@ -73,7 +73,7 @@ def game_detail():
 
 
 @app.route('/game_summary/', methods=['POST'])
-def test():
+def game_summary():
     game = request.form['game']
     summary = bev.get_game_summary(game)
     return summary
