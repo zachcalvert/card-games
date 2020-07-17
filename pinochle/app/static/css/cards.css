@@ -4,7 +4,7 @@
     display: inline;
     background: none;
     border: none;
-    margin: 0 -15px;
+    margin: 0 -25px;
 }
 .card.selected {
   z-index: 2;
