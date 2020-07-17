@@ -17,6 +17,7 @@
     <div class="box">
 
       <div class="row content">
+
         <div class="col-3 game-log-container rounded panel">
           <div class="panel-header">
             <span>chat</span>
@@ -36,10 +37,12 @@
             </div>
           </form>
         </div>
+
         <div class="play-area-container col-9"></div>
+
       </div>
 
-      <div class="footer player-container rounded panel">
+      <div class="player-container footer rounded panel">
         <div class="panel-header">
           <span class="player-nickname">{{ player_name }}</span>
           <div class="action-button-container">
@@ -50,6 +53,7 @@
           <div id="{{ player_name }}-cards" class="player-cards"></div>
         </div>
       </div>
+
     </div>
 
     {% include 'startModal.html' %}

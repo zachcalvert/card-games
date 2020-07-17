@@ -1,10 +1,10 @@
 .card {
-    height: 150px;
+    width: 15%;
     z-index: 1;
     display: inline;
     background: none;
     border: none;
-    margin: 0 -25px;
+    margin: 0 -4%;
 }
 .card.selected {
   z-index: 2;
