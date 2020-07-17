@@ -1,15 +1,28 @@
 version: '3.7'
 
 services:
-  web:
-    build: ./web
+  cribbage:
+    build: ./cribbage
     volumes:
-      - ./web/:/code
+      - ./cribbage/:/code
     ports:
       - 5000:5000
     env_file:
-      - env.dev
+      - cribbage.dev
     depends_on:
       - redis-master
   redis-master:
+    image: redis
+
+  pinochle:
+    build: ./pinochle
+    volumes:
+      - ./pinochle/:/code
+    ports:
+      - 5001:5001
+    env_file:
+      - pinochle.dev
+    depends_on:
+      - pinochle-redis
+  pinochle-redis:
     image: redis
