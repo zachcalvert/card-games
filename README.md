@@ -1,10 +1,11 @@
-## A multiplayer cribbage app built with flask-socketio and redis
+## Real-time, multiplayer card games
 
-### To run the cribbage app locally:
+### To run the card-games app locally:
 * docker-compose build
 * docker-compose up
-* App runs at http://localhost:5000
+* Cribbage runs at http://localhost:5000
+* Pinochle runs at http://localhost:5001
 
 ### To run the tests
-* docker-compose exec -T web coverage run -m  pytest
-* docker-compose exec -T web coverage report
+* docker-compose exec -T cribbage coverage run -m  pytest
+* docker-compose exec -T cribbage coverage report
