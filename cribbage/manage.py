@@ -1,9 +1,9 @@
 from flask.cli import FlaskGroup
 
-from cribbage import app
+from app import cribbage
 
 
-cli = FlaskGroup(app)
+cli = FlaskGroup(cribbage)
 
 
 @cli.command("populate_redis")

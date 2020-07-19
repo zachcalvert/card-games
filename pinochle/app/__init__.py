@@ -95,7 +95,13 @@ def send_message(message):
 
 @socketio.on('start_game', namespace='/game')
 def start_game(msg):
-    dealer = frank.start_game(msg['game'])
+    dealer, teams = frank.start_game(msg['game'])
+    message = "It's "
+    for team in teams:
+        p = " and ".join(g['teams'][team]['players'])
+        message.append(p)
+        message.append(" on team ".format())
+
     emit('new_message', {'type': 'chat', 'data': 'Here we go!', 'nickname': 'cribby'}, room=msg['game'])
     emit('start_game', {'dealer': dealer}, room=msg['game'])
 

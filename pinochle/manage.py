@@ -1,9 +1,9 @@
 from flask.cli import FlaskGroup
 
-from pinochle import app
+from app import pinochle
 
 
-cli = FlaskGroup(app)
+cli = FlaskGroup(pinochle)
 
 
 @cli.command("populate_redis")
