@@ -1,5 +1,5 @@
-from cribbage.cards import CARDS
-from cribbage.hand import Hand
+from app.cards import CARDS
+from app.hand import Hand
 
 
 class TestHand:

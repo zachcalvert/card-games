@@ -1,5 +1,7 @@
 import pytest
 
+from app.cards import CARDS
+
 
 @pytest.fixture(scope="module")
 def two_player_game_unstarted():

@@ -2,11 +2,11 @@ import fakeredis
 import json
 import mock
 
-from cribbage import bev
-from cribbage.cards import CARDS
+from app import bev
+from app.cards import CARDS
 
 
-class TestStartGame(RedisTestCase):
+class TestStartGame:
 
     def test_start_with_two_players(self, two_player_game_unstarted):
         fake_redis = fakeredis.FakeRedis()
@@ -239,6 +239,17 @@ class TestNextPlayer:
                 'tom': 0,
                 'kathy': 0
             },
+            'scoring_stats':
+                {'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
+            },
             'state': 'PLAY',
             'turn': 'kathy',
             'winning_score': 121,
@@ -252,7 +263,7 @@ class TestNextPlayer:
         assert g['pegging']['total'] == 30
         assert bev.get_player_action('test', g['turn']) == 'PASS'
 
-    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=True))
+    @mock.patch('app.award_points', mock.MagicMock(return_value=True))
     def test_everyone_has_passed_and_tom_still_has_cards(self):
         fake_redis = fakeredis.FakeRedis()
         game_dict = {
@@ -267,6 +278,17 @@ class TestNextPlayer:
             'players': {
                 'tom': 0,
                 'kathy': 0
+            },
+            'scoring_stats':
+                {'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
             },
             'state': 'PLAY',
             'turn': 'kathy',
@@ -409,7 +431,7 @@ class TestNextPlayer:
         assert g['state'] == 'SCORE'
         assert g['turn'] == 'tom'
 
-    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=True))
+    @mock.patch('app.award_points', mock.MagicMock(return_value=True))
     def test_no_one_has_cards_left(self):
         """
         Kathy just hit 24, and everyone is out of cards
@@ -431,6 +453,17 @@ class TestNextPlayer:
                 'tom': 0,
                 'kathy': 2
             },
+            'scoring_stats':
+                {'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
+            },
             'turn': 'kathy',
             'winning_score': 121,
         }
@@ -446,7 +479,7 @@ class TestNextPlayer:
 
 class TestPlayScoring:
 
-    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    @mock.patch('app.award_points', mock.MagicMock(return_value=False))
     def test_fifteen_two(self):
         fake_redis = fakeredis.FakeRedis()
         game_dict = {
@@ -466,6 +499,17 @@ class TestPlayScoring:
                 'kathy': [],
                 'tom': []
             },
+            'scoring_stats':
+                {'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
+            },
             'state': 'PLAY',
             'turn': 'kathy',
             'winning_score': 121,
@@ -483,7 +527,7 @@ class TestPlayScoring:
         assert set(g['pegging']['cards']) == set(['4de6b73ab8', 'c6f4900f82'])
         assert g['hands']['kathy'] == ['6d95c18472']
 
-    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    @mock.patch('app.award_points', mock.MagicMock(return_value=False))
     def test_thirtyone(self):
         """
         Verify two points for 31
@@ -506,6 +550,17 @@ class TestPlayScoring:
                 'kathy': ['f6571e162f'],
                 'tom': ['4de6b73ab8', 'c88523b677']
             },
+            'scoring_stats':
+                {'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
+            },
             'state': 'PLAY',
             'turn': 'kathy',
             'winning_score': 121,
@@ -523,7 +578,7 @@ class TestPlayScoring:
         assert g['players']['kathy'] == 2
         assert g['pegging']['total'] == 31
 
-    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    @mock.patch('app.award_points', mock.MagicMock(return_value=False))
     def test_pair(self):
         fake_redis = fakeredis.FakeRedis()
         game_dict = {
@@ -543,6 +598,17 @@ class TestPlayScoring:
                 'kathy': [],
                 'tom': []
             },
+            'scoring_stats':
+                {'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
+            },
             'state': 'PLAY',
             'turn': 'kathy',
             'winning_score': 121,
@@ -560,7 +626,7 @@ class TestPlayScoring:
         assert set(g['pegging']['cards']) == set(['32f7615119', 'c6f4900f82'])
         assert g['hands']['kathy'] == ['6d95c18472']
 
-    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    @mock.patch('app.award_points', mock.MagicMock(return_value=False))
     def test_three_of_a_kind(self):
         fake_redis = fakeredis.FakeRedis()
         game_dict = {
@@ -580,6 +646,17 @@ class TestPlayScoring:
                 'kathy': ['32f7615119'],
                 'tom': ['4f99bf15e5']
             },
+            'scoring_stats':
+                {'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
+            },
             'state': 'PLAY',
             'turn': 'kathy',
             'winning_score': 121,
@@ -597,7 +674,7 @@ class TestPlayScoring:
         assert g['pegging']['total'] == 21
         assert g['players']['kathy'] == 6
 
-    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    @mock.patch('app.award_points', mock.MagicMock(return_value=False))
     def test_four_of_a_kind(self):
         fake_redis = fakeredis.FakeRedis()
         game_dict = {
@@ -617,6 +694,17 @@ class TestPlayScoring:
                 'kathy': ['32f7615119'],
                 'tom': ['4f99bf15e5', 'def8effef6']
             },
+            'scoring_stats':
+                {'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
+            },
             'state': 'PLAY',
             'turn': 'kathy',
             'winning_score': 121,
@@ -634,7 +722,7 @@ class TestPlayScoring:
         assert g['pegging']['total'] == 28
         assert g['players']['kathy'] == 14
 
-    @mock.patch('cribbage.award_points', mock.MagicMock(return_value=False))
+    @mock.patch('app.award_points', mock.MagicMock(return_value=False))
     def test_run_of_three(self):
         """
         test run of three scores three points
@@ -656,6 +744,17 @@ class TestPlayScoring:
             'played_cards': {
                 'kathy': ['32f7615119'],
                 'tom': ['4f99bf15e5', 'def8effef6']
+            },
+            'scoring_stats':
+                {'tom': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'kathy': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
             },
             'state': 'PLAY',
             'turn': 'kathy',
@@ -733,6 +832,17 @@ class TestResetGameDict:
             "jokers": True,
             "name": 'homemovies',
             'players': {'brendon': 0, 'jason': 0},
+            'scoring_stats':
+                {'brendon': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }, 'jason': {
+                    'a_play': 0,
+                    'b_hand': 0,
+                    'c_crib': 0
+                }
+            },
             "state": "INIT",
             "winning_score": 121,
         }

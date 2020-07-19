@@ -1,4 +1,4 @@
-from cribbage import cribby
+from app import cribby
 
 KNOWN_BLOBS = {'dundundun', 'party', 'cry', 'bored', 'yep', 'bongo', 'grimace', 'eyeroll', 'smile',
                'goodnight', 'nervous', 'stare', 'hype', 'triggered', 'wink', 'gimme', 'wave', 'ugh', 'conga', 'panic',

@@ -1,5 +1,5 @@
-from cribbage.cards import CARDS
-from cribbage.utils import rotate_turn, rotate_reverse, play_or_pass, card_object_from_text, card_text_from_id
+from app.cards import CARDS
+from app.utils import rotate_turn, rotate_reverse, play_or_pass, card_object_from_text, card_text_from_id
 
 
 class TestRotateTurn:
