@@ -13,6 +13,10 @@ html, body {
   margin: auto!important;
 }
 
+.game-play-container {
+  display: grid;
+}
+
 #leave-game {
   position: absolute;
   top: 5px;
@@ -89,6 +93,7 @@ html, body {
   height: 100%;
   text-align: left;
   position: relative;
+  min-height: 200px;
 }
 
 .game-log-header {
@@ -164,7 +169,7 @@ html, body {
 
 /*  TOP ROW  */
 .opponents {
-  height: 25%;
+  height: 180px;
   align-items: center;
   justify-content: center;
 }
@@ -173,8 +178,8 @@ html, body {
   display: inline-block;
   border: 1px solid #37434D;
   height: 100%;
-  width: 70%;
-  max-width: 300px;
+  width: 95%;
+  max-width: 360px;
   margin: 0 10px;
   position: relative;
 }
@@ -183,7 +188,7 @@ html, body {
 
 /*  MIDDLE ROW  */
 .middle-area {
-  height: 45%;
+  flex-grow: 1;
   text-align: center;
   align-items: center;
   padding: 10px 15px;
@@ -202,8 +207,7 @@ html, body {
 }
 
 .peg-board {
-  display: none;
-  height: auto;
+  height: fit-content;
   border: 1px solid #37434D;
   background: #E1C699;
   color: rgb(21, 32, 43);
@@ -211,7 +215,6 @@ html, body {
 }
 
 .peg-board-buffer {
-  display: none;
 }
 
 .player-track {
@@ -239,13 +242,10 @@ html, body {
 
 /*  BOTTOM ROW  */
 .player {
-  height: 30%;
+  height: 200px;
   margin: auto;
   width: 100%;
-}
-
-.player.desktop {
-  width: 70%;
+  max-width: 360px;
 }
 
 .player-nickname {
@@ -351,4 +351,16 @@ td {
 
 .summary-header-name, .summary-player-name {
   text-align: left;
+}
+
+@media only screen and (max-width: 650px) {
+  .player-progress-name {
+    margin-top: -5px;
+  }
+  .progress {
+    height: 10px!important;
+  }
+  .player-track {
+    height: 2em;
+  }
 }

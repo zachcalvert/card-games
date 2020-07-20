@@ -1,5 +1,5 @@
 .card {
-  height: 100px;
+  height: 120px;
   z-index: 1;
   display: inline;
   background: none;
@@ -21,18 +21,18 @@
 
 /* OTHER CARD TYPES */
 #deck {
-  height: 105px;
+  height: 125px;
   margin: auto;
 }
 
 .cut-card {
-  height: 100px;
+  height: 120px;
   margin: auto;
   z-index: 2;
 }
 
 .crib-card {
-  height: 100px;
+  height: 120px;
   margin: 0 -1em;
 }
 
