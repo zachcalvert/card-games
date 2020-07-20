@@ -363,4 +363,7 @@ td {
   .player-track {
     height: 2em;
   }
+  .game-log-container {
+    height: 250px;
+  }
 }
