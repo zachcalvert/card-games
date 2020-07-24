@@ -4,7 +4,7 @@
 * docker-compose build
 * docker-compose up
 * cribbage runs at http://localhost:5000
-* pinochle runs at http://localhost:5001
+* pinochle runs at http://localhost:5001 (WIP)
 
 ### To run the tests
 * docker-compose exec -T cribbage coverage run -m  pytest
