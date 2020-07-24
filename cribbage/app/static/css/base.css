@@ -363,7 +363,19 @@ td {
   .player-track {
     height: 2em;
   }
+
+  .opponents {
+    height: 165px;
+  }
+
+  .player {
+    height: 180px;
+  }
+
   .game-log-container {
     height: 200px;
+  }
+  .game-log {
+    height: 70%;
   }
 }

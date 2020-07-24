@@ -40,6 +40,7 @@
   /* player cards */
   .card {
     margin: 0 -1em;
+    height: 110px;
   }
   .card.to-be-played {
     margin: 0 -1em;
@@ -49,5 +50,13 @@
   }
   .card.scored {
     margin: 0 -1em;
+  }
+
+  #deck {
+    height: 115px;
+  }
+
+  .cut-card {
+    height: 110px;
   }
 }
