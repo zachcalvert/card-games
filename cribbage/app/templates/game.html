@@ -53,14 +53,17 @@
                 </form>
               </div>
 
-              <div class="peg-board-buffer col-1"></div>
-              <div class="peg-board col-8 rounded"></div>
               <!--DECK, CUT CARD-->
-              <div class="deck-area col-3">
+              <div class="deck-area col-2">
                 <div class="deck-container">
                   <img id="deck" src="/static/img/cards/facedown.png" alt="This the deck">
                 </div>
               </div>
+            </div>
+            <div class="scoreboard row">
+            <div class="peg-board-buffer buffer-left col-1"></div>
+            <div class="peg-board col-10 rounded"></div>
+            <div class="peg-board-buffer buffer-right col-1"></div>
             </div>
 
             <!--player area-->
@@ -90,9 +93,8 @@
         gameLogContainer.removeClass('col-9').addClass('col-3');
         gamePlayContainer.removeClass('col-12').addClass('col-9');
         $('.game-log-header').show();
-        $('.peg-board').show();
-        $('.peg-board-buffer').show();
-        $('.player').addClass('desktop');
+
+        $('.peg-board').insertAfter('.deck-area');
       }
 
       function displayMobile() {
@@ -102,11 +104,10 @@
         middleArea.prepend(gameLogContainer);
         gameLogContainer.removeClass('col-3').addClass('col-9');
         gamePlayContainer.removeClass('col-9').addClass('col-12');
+
+        $('.deck-area').insertAfter('.game-log-container');
+        $('.peg-board').insertAfter('.buffer-left');
         $('.game-log-header').hide();
-        $('.peg-board').hide();
-        $('.peg-board-buffer').hide();
-        $('.player').removeClass('desktop');
-        $('.game-log').css('height', '80%');
       }
 
       $(document).ready(function() {
