@@ -1,10 +1,9 @@
-## Real-time, multiplayer card games
+## Real-time, multiplayer cribbage
 
-### To run the card-games app locally:
+### To run cribbage locally:
 * docker-compose build
 * docker-compose up
-* cribbage runs at http://localhost:5000
-* pinochle runs at http://localhost:5001 (WIP)
+* app runs at http://localhost:5000
 
 ### To run the tests
 * docker-compose exec -T cribbage coverage run -m  pytest
