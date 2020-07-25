@@ -1,5 +1,9 @@
 """
 Beverley manages the state of the game and all the cache interactions.
+
+Beverley Calvert was an American woman, mother, grandmother, teacher, and feminist. She taught english in the
+favelas of Brazil, and taught this game to her grandchildren in California. The author of this code is one of her
+grandsons.
 """
 
 import json
