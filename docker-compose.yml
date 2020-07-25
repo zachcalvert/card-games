@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  cribbage:
+  flask:
     build: ./cribbage
     volumes:
       - ./cribbage/:/code
@@ -10,6 +10,6 @@ services:
     env_file:
       - cribbage/env.dev
     depends_on:
-      - cribbage-redis
-  cribbage-redis:
+      - redis
+  redis:
     image: redis
