@@ -1,5 +1,5 @@
 ## Real-time, multiplayer cribbage
-![gameplay screenshot](https://i.imgur.com/7RD8J4p.png)
+![gameplay screenshot](https://i.imgur.com/KdMFpMt.png)
 
 ### To run cribbage.live locally:
 * docker-compose up --build
