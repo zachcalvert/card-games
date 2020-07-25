@@ -34,7 +34,6 @@ def play_or_pass(card_values, pegging_total):
     :return: action
     """
     action = 'PASS'
-    print('Cards are : {}'.format(card_values))
     remainder = 31 - pegging_total
     if any(int(value) <= remainder for value in card_values):
         action = 'PLAY'

@@ -1,9 +1,15 @@
+"""
+Jim manages the things that add a little fun to the game: animations, gifs, comments on good/bad hands.
+
+Jim Calvert was an American man, father, grandfather, WWII veteran and civil engineer. One of his grandsons is the
+author of this code.
+"""
+
 import os
 import random
 
 import giphy_client
 from giphy_client.rest import ApiException
-from pprint import pprint
 
 giphy_api_instance = giphy_client.DefaultApi()
 giphy_api_key = 'qUzMZY2GSYY8yk1nOk2cOsKF3naPtlZF'

@@ -1,8 +1,6 @@
 from itertools import chain, combinations
 import more_itertools as mit
 
-from .cards import CARDS
-
 
 class Hand:
     def __init__(self, cards, cut_card, is_crib=False):

@@ -2,19 +2,15 @@
 import eventlet
 eventlet.monkey_patch()
 
-import json
-import os
 import random
-import redis
-
 
 from threading import Lock
-from flask import Flask, render_template, session, request, Markup, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for
 from flask_fontawesome import FontAwesome
-from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 from app import bev
-from app import cribby
+from app import jim
 from app.utils import rotate_turn, play_or_pass, card_text_from_id
 
 async_mode = None
@@ -114,13 +110,13 @@ def send_message(message):
 
     if message['data'].startswith('/gif '):
         _, search_term = message['data'].split('/gif ')
-        gif = cribby.find_gif(search_term) or 'Whoopsie!'
+        gif = jim.find_gif(search_term) or 'Whoopsie!'
         emit('gif', {'nickname': message['nickname'], 'gif': gif}, room=message['game'])
         return
     elif message['data'].startswith('/') and ' ' in message['data']:
         type, request = message['data'].strip('/').split(' ')
         if type in {'blob', 'piggy', 'meow'}:
-            found, known_animations = cribby.find_animation(type, request)
+            found, known_animations = jim.find_animation(type, request)
             if found:
                 emit('animation', {'nickname': message['nickname'], 'type': type, 'instance': request}, room=message['game'])
             else:
@@ -240,9 +236,9 @@ def score_hand(msg):
 
     if points == 0:
         emit('new_message', {'type': 'chat', 'data': "+0 for {} (from hand)".format(msg['nickname']), 'nickname': 'cribby'}, room=msg['game'])
-        emit('new_message', {'type': 'chat', 'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': random.choice(jim.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
     elif points >= 11:
-        emit('new_message', {'type': 'chat', 'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': random.choice(jim.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
 
     if just_won:
         return
@@ -264,9 +260,9 @@ def score_crib(msg):
 
     if points == 0:
         emit('new_message', {'type': 'score', 'data': "+0 for {} (from crib)".format(dealer), 'nickname': 'cribby'}, room=msg['game'])
-        emit('new_message', {'type': 'chat', 'data': random.choice(cribby.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': random.choice(jim.ZERO_POINT_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
     elif points >= 9:
-        emit('new_message', {'type': 'chat', 'data': random.choice(cribby.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
+        emit('new_message', {'type': 'chat', 'data': random.choice(jim.GREAT_HAND_RESPONSES), 'nickname': 'cribby'}, room=msg['game'])
 
     if just_won:
         return
