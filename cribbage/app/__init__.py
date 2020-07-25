@@ -208,10 +208,10 @@ def peg_round_action(msg):
 
         new_total = bev.record_play(msg['game'], msg['player'], msg['card_played'])
         card_text = card_text_from_id(msg['card_played'])
-        message = '{} played {}. <b>({})</b>'.format(msg['player'], card_text, new_total)
+        message = '{} played {}.'.format(msg['player'], card_text, new_total)
 
         emit('new_message', {'type': 'action', 'data': message}, room=msg['game'])
-        emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played']}, room=msg['game'])
+        emit('show_card_played', {'nickname': msg['player'], 'card': msg['card_played'], 'new_total': new_total}, room=msg['game'])
 
         if points_scored > 0:
             reason = ', '.join(ps for ps in sorted(points_source))
